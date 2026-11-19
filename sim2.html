@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNUCKLES' ANTHROPOCENE 32X // Interactive ELA Guide</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tone.js for Authentic Sega 32X / FM-Synth Arcade Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Google Fonts: Press Start 2P (Sega 32X Arcade HUD) + Space Mono + Inter (Clean Readability) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome for crisp retro UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                        arcade: ['"Press Start 2P"', 'monospace'],
+                    },
+                    colors: {
+                        brandRed: '#d52a3f',    /* Knuckles Red */
+                        brandBlue: '#314ece',   /* Sega 32X / Newtrogic Blue */
+                        brandGreen: '#45ba4b',  /* Vector Green */
+                        ringGold: '#facc15',    /* Chaos / Combi Ring Gold */
+                        retroBg: '#eef3fa',
+                        ink: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Clean, Minimal Sega 32X / Knuckles' Chaotix Aesthetic */
+        :root {
+            --sky-top: #eef4fc;
+            --sky-bottom: #dce8f8;
+            --grid-line: rgba(49, 78, 206, 0.11);
+        }
+
+        body[data-tod="sunset"] {
+            --sky-top: #fff1f2;
+            --sky-bottom: #ffe4e6;
+            --grid-line: rgba(213, 42, 63, 0.12);
+        }
+
+        body[data-tod="night"] {
+            --sky-top: #e2e8f0;
+            --sky-bottom: #cbd5e1;
+            --grid-line: rgba(49, 78, 206, 0.16);
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+            background-attachment: fixed;
+            color: #111827;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background 0.35s ease;
+        }
+
+        /* Newtrogic High Clean Geometric Grid + Floating Chaotix Blocks */
+        .newtrogic-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Optional Subtle CRT Scanline Overlay */
+        body.crt-enabled::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(17, 24, 39, 0) 0px,
+                rgba(17, 24, 39, 0) 2px,
+                rgba(17, 24, 39, 0.06) 3px,
+                rgba(17, 24, 39, 0.06) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Knuckles' Chaotix Iconic Checkerboard Strips */
+        .chaotix-checker-blue {
+            background-color: #314ece;
+            background-image:
+                linear-gradient(45deg, #22389e 25%, transparent 25%),
+                linear-gradient(-45deg, #22389e 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #22389e 75%),
+                linear-gradient(-45deg, transparent 75%, #22389e 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+        }
+
+        .chaotix-checker-red {
+            background-color: #d52a3f;
+            background-image:
+                linear-gradient(45deg, #a81d2e 25%, transparent 25%),
+                linear-gradient(-45deg, #a81d2e 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #a81d2e 75%),
+                linear-gradient(-45deg, transparent 75%, #a81d2e 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+        }
+
+        .chaotix-checker-green {
+            background-color: #45ba4b;
+            background-image:
+                linear-gradient(45deg, #329437 25%, transparent 25%),
+                linear-gradient(-45deg, #329437 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #329437 75%),
+                linear-gradient(-45deg, transparent 75%, #329437 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+        }
+
+        /* Tri-Color Sega 32X Racing Stripe Divider */
+        .sega-32x-bar {
+            height: 8px;
+            background: repeating-linear-gradient(
+                -45deg,
+                #d52a3f 0px,
+                #d52a3f 12px,
+                #314ece 12px,
+                #314ece 24px,
+                #45ba4b 24px,
+                #45ba4b 36px
+            );
+        }
+
+        /* 32-Bit Beveled Arcade Window Frame */
+        .retro-window {
+            background: #ffffff;
+            border: 3px solid #111827;
+            border-radius: 6px;
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.9),
+                inset -2px -2px 0px rgba(17, 24, 39, 0.12),
+                5px 5px 0px #111827;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .retro-shadow-blue {
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.9),
+                5px 5px 0px #314ece;
+        }
+
+        .retro-shadow-red {
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.9),
+                5px 5px 0px #d52a3f;
+        }
+
+        .retro-shadow-green {
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.9),
+                5px 5px 0px #45ba4b;
+        }
+
+        /* Tactile 32X Arcade Buttons with Pixel Bevel */
+        .retro-btn {
+            border: 3px solid #111827;
+            border-radius: 5px;
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.55),
+                inset -2px -2px 0px rgba(17, 24, 39, 0.25),
+                3px 3px 0px #111827;
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .retro-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow:
+                inset 2px 2px 0px rgba(255, 255, 255, 0.7),
+                inset -2px -2px 0px rgba(17, 24, 39, 0.25),
+                4px 4px 0px #111827;
+        }
+
+        .retro-btn:active {
+            transform: translate(2px, 2px);
+        /* Combi-Tether Pulse & Elastic Stretch */
+        @keyframes tetherPulse {
+            0%, 100% { stroke-dashoffset: 0; }
+            50% { stroke-dashoffset: 16; }
+        }
+        .combi-tether-line {
+            stroke-dasharray: 6 4;
+            animation: tetherPulse 1.2s linear infinite;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Knuckles' Chaotix 3D Wireframe Special Stage Backdrop */
+        .special-stage-wireframe {
+            background-color: #0f172a;
+            background-image:
+                linear-gradient(to right, rgba(69, 186, 75, 0.25) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(49, 78, 206, 0.35) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Chaotix Angled Attraction Badge */
+        .chaotix-skew {
+            transform: skewX(-8deg);
+        }
+        .chaotix-unskew {
+            transform: skewX(8deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-left: 2px solid #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #314ece;
+            border: 2px solid #111827;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d52a3f;
+        }
+
+        /* Smooth Panel Transition */
+        .panel-animate {
+            animation: panelFade 0.2s steps(4, end);
+        }
+        @keyframes panelFade {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative" data-tod="day">
+
+    <!-- Clean Newtrogic High Geometric Horizon Backdrop -->
+    <div class="newtrogic-bg"></div>
+
+    <!-- =================================================================== -->
+    <!-- SEGA 32X / KNUCKLES' CHAOTIX TOP ARCADE HUD BAR                     -->
+    <!-- =================================================================== -->
+    <header class="bg-white border-b-4 border-ink sticky top-0 z-40">
+        <div class="sega-32x-bar border-b-2 border-ink"></div>
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <!-- Sega 32X Cartridge + Player 1 / Player 2 Combi-HUD -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <div class="bg-ink text-white px-2.5 py-1.5 rounded border-2 border-ink flex items-center gap-1.5 shadow-[2px_2px_0px_#d52a3f]">
+                    <span class="font-arcade text-[10px] sm:text-xs tracking-wider text-brandRed">32</span><span class="font-arcade text-[10px] sm:text-xs text-brandBlue">X</span>
+                    <span class="w-2 h-2 rounded-full bg-brandGreen inline-block ml-0.5"></span>
+                </div>
+
+                <!-- Chaotix Life/Partner Portrait Box -->
+                <div class="hidden sm:flex items-center gap-1.5 bg-gray-100 border-2 border-ink rounded px-2 py-1 shadow-[2px_2px_0px_#314ece]">
+                    <span class="w-6 h-6 rounded bg-brandRed text-white border border-ink flex items-center justify-center text-xs" title="Player 1: You">
+                        <i class="fa-solid fa-fist-raised"></i>
+                    </span>
+                    <span class="font-arcade text-[8px] text-ringGold bg-ink px-1 py-0.5 rounded">LINK</span>
+                    <span id="hud-partner-badge" class="w-6 h-6 rounded bg-brandGreen text-white border border-ink flex items-center justify-center text-xs" title="Combi-Partner">
+                        <i class="fa-solid fa-glasses"></i>
+                    </span>
+                </div>
+
+                <div>
+                    <h1 class="font-arcade text-[10px] sm:text-xs text-ink tracking-tight leading-snug">
+                        KNUCKLES'<span class="text-brandRed">_</span>CHAOTIX <span class="text-brandBlue">32X</span>
+                    </h1>
+                    <p class="font-mono text-[11px] text-gray-600 font-bold">NEWTROGIC HIGH // ANTHROPOCENE</p>
+                </div>
+            </div>
+
+            <!-- Live Arcade Counters & Toggles -->
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+                <!-- Ring Counter (Gamified Study Points) -->
+                <div class="bg-ink text-white px-2.5 sm:px-3 py-1.5 rounded border-2 border-ink flex items-center gap-2 shadow-[2px_2px_0px_#45ba4b]">
+                    <span class="ring-spin w-3.5 h-3.5 rounded-full border-[3px] border-ringGold bg-yellow-200/20 inline-block"></span>
+                    <span class="font-arcade text-[9px] sm:text-[10px] text-ringGold">RINGS</span>
+                    <span id="hud-rings" class="font-arcade text-[11px] sm:text-xs text-white">050</span>
+                </div>
+
+                <!-- Iconic Chaotix Time-of-Day Cycle Button -->
+                <button onclick="cycleTimeOfDay()" id="tod-toggle-btn" class="retro-btn bg-brandBlue text-white px-2.5 py-1.5 font-arcade text-[9px] flex items-center gap-1.5" title="Switch Knuckles' Chaotix Time of Day">
+                    <i id="tod-icon" class="fa-solid fa-sun text-ringGold"></i>
+                    <span id="tod-label">DAY</span>
+                </button>
+
+                <!-- 32X Chiptune BGM Toggle -->
+                <button onclick="toggleBgm()" id="bgm-toggle-btn" class="retro-btn bg-white text-ink px-2.5 py-1.5 font-arcade text-[9px] flex items-center gap-1.5" title="Toggle 32X Chaotix Synth Groove">
+                    <i class="fa-solid fa-music text-brandRed"></i>
+                    <span id="bgm-label">BGM:OFF</span>
+                </button>
+
+                <!-- SFX Audio Toggle -->
+                <button onclick="toggleSfx()" id="sfx-toggle-btn" class="retro-btn bg-brandGreen text-white px-2.5 py-1.5 font-arcade text-[9px] flex items-center gap-1.5" title="Toggle 32X Synth SFX">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span id="sfx-label">SFX:ON</span>
+                </button>
+
+                <!-- CRT Scanline Toggle -->
+                <button onclick="toggleCrt()" id="crt-toggle-btn" class="retro-btn bg-white text-ink px-2.5 py-1.5 font-arcade text-[9px] flex items-center gap-1.5" title="Toggle Retro CRT Scanlines">
+                    <i class="fa-solid fa-tv text-brandBlue"></i>
+                    <span id="crt-label">CRT:OFF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Arcade Viewport -->
+    <main class="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 py-6 space-y-6">
+
+        <!-- =================================================================== -->
+        <!-- KNUCKLES' CHAOTIX TITLE EMBLEM & COMBI-CATCHER TETHER BANNER        -->
+        <!-- =================================================================== -->
+        <section class="retro-window retro-shadow-blue overflow-hidden">
+            <div class="chaotix-checker-blue text-white px-4 py-2 border-b-3 border-ink flex items-center justify-between">
+                <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow">WORLD ENTRANCE // SEGA 32X CARTRIDGE</span>
+                <span class="font-arcade text-[10px] bg-ink text-ringGold px-2 py-0.5 rounded border border-white">COMBI-SYSTEM OK</span>
+            </div>
+
+            <div class="p-5 sm:p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                <div class="space-y-3 max-w-2xl">
+                    <!-- Iconic Knuckles' Chaotix Jagged Starburst Title Badge -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <svg viewBox="0 0 320 74" class="w-64 sm:w-72 h-auto shrink-0" aria-label="Knuckles Chaotix Style Emblem">
+                            <!-- Jagged 32X Starburst Polygon -->
+                            <polygon points="10,14 55,4 115,12 175,3 235,12 310,6 296,38 314,66 245,62 180,71 115,61 48,70 6,60 20,36" fill="#314ece" stroke="#111827" stroke-width="4" />
+                            <polygon points="18,18 62,10 120,17 175,9 232,17 298,12 286,38 302,60 242,56 180,64 118,55 54,63 15,54 27,36" fill="#d52a3f" stroke="#111827" stroke-width="3" />
+                            <!-- Crisp Arcade Banner Text -->
+                            <text x="160" y="33" text-anchor="middle" fill="#facc15" stroke="#111827" stroke-width="3" paint-order="stroke" font-family="'Press Start 2P', monospace" font-size="11" font-weight="bold">ANTHROPOCENE</text>
+                            <text x="160" y="53" text-anchor="middle" fill="#ffffff" stroke="#111827" stroke-width="3" paint-order="stroke" font-family="'Press Start 2P', monospace" font-size="12" font-weight="bold">CHAOTIX 32X</text>
+                        </svg>
+
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-brandGreen text-white border-2 border-ink font-arcade text-[9px] shadow-[2px_2px_0px_#111827]">
+                            <i class="fa-solid fa-gamepad"></i> ELA SPEEDRUN MODE
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight text-ink leading-tight">
+                        Beat <span class="text-brandBlue underline decoration-brandRed decoration-4 underline-offset-4">The Anthropocene Reviewed</span> Without Reading Every Page.
+                    </h2>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        <strong>Zero boring chapters.</strong> John Green's book has no traditional plot—it's 44 essays reviewing random pieces of human life (like <em>Diet Dr Pepper</em>, <em>Canada Geese</em>, and <em>Halley's Comet</em>) on a 5-star scale. Grab rings, unlock Chaos Themes, and tether up with characters in real time.
+                    </p>
+                </div>
+
+                <!-- Interactive Knuckles' Chaotix COMBI-RING Tether & Crane Widget -->
+                <div class="w-full lg:w-80 bg-gray-50 border-3 border-ink rounded-md p-4 shrink-0 shadow-[4px_4px_0px_#d52a3f]">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-arcade text-[9px] text-brandBlue">COMBI-RING TETHER</span>
+                        <span id="tether-status" class="font-mono text-xs font-bold text-brandGreen">● TENSION: NORMAL</span>
+                    </div>
+
+                    <!-- Interactive SVG Combi-Ring Graphic (Knuckles Red + Ring Tether + Partner Green) -->
+                    <svg id="combi-svg" viewBox="0 0 260 72" class="w-full h-16 my-1 bg-white border-2 border-ink rounded p-1 cursor-pointer" onclick="stretchCombiRing()" title="Click to snap the Combi-Ring tether!">
+                        <!-- Combi-Catcher Crane Hook Above Center Ring -->
+                        <line x1="130" y1="0" x2="130" y2="14" stroke="#111827" stroke-width="3" />
+                        <path d="M122,16 Q130,10 138,16" fill="none" stroke="#d52a3f" stroke-width="3" />
+                        <!-- Elastic Energy Band -->
+                        <line id="combi-band" x1="52" y1="38" x2="208" y2="38" stroke="#314ece" stroke-width="5" class="combi-tether-line" />
+                        <!-- Center Holding Ring -->
+                        <circle id="combi-ring-outer" cx="130" cy="38" r="14" fill="none" stroke="#111827" stroke-width="6" />
+                        <circle id="combi-ring-inner" cx="130" cy="38" r="14" fill="none" stroke="#facc15" stroke-width="3.5" />
+                        <!-- Player 1 Orb (Knuckles Red #d52a3f) -->
+                        <circle id="combi-p1" cx="46" cy="38" r="19" fill="#d52a3f" stroke="#111827" stroke-width="3" />
+                        <text id="combi-p1-txt" x="46" y="42" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="bold" font-size="11">YOU</text>
+                        <!-- Player 2 Orb (Vector Green #45ba4b) -->
+                        <circle id="combi-p2" cx="214" cy="38" r="19" fill="#45ba4b" stroke="#111827" stroke-width="3" />
+                        <text id="combi-p2-txt" x="214" y="42" text-anchor="middle" fill="#ffffff" font-family="monospace" font-weight="bold" font-size="10">JOHN</text>
+                    </svg>
+
+                    <div class="flex items-center justify-between mt-2 gap-2">
+                        <button onclick="stretchCombiRing()" class="retro-btn bg-brandRed text-white px-2.5 py-1 font-arcade text-[8px]">
+                            SNAP RING!
+                        </button>
+                        <span class="font-mono text-xs font-bold text-ink">BOOK: <span class="text-brandRed">★★★★½</span></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- CHAOTIX ATTRACTION / STAGE SELECT NAVIGATION                        -->
+        <!-- =================================================================== -->
+        <nav aria-label="Attraction Select" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <button onclick="switchTab('plot')" id="tab-plot" class="retro-btn bg-brandBlue text-white p-3 font-arcade text-[9px] sm:text-[10px] flex flex-col items-center justify-center gap-1.5">
+                <span class="text-[8px] opacity-80">BOTANIC BASE</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-route"></i> ACT 1: PLOT</span>
+            </button>
+            <button onclick="switchTab('themes')" id="tab-themes" class="retro-btn bg-white text-ink p-3 font-arcade text-[9px] sm:text-[10px] flex flex-col items-center justify-center gap-1.5">
+                <span class="text-[8px] text-brandRed">AMAZING ARENA</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-gem text-brandRed"></i> ACT 2: THEMES</span>
+            </button>
+            <button onclick="switchTab('characters')" id="tab-characters" class="retro-btn bg-white text-ink p-3 font-arcade text-[9px] sm:text-[10px] flex flex-col items-center justify-center gap-1.5">
+                <span class="text-[8px] text-brandGreen">TECHNO TOWER</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-users text-brandGreen"></i> ACT 3: CAST</span>
+            </button>
+            <button onclick="switchTab('chat')" id="tab-chat" class="retro-btn bg-white text-ink p-3 font-arcade text-[9px] sm:text-[10px] flex flex-col items-center justify-center gap-1.5">
+                <span class="text-[8px] text-brandBlue">MARINA MADNESS</span>
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brandGreen border border-ink animate-ping"></span> ACT 4: COMMS</span>
+            </button>
+            <button onclick="switchTab('ai')" id="tab-ai" class="retro-btn bg-white text-ink p-3 font-arcade text-[9px] sm:text-[10px] col-span-2 sm:col-span-1 flex flex-col items-center justify-center gap-1.5">
+                <span class="text-[8px] text-brandRed">SPEED SLIDER</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-robot text-brandBlue"></i> ACT 5: ELA AI</span>
+            </button>
+        </nav>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 1: THE PLOT / STRUCTURE & BONUS RING SIMULATOR     -->
+        <!-- ========================================================= -->
+        <section id="view-plot" class="space-y-6 panel-animate">
+            <!-- Plot / Narrative Arc Explorer -->
+            <div class="retro-window">
+                <div class="chaotix-checker-blue text-white px-4 py-2 border-b-3 border-ink flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow"><i class="fa-solid fa-map mr-1"></i> ACT 01 // ZONE MAP &amp; NARRATIVE ARC</span>
+                    <span class="font-mono text-xs bg-ink/80 px-2 py-0.5 rounded">SELECT CHECKPOINT</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-6">
+                    <!-- The Big ELA Secret -->
+                    <div class="bg-brandRed/10 border-3 border-brandRed rounded-md p-4 flex items-start gap-3">
+                        <div class="bg-brandRed text-white w-9 h-9 rounded border-2 border-ink flex items-center justify-center shrink-0 font-arcade text-xs mt-0.5 shadow-[2px_2px_0px_#111827]">!</div>
+                        <div>
+                            <h3 class="font-extrabold text-ink text-sm sm:text-base">BOSS SECRET: It's Creative Nonfiction, Not a Novel</h3>
+                            <p class="text-xs sm:text-sm text-gray-800 mt-1 leading-relaxed">
+                                If your teacher asks <em>"What is the plot?"</em>, drop this line: <strong>"It doesn't follow a traditional fictional plot—it's a collection of personal essays structured around a 5-star review system that traces John Green's emotional journey from pandemic isolation toward radical hope."</strong> (+1000 ELA XP)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4-Step Interactive Emotional Arc -->
+                    <div>
+                        <h4 class="font-arcade text-[10px] uppercase text-gray-600 mb-3">SELECT LEVEL CHECKPOINT:</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="arc-buttons">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Arc Details Box -->
+                    <div id="arc-detail-box" class="border-3 border-ink rounded-md p-5 bg-gray-50 shadow-[3px_3px_0px_#314ece]">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive 5-Star Rating 3D Wireframe Special Stage -->
+            <div class="retro-window retro-shadow-green overflow-hidden">
+                <div class="chaotix-checker-green text-white px-4 py-2 border-b-3 border-ink flex items-center justify-between">
+                    <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow"><i class="fa-solid fa-star mr-1"></i> CHAOTIX SPECIAL STAGE // 3D WIREFRAME ARENA</span>
+                    <span class="font-arcade text-[9px] bg-ink text-ringGold px-2 py-0.5 rounded">+10 RINGS PER VOTE</span>
+                </div>
+                <div class="special-stage-wireframe p-5 sm:p-6">
+                    <div class="flex flex-col md:flex-row justify-between gap-6 items-center">
+                        <div class="space-y-2.5 flex-1 bg-white border-3 border-ink rounded-md p-4 shadow-[4px_4px_0px_#314ece]">
+                            <div class="flex items-center justify-between">
+                                <span class="font-arcade text-[9px] px-2.5 py-1 bg-ink text-ringGold rounded inline-block">CHAOS RING <span id="sim-index">1</span> / 6</span>
+                                <span class="font-arcade text-[8px] text-brandGreen">WIREFRAME 32X</span>
+                            </div>
+                            <h3 id="sim-title" class="text-xl sm:text-2xl font-extrabold text-ink">Diet Dr Pepper</h3>
+                            <p id="sim-desc" class="text-sm text-gray-700">A crisp, artificially sweetened soda invented in the 1960s that tastes like 23 flavors of nostalgic comfort.</p>
+
+                            <!-- User Star Picker -->
+                            <div class="pt-2">
+                                <div class="font-arcade text-[9px] text-gray-500 mb-2">CHOOSE YOUR STAR POWER:</div>
+                                <div class="flex flex-wrap items-center gap-2" id="sim-star-buttons">
+                                    <button onclick="rateSubject(1)" class="retro-btn bg-white px-3 py-2 font-arcade text-[10px] hover:bg-brandRed hover:text-white">1★</button>
+                                    <button onclick="rateSubject(2)" class="retro-btn bg-white px-3 py-2 font-arcade text-[10px] hover:bg-brandRed hover:text-white">2★</button>
+                                    <button onclick="rateSubject(3)" class="retro-btn bg-white px-3 py-2 font-arcade text-[10px] hover:bg-brandBlue hover:text-white">3★</button>
+                                    <button onclick="rateSubject(4)" class="retro-btn bg-white px-3 py-2 font-arcade text-[10px] hover:bg-brandBlue hover:text-white">4★</button>
+                                    <button onclick="rateSubject(5)" class="retro-btn bg-white px-3 py-2 font-arcade text-[10px] hover:bg-brandGreen hover:text-white">5★</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reveal Box -->
+                        <div id="sim-result" class="w-full md:w-80 border-3 border-ink rounded-md p-4 bg-white min-h-[175px] flex flex-col justify-between shadow-[4px_4px_0px_#d52a3f]">
+                            <div class="font-arcade text-[9px] text-gray-400">AWAITING PLAYER INPUT...</div>
+                            <p class="text-xs text-gray-600 my-2">Pick 1 to 5 stars on the left to see what John Green actually rated this in the book—and earn +10 Rings!</p>
+                            <button onclick="nextSubject()" class="retro-btn bg-gray-100 px-3 py-1.5 font-arcade text-[9px] self-end">
+                                SKIP &gt;&gt;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 2: THEMES & CHAOS EMERALD THESIS BUILDER           -->
+        <!-- ========================================================= -->
+        <section id="view-themes" class="hidden space-y-6 panel-animate">
+            <div class="retro-window retro-shadow-red">
+                <div class="chaotix-checker-red text-white px-4 py-2 border-b-3 border-ink flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow"><i class="fa-solid fa-gem mr-1"></i> ACT 02 // CORE THEMES &amp; THESIS POWER-UPS</span>
+                    <span class="font-arcade text-[9px] bg-ink text-white px-2 py-0.5 rounded">+5 RINGS ON COPY</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <p class="text-sm text-gray-700">
+                        Unlock the <strong>4 Chaos Themes</strong> of <em>The Anthropocene Reviewed</em>. Each power-up card gives you the plain-English breakdown, supporting essays, and a copy-paste thesis sentence for your ELA assignments.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="themes-grid">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 3: COMBI-PARTNER CHARACTER SELECT                  -->
+        <!-- ========================================================= -->
+        <section id="view-characters" class="hidden space-y-6 panel-animate">
+            <div class="retro-window retro-shadow-green">
+                <div class="chaotix-checker-green text-white px-4 py-2 border-b-3 border-ink flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow"><i class="fa-solid fa-users mr-1"></i> ACT 03 // COMBI-PARTNER ROSTER</span>
+                    <span class="font-arcade text-[9px] bg-ink text-ringGold px-2 py-0.5 rounded">PICK PLAYER 2</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <p class="text-sm text-gray-700">
+                        In <em>Knuckles' Chaotix</em>, you never go solo—you tether up with a partner! Choose <strong>John Green</strong> or one of the iconic subjects from his essays to form a <strong>Combi-Link</strong> and interview them live.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="characters-grid">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 4: CHAOTIX COMBI-LINK COMMUNICATOR (AI CHAT)       -->
+        <!-- ========================================================= -->
+        <section id="view-chat" class="hidden space-y-4 panel-animate">
+            <div class="retro-window retro-shadow-blue overflow-hidden">
+                <!-- Classic 32X Tactical Comms Header -->
+                <div class="chaotix-checker-blue text-white px-4 py-2 border-b-3 border-ink flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-walkie-talkie"></i>
+                        <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow">COMBI-LINK.32X // LIVE CHARACTER COMMS</span>
+                    </div>
+                    <span class="bg-brandGreen text-ink border border-ink px-2 py-0.5 rounded font-arcade text-[9px]">LINK OK</span>
+                </div>
+
+                <div class="flex flex-col md:flex-row min-h-[530px]">
+                    <!-- Partner Select Sidebar -->
+                    <aside class="w-full md:w-72 bg-gray-100 border-b-3 md:border-b-0 md:border-r-3 border-ink p-3 flex flex-col justify-between">
+                        <div>
+                            <div class="font-arcade text-[9px] text-gray-600 uppercase px-2 py-1.5 mb-2 border-b-2 border-ink flex justify-between items-center">
+                                <span>PARTNERS (5)</span>
+                                <span class="text-brandGreen">● READY</span>
+                            </div>
+                            <div class="space-y-2" id="chat-buddy-list">
+                                <!-- Injected by JS -->
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t-2 border-gray-300 hidden md:block">
+                            <div class="bg-white border-2 border-ink rounded p-2.5 text-xs font-mono text-gray-700 shadow-[2px_2px_0px_#d52a3f]">
+                                <strong class="font-arcade text-[9px] text-brandRed block mb-1">CHEAT CODE:</strong>
+                                Ask any partner to summarize their essay, rate your homework out of 5 stars, or give you a quote for class!
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Active Comms Window -->
+                    <div class="flex-1 flex flex-col bg-white">
+                        <!-- Active Partner Header -->
+                        <div id="chat-header" class="p-3.5 border-b-3 border-ink bg-gray-50 flex items-center justify-between gap-3">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Messages Feed -->
+                        <div id="chat-messages" class="flex-1 p-4 space-y-3 overflow-y-auto max-h-[340px] bg-white">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Quick One-Click Prompt Chips -->
+                        <div class="px-3 py-2 bg-gray-100 border-t-2 border-ink flex items-center gap-2 overflow-x-auto">
+                            <span class="font-arcade text-[9px] text-brandBlue shrink-0">QUICK ASK:</span>
+                            <button onclick="sendQuickPrompt('Explain the main point of this book in 3 bullet points.')" class="text-xs font-mono font-bold bg-white border-2 border-ink px-2.5 py-1 rounded hover:bg-brandBlue hover:text-white transition shrink-0">
+                                Main point in 3 bullets?
+                            </button>
+                            <button onclick="sendQuickPrompt('Review my ELA class on a 5-star scale in your style!')" class="text-xs font-mono font-bold bg-white border-2 border-ink px-2.5 py-1 rounded hover:bg-brandRed hover:text-white transition shrink-0">
+                                Rate my ELA class ★
+                            </button>
+                            <button onclick="sendQuickPrompt('What is one quote or example from your essay I can use in class?')" class="text-xs font-mono font-bold bg-white border-2 border-ink px-2.5 py-1 rounded hover:bg-brandGreen hover:text-white transition shrink-0">
+                                Give me an essay example
+                            </button>
+                        </div>
+
+                        <!-- Input Form -->
+                        <form onsubmit="handleChatSubmit(event)" class="p-3 border-t-3 border-ink bg-gray-50 flex gap-2">
+                            <input
+                                type="text"
+                                id="chat-input"
+                                placeholder="Transmit message to Combi-Partner..."
+                                class="flex-1 bg-white border-2 border-ink rounded px-3 py-2 text-sm font-mono focus:outline-none focus:border-brandBlue"
+                                autocomplete="off"
+                            >
+                            <button type="submit" id="chat-send-btn" class="retro-btn bg-brandGreen text-white px-4 py-2 font-arcade text-[10px] flex items-center gap-1.5">
+                                <span>SEND</span>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- MODULE 5: SPEED SLIDER // DEDICATED ELA & JOHN GREEN AI   -->
+        <!-- ========================================================= -->
+        <section id="view-ai" class="hidden space-y-6 panel-animate">
+            <div class="retro-window retro-shadow-red overflow-hidden">
+                <div class="chaotix-checker-red text-white px-4 py-2 border-b-3 border-ink flex flex-wrap items-center justify-between gap-2">
+                    <span class="font-arcade text-[10px] sm:text-xs hud-text-shadow"><i class="fa-solid fa-robot mr-1"></i> ACT 05 // SPEED SLIDER ELA AI STUDIO</span>
+                    <span class="font-arcade text-[9px] bg-ink text-ringGold px-2 py-0.5 rounded">+10 RINGS PER ASSIST</span>
+                </div>
+
+                <div class="p-5 sm:p-6 space-y-5">
+                    <!-- Intro Banner -->
+                    <div class="bg-brandBlue/10 border-3 border-brandBlue rounded-md p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="space-y-1">
+                            <h3 class="font-extrabold text-ink text-base sm:text-lg flex items-center gap-2">
+                                <span class="bg-brandBlue text-white font-arcade text-[9px] px-2 py-1 rounded border border-ink">AI COACH</span>
+                                <span>Your No-Fluff ELA &amp; John Green Co-Pilot</span>
+                            </h3>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                                Stuck on an assignment? Pick a power-up mode below to decode any essay in <em>The Anthropocene Reviewed</em>, build a thesis &amp; outline, polish a rough paragraph, or get instant help on any ELA reading/writing homework.
+                            </p>
+                        </div>
+                        <button onclick="clearAiStudio()" class="retro-btn bg-white px-3 py-1.5 font-arcade text-[9px] text-brandRed shrink-0">
+                            <i class="fa-solid fa-trash-can mr-1"></i> CLEAR LOG
+                        </button>
+                    </div>
+
+                    <!-- 4 ELA AI Power-Up Modes -->
+                    <div>
+                        <div class="font-arcade text-[9px] text-gray-600 uppercase mb-2">1. SELECT AI POWER-UP MODE:</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5" id="ai-mode-buttons">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Sample Prompts for the Selected Mode -->
+                    <div class="bg-gray-100 border-2 border-ink rounded-md p-3 space-y-2">
+                        <div class="font-arcade text-[8px] text-brandBlue">ONE-CLICK ELA STARTERS:</div>
+                        <div class="flex flex-wrap gap-2" id="ai-quick-chips">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- AI Input Box -->
+                    <form onsubmit="handleAiStudioSubmit(event)" class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label for="ai-studio-input" id="ai-input-label" class="font-arcade text-[9px] text-ink">2. ENTER YOUR ELA PROMPT, ESSAY TOPIC, OR DRAFT:</label>
+                            <span class="font-mono text-[11px] text-gray-500">Powered by Gemini 32X</span>
+                        </div>
+                        <textarea
+                            id="ai-studio-input"
+                            rows="3"
+                            placeholder="Example: Explain John Green's 'Viral Meningitis' essay in 4 bullet points, OR paste your ELA homework question here..."
+                            class="w-full bg-white border-3 border-ink rounded-md p-3 text-sm font-mono focus:outline-none focus:border-brandBlue shadow-[3px_3px_0px_#111827]"
+                        ></textarea>
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs font-mono text-gray-600">Tip: Every response includes a 1-click <strong>Copy</strong> button!</span>
+                            <button type="submit" id="ai-studio-submit" class="retro-btn bg-brandGreen text-white px-5 py-2.5 font-arcade text-[10px] flex items-center gap-2">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>RUN ELA AI</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- AI Output Feed -->
+                    <div id="ai-studio-output" class="space-y-4 pt-2">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Sega 32X Arcade Footer -->
+    <footer class="bg-white border-t-4 border-ink mt-10">
+        <div class="max-w-6xl mx-auto py-4 px-4 flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-xs text-gray-700">
+            <div class="flex items-center gap-2">
+                <span class="font-arcade text-[10px] text-ink">CHAOTIX_32X</span>
+                <span>// Built to beat ELA without falling asleep.</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 bg-brandRed border-2 border-ink"></span>
+                <span class="inline-block w-3 h-3 bg-brandBlue border-2 border-ink"></span>
+                <span class="inline-block w-3 h-3 bg-brandGreen border-2 border-ink"></span>
+                <span class="font-arcade text-[9px] text-ink">SEGA 32X EDITION</span>
+            </div>
+        </div>
+        <div class="sega-32x-bar border-t-2 border-ink"></div>
+    </footer>
+
+    <!-- Custom Non-Blocking Arcade Toast Notification -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-200 pointer-events-none">
+        <div class="retro-window bg-ink text-white px-4 py-3 flex items-center gap-3 font-arcade text-[10px] border-3 border-white">
+            <span class="ring-spin w-3 h-3 rounded-full border-2 border-ringGold inline-block"></span>
+            <span id="toast-message">RING BONUS +5!</span>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. DATA STORE: BOOK PLOT/ARC, SIMULATOR, THEMES, AND CHARACTERS
+        // =========================================================================
+
+        const arcStages = [
+            {
+                id: 'phase1',
+                step: 'PHASE 01',
+                title: 'The Premise & The Anthropocene',
+                badgeColor: 'bg-brandBlue',
+                summary: 'John introduces the "Anthropocene"—the current geological era where humans are the #1 force reshaping Earth. He explains why reviewing huge, messy human experiences on a 5-star consumer scale is ridiculous, yet deeply relatable.',
+                keyEssays: ['Introduction', 'You’ll Never Walk Alone', 'Halley’s Comet'],
+                classTakeaway: 'The 5-star rating device highlights the tension between how we try to measure value and how messy life actually is.'
+            },
+            {
+                id: 'phase2',
+                step: 'PHASE 02',
+                title: 'Nostalgia & Wonder at Small Things',
+                badgeColor: 'bg-brandGreen',
+                summary: 'John dives into childhood memories, weird history, and everyday objects—like Scratch ’n’ Sniff stickers, Super Mario Kart, and Diet Dr Pepper. He shows how paying close attention to ordinary things turns boredom into wonder.',
+                keyEssays: ['Diet Dr Pepper', 'Super Mario Kart', 'The Lascaux Cave Paintings'],
+                classTakeaway: 'Paying attention is an act of love. Even pop culture and soda carry real emotional history.'
+            },
+            {
+                id: 'phase3',
+                step: 'PHASE 03',
+                title: 'Crisis, Illness & The 2020 Pandemic',
+                badgeColor: 'bg-brandRed',
+                summary: 'The book takes a darker, real turn. John writes candidly about chronic anxiety, severe viral meningitis, tuberculosis, and the isolation of COVID-19 lockdowns. Cynicism and despair creep in as human fragility becomes impossible to ignore.',
+                keyEssays: ['Viral Meningitis', 'The Plague', 'Staphylococcus Aureus'],
+                classTakeaway: 'Humans are fragile, and isolation hurts—which proves how desperately we depend on one another.'
+            },
+            {
+                id: 'phase4',
+                step: 'PHASE 04',
+                title: 'Radical Hope & Falling in Love With the World',
+                badgeColor: 'bg-brandBlue',
+                summary: 'In the final stretch, John rejects detached cynicism. Even though the future is uncertain and humans make huge mistakes, choosing hope—and singing "Auld Lang Syne" together—is how we survive.',
+                keyEssays: ['Sunsets', 'Indianapolis', 'Auld Lang Syne', 'Postscript'],
+                classTakeaway: 'Hope isn’t ignoring reality; it’s choosing to care about the world anyway.'
+            }
+        ];
+
+        const ratingSubjects = [
+            {
+                title: 'Diet Dr Pepper',
+                desc: 'A crisp, artificially sweetened soda invented in the 1960s that tastes like 23 flavors of nostalgic comfort.',
+                johnRating: 4,
+                johnReason: 'John gives it 4 stars! He admits it is completely artificial, yet it represents reliable comfort, routine, and the strange beauty of human invention.'
+            },
+            {
+                title: 'Viral Meningitis',
+                desc: 'An excruciatingly painful inflammation of the membranes surrounding your brain and spinal cord.',
+                johnRating: 1,
+                johnReason: 'John gives it 1 star (the lowest possible rating). However, being hospitalized taught him that "we are only as strong as our connections to one another."'
+            },
+            {
+                title: 'The Lascaux Cave Paintings',
+                desc: '17,000-year-old paintings of bulls, horses, and human handprints hidden deep inside a cave in France.',
+                johnRating: 5,
+                johnReason: 'John gives them 5 stars! They prove that from the very beginning, humans have crawled into the dark just to make art and say "we were here."'
+            },
+            {
+                title: 'Canada Geese',
+                desc: 'Loud, territorial, aggressive birds that have completely taken over suburban parks and corporate office ponds.',
+                johnRating: 4.5,
+                johnReason: 'John gives them 4.5 stars! While everyone finds them annoying, he admires how fiercely loyal they are to injured mates and how well they adapted to human cities.'
+            },
+            {
+                title: 'Monopoly (The Board Game)',
+                desc: 'A famously endless real-estate board game originally invented to show how unfair monopolies are.',
+                johnRating: 2.5,
+                johnReason: 'John gives it 2.5 stars. It turns family game nights into cutthroat capitalism—ironically doing the exact opposite of what its anti-monopoly creator intended.'
+            },
+            {
+                title: 'Auld Lang Syne',
+                desc: 'The traditional New Year’s Eve song about remembering old friends and raising a cup of kindness.',
+                johnRating: 5,
+                johnReason: 'John gives it 5 stars to close the book. It captures gratitude for the past and hope for the future despite human imperfection.'
+            }
+        ];
+
+        const themesData = [
+            {
+                title: '1. Paying Attention Is a Form of Love',
+                accent: 'border-brandBlue',
+                badgeBg: 'bg-brandBlue',
+                explanation: 'In a distracted world, slowing down to notice details—whether in a painting or a sunset—connects us to reality and each other.',
+                essays: 'The Lascaux Cave Paintings, Sunsets, Velociraptors',
+                thesis: 'In The Anthropocene Reviewed, John Green argues that intentional attention transforms ordinary objects into sources of meaning, proving that noticing the world is an act of love.'
+            },
+            {
+                title: '2. Hope Over Cynicism',
+                accent: 'border-brandRed',
+                badgeBg: 'bg-brandRed',
+                explanation: 'Being cynical feels smart and safe because you never get disappointed, but Green argues it is actually lazy. Real courage is hoping anyway.',
+                essays: 'You’ll Never Walk Alone, Harvey, Postscript',
+                thesis: 'Green challenges modern detachment by portraying hope not as naive optimism, but as a deliberate, courageous choice in an uncertain era.'
+            },
+            {
+                title: '3. Human Fragility & Interdependence',
+                accent: 'border-brandGreen',
+                badgeBg: 'bg-brandGreen',
+                explanation: 'Illness, mental health struggles, and pandemics prove that nobody is truly self-made. We survive only because other people care for us.',
+                essays: 'Viral Meningitis, Staphylococcus Aureus, Humanity’s Temporal Range',
+                thesis: 'Through candid accounts of illness and the COVID-19 pandemic, Green reveals that human survival depends entirely on mutual care and community.'
+            },
+            {
+                title: '4. The Absurdity of 5-Star Ratings',
+                accent: 'border-brandBlue',
+                badgeBg: 'bg-brandBlue',
+                explanation: 'Modern internet culture rates everything from tacos to human lives out of 5 stars. Using this format exposes how impossible it is to quantify real life.',
+                essays: 'Introduction, Yelp, Super Mario Kart',
+                thesis: 'By applying a five-star consumer rating scale to profound human experiences, Green satirizes modern quantification while searching for shared values.'
+            }
+        ];
+
+        const charactersData = [
+            {
+                id: 'john',
+                name: 'John Green',
+                role: 'The Narrator & Reviewer',
+                tagColor: 'bg-brandBlue',
+                avatarIcon: 'fa-glasses',
+                rating: '★★★★☆ (4.0)',
+                stats: { HOPE: 90, IRONY: 85 },
+                bio: 'Self-deprecating author, anxious overthinker, Diet Dr Pepper fan, and empathetic observer trying to fall back in love with the world.',
+                systemPrompt: `You are John Green, author of "The Anthropocene Reviewed". Speak in your signature warm, self-deprecating, thoughtful, slightly nerdy voice. You love weird historical tangents, Diet Dr Pepper, AFC Wimbledon, and finding deep emotional meaning in everyday things. Help the high school student understand your book without sounding like a boring textbook. Whenever appropriate, end your response with a mini 5-star review of whatever you just talked about (e.g., "I give ELA class 3.5 stars."). Keep answers concise (2-3 short paragraphs max).`
+            },
+            {
+                id: 'goose',
+                name: 'Canada Goose',
+                role: 'Suburban Boss (Essay Subject)',
+                tagColor: 'bg-brandGreen',
+                avatarIcon: 'fa-feather-pointed',
+                rating: '★★★★½ (4.5)',
+                stats: { LOYALTY: 99, CHAOS: 95 },
+                bio: 'Loud, fearless, hissed at your car in a Walmart parking lot, and fiercely loyal to its flock. Thriving in the Anthropocene.',
+                systemPrompt: `You are a Canada Goose featured in John Green's essay "Canada Geese" in The Anthropocene Reviewed. You are proud, slightly aggressive ("HONK!"), hilarious, and deeply philosophical about how humans paved over wetlands and accidentally built you paradise golf courses and retention ponds. Mention your fierce loyalty to your mate and flock. Help the student understand what your essay symbolizes in the book (resilience, adaptation, and misunderstood loyalty). Keep it fun and punchy (2-3 short paragraphs).`
+            },
+            {
+                id: 'comet',
+                name: 'Halley’s Comet',
+                role: 'Cosmic Timekeeper',
+                tagColor: 'bg-brandRed',
+                avatarIcon: 'fa-meteor',
+                rating: '★★★★½ (4.5)',
+                stats: { ORBIT: 100, WONDER: 92 },
+                bio: 'Visits Earth once every 75–76 years. Watched Mark Twain arrive and depart, and reminds humans how brief and precious life is.',
+                systemPrompt: `You are Halley's Comet from John Green's essay "Halley's Comet" in The Anthropocene Reviewed. You speak with cosmic perspective, poetic chill, and timeless wisdom. You swing past Earth every 75–76 years, so a single human lifetime is just one orbit to you. Reference Mark Twain (who was born and died with your appearances) and remind the student that human brevity makes connection precious. Keep responses clear, engaging, and under 3 short paragraphs.`
+            },
+            {
+                id: 'painter',
+                name: 'Lascaux Cave Artist',
+                role: '17,000-Year-Old Creator',
+                tagColor: 'bg-brandBlue',
+                avatarIcon: 'fa-hand-sparkles',
+                rating: '★★★★★ (5.0)',
+                stats: { VISION: 98, ART: 100 },
+                bio: 'Crawled deep into pitch-black caves in France 17,000 years ago with animal-fat lamps to paint bulls and leave handprints for the future.',
+                systemPrompt: `You are one of the Paleolithic artists who painted the Lascaux Cave Paintings in France 17,000 years ago, featured in John Green's 5-star essay "The Lascaux Cave Paintings". You speak simply, vividly, and passionately about crawling into dark caves with flickering stone lamps to paint horses, bulls, and your own handprints so future humans would know you existed and paid attention to the beauty of the world. Connect this directly to John Green's themes for the student's ELA class. Keep it brief and vivid.`
+            },
+            {
+                id: 'soda',
+                name: 'Diet Dr Pepper',
+                role: '23 Flavors of Comfort',
+                tagColor: 'bg-brandRed',
+                avatarIcon: 'fa-can-food',
+                rating: '★★★★☆ (4.0)',
+                stats: { FIZZ: 96, COMFORT: 88 },
+                bio: 'Crisp, fizzy, totally artificial, and proud of it. John’s favorite afternoon ritual when the world feels overwhelming.',
+                systemPrompt: `You are a cold can of Diet Dr Pepper from John Green's essay "Diet Dr Pepper" in The Anthropocene Reviewed. You are bubbly, witty, and self-aware about being completely artificial (aspartame, caramel color, and 23 mysterious flavors). Explain why John Green gave you 4 stars: because even artificial human creations can bring genuine comfort, nostalgia, and joy during stressful times. Keep it funny, sharp, and helpful for ELA!`
+            },
+            {
+                id: 'ela_ai',
+                name: 'Chaotix ELA Coach',
+                role: 'All-Purpose ELA & Book AI',
+                tagColor: 'bg-brandBlue',
+                avatarIcon: 'fa-robot',
+                rating: '★★★★★ (5.0)',
+                stats: { CLARITY: 100, SPEED: 99 },
+                bio: 'Your personal high school ELA tutor. Breaks down John Green essays, writes thesis statements, fixes grammar, and explains any reading assignment fast.',
+                systemPrompt: `You are "Chaotix ELA Coach", an expert, encouraging high school English Language Arts (ELA) tutor who specializes in John Green's "The Anthropocene Reviewed" as well as general high school ELA (rhetorical analysis, thesis statements, literary devices, grammar, reading comprehension, and essay outlining). The student dislikes reading long, boring walls of text, so keep your explanations super clear, structured with short bullet points and bold key terms, practical for getting good grades, and free of academic jargon. Always directly answer their ELA question or analyze the specific John Green essay they ask about.`
+            }
+        ];
+
+        const aiStudioModes = [
+            {
+                id: 'tutor',
+                badge: 'MODE 01',
+                title: 'ELA & Book Q&A',
+                color: 'bg-brandBlue',
+                label: 'ASK ANY ELA OR JOHN GREEN QUESTION:',
+                placeholder: 'e.g., How does John Green use tone and personal anecdotes in "The Anthropocene Reviewed"? Or ask about any ELA concept (ethos/pathos/logos, irony, theme)...',
+                chips: [
+                    'Explain "The Anthropocene Reviewed" in 4 easy bullets',
+                    'What is John Green\'s writing style & tone?',
+                    'Explain Ethos, Pathos, and Logos with examples',
+                    'How do I write a strong hook for an ELA essay?'
+                ],
+                instruction: `You are an expert high school ELA tutor helping a student who dislikes boring reading. Answer their ELA or John Green ("The Anthropocene Reviewed") question clearly using concise bullet points, bold key terms, and concrete examples they can use directly in class or on a test.`
+            },
+            {
+                id: 'decoder',
+                badge: 'MODE 02',
+                title: 'Chapter / Essay Decoder',
+                color: 'bg-brandRed',
+                label: 'TYPE ANY ESSAY TITLE OR PASTE A PASSAGE TO SUMMARIZE:',
+                placeholder: 'e.g., "You\'ll Never Walk Alone", "Indianapolis", "Sunsets", "Staphylococcus Aureus", or paste any confusing paragraph from class...',
+                chips: [
+                    'Decode essay: "You\'ll Never Walk Alone"',
+                    'Decode essay: "Indianapolis"',
+                    'Decode essay: "Sunsets"',
+                    'Decode essay: "Scratch \'n\' Sniff Stickers"'
+                ],
+                instruction: `You are an ELA Reading Decoder for a student who hates reading long text. If they give an essay title from John Green's "The Anthropocene Reviewed" (or paste a passage), provide: 1) **TL;DR Summary** (2 sentences), 2) **What John Rated It & Why**, 3) **Main Theme**, and 4) **1 Smart Detail/Quote Idea** to mention in class discussion.`
+            },
+            {
+                id: 'thesis',
+                badge: 'MODE 03',
+                title: 'Thesis & Outline Forge',
+                color: 'bg-brandGreen',
+                label: 'ENTER YOUR ESSAY PROMPT OR TOPIC:',
+                placeholder: 'e.g., Write a thesis and 3-paragraph outline arguing how John Green uses everyday objects to explore hope...',
+                chips: [
+                    'Thesis + outline on Hope vs. Cynicism in the book',
+                    'Thesis + outline on why John uses a 5-star rating scale',
+                    'Compare two essays: Diet Dr Pepper & Lascaux Cave Paintings',
+                    'Write a 5-star review essay outline about a topic I love'
+                ],
+                instruction: `You are an ELA Essay Architect. Given the student's prompt or topic, generate: 1) **A Strong, Arguable Thesis Statement**, and 2) **A Clean 3-Body-Paragraph Outline** with topic sentences and specific supporting examples (from "The Anthropocene Reviewed" if relevant). Keep it concise, structured, and easy to follow.`
+            },
+            {
+                id: 'polisher',
+                badge: 'MODE 04',
+                title: 'Draft Fixer & Rater',
+                color: 'bg-brandBlue',
+                label: 'PASTE YOUR ROUGH PARAGRAPH OR SENTENCE TO IMPROVE:',
+                placeholder: 'Paste your rough ELA paragraph here. I will fix grammar, upgrade vocabulary naturally, and give it a John Green-style 5-star review!',
+                chips: [
+                    'Polish: "In this book John Green rates random stuff like soda and geese because he wants to show life is cool even when bad things happen."',
+                    'Make my thesis sound more academic without sounding fake',
+                    'Fix run-on sentences and weak transitions in my draft'
+                ],
+                instruction: `You are an encouraging ELA Writing Coach. Take the student's rough draft or sentence and provide: 1) **Polished Version** (clear, strong high-school level writing—never overly robotic), 2) **3 Quick Fixes Made** (grammar, clarity, or word choice), and 3) **A Fun John Green-Style 5-Star Rating** of their idea.`
+            }
+        ];
+
+        // =========================================================================
+        // 2. STATE MANAGEMENT & SEGA 32X AUDIO SYNTHESIZER
+        // =========================================================================
+        let currentTab = 'plot';
+        let selectedArcId = 'phase1';
+        let currentSimIndex = 0;
+        let activeBuddyId = 'john';
+        let activeAiModeId = 'tutor';
+        let aiStudioHistory = [];
+        let ringCount = 50;
+        let sfxEnabled = true;
+        let bgmEnabled = false;
+        let bgmLoop = null;
+        let crtEnabled = false;
+        const todModes = ['day', 'sunset', 'night'];
+        let todIndex = 0;
+        let chatHistories = {
+            john: [
+                { sender: 'bot', text: "Hey! I'm John. If you hate reading, good news: you can jump straight to any essay you want. Ask me what this whole 'Anthropocene' thing means, or ask me to rate your homework out of 5 stars." }
+            ],
+            goose: [
+                { sender: 'bot', text: "*HONK!* You stepped near my retention pond, so now we're talking ELA. Want to know why John Green gave Canada Geese 4.5 stars?" }
+            ],
+            comet: [
+                { sender: 'bot', text: "Greetings from the outer solar system. I pass by Earth once every 76 years—just enough time to watch an entire human life unfold. What do you want to know about my chapter?" }
+            ],
+            painter: [
+                { sender: 'bot', text: "I mixed red ochre and charcoal by the light of a stone lamp 17,000 years ago so you could see my handprint today. Ask me why John Green gave our cave 5 full stars." }
+            ],
+            soda: [
+                { sender: 'bot', text: "*Psshh-CLICK.* Fresh out of the fridge! 23 artificial flavors and zero calories. Want to know why a fictional soda essay is actually super deep for your ELA class?" }
+            ],
+            ela_ai: [
+                { sender: 'bot', text: "BOOTING CHAOTIX ELA COACH! Need help understanding John Green's book, writing a thesis statement, analyzing rhetoric, or fixing a paragraph for English class? Drop your question right here!" }
+            ]
+        };
+
+        // =========================================================================
+        // 3. SEGA 32X SOUND EFFECTS, RING COUNTER & UI NAVIGATION
+        // =========================================================================
+
+        function playSfx(type) {
+            if (!sfxEnabled || typeof Tone === 'undefined') return;
+            try {
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                const synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'square' },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.02, release: 0.1 }
+                }).toDestination();
+                synth.volume.value = -14;
+
+                const now = Tone.now();
+                if (type === 'ring') {
+                    // Classic Sega Ring Chime (B5 -> E6)
+                    synth.triggerAttackRelease('B5', '32n', now);
+                    synth.triggerAttackRelease('E6', '16n', now + 0.06);
+                } else if (type === 'select') {
+                    // Crisp 32X Menu Select
+                    synth.triggerAttackRelease('C5', '32n', now);
+                    synth.triggerAttackRelease('G5', '32n', now + 0.04);
+                } else if (type === 'tether') {
+                    // Iconic Knuckles' Chaotix Combi-Ring Rubber Snap!
+                    synth.triggerAttackRelease('E4', '32n', now);
+                    synth.triggerAttackRelease('B4', '32n', now + 0.04);
+                    synth.triggerAttackRelease('E5', '16n', now + 0.08);
+                } else if (type === 'bonus') {
+                    // Chaotix Power-Up Arpeggio
+                    synth.triggerAttackRelease('C5', '32n', now);
+                    synth.triggerAttackRelease('E5', '32n', now + 0.05);
+                    synth.triggerAttackRelease('G5', '32n', now + 0.10);
+                    synth.triggerAttackRelease('C6', '16n', now + 0.15);
+                } else {
+                    // Subtle UI Blip
+                    synth.triggerAttackRelease('A4', '64n', now);
+                }
+            } catch (e) {
+                // Fail silently if audio context is blocked
+            }
+        }
+
+        function cycleTimeOfDay() {
+            todIndex = (todIndex + 1) % todModes.length;
+            const mode = todModes[todIndex];
+            document.body.setAttribute('data-tod', mode);
+
+            const label = document.getElementById('tod-label');
+            const icon = document.getElementById('tod-icon');
+            const btn = document.getElementById('tod-toggle-btn');
+
+            btn.classList.remove('bg-brandBlue', 'bg-brandRed', 'bg-ink');
+            if (mode === 'day') {
+                label.textContent = 'DAY';
+                icon.className = 'fa-solid fa-sun text-ringGold';
+                btn.classList.add('bg-brandBlue');
+            } else if (mode === 'sunset') {
+                label.textContent = 'SUNSET';
+                icon.className = 'fa-solid fa-cloud-sun text-ringGold';
+                btn.classList.add('bg-brandRed');
+            } else {
+                label.textContent = 'NIGHT';
+                icon.className = 'fa-solid fa-moon text-ringGold';
+                btn.classList.add('bg-ink');
+            }
+            playSfx('select');
+            showToast(`NEWTROGIC TIME: ${mode.toUpperCase()}`);
+        }
+
+        function toggleBgm() {
+            if (typeof Tone === 'undefined') return;
+            bgmEnabled = !bgmEnabled;
+            const label = document.getElementById('bgm-label');
+            const btn = document.getElementById('bgm-toggle-btn');
+
+            if (bgmEnabled) {
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                const bgmSynth = new Tone.Synth({
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 0.01, decay: 0.14, sustain: 0.05, release: 0.15 }
+                }).toDestination();
+                bgmSynth.volume.value = -19;
+
+                // Upbeat 32X Chaotix-inspired bass/melody arpeggio loop
+                const notes = ['C4', 'E4', 'G4', 'B4', 'A4', 'G4', 'E4', 'D4', 'F4', 'A4', 'C5', 'B4', 'G4', 'E4', 'D4', 'G4'];
+                let step = 0;
+                bgmLoop = new Tone.Loop((time) => {
+                    bgmSynth.triggerAttackRelease(notes[step % notes.length], '16n', time);
+                    step++;
+                }, '8n').start(0);
+                Tone.Transport.bpm.value = 128;
+                Tone.Transport.start();
+
+                label.textContent = 'BGM:ON';
+                btn.classList.remove('bg-white', 'text-ink');
+                btn.classList.add('bg-brandRed', 'text-white');
+                showToast('32X SYNTH GROOVE: ON');
+            } else {
+                if (bgmLoop) {
+                    bgmLoop.stop();
+                    bgmLoop.dispose();
+                    bgmLoop = null;
+                }
+                Tone.Transport.stop();
+                label.textContent = 'BGM:OFF';
+                btn.classList.remove('bg-brandRed', 'text-white');
+                btn.classList.add('bg-white', 'text-ink');
+            }
+        }
+
+        function stretchCombiRing() {
+            playSfx('tether');
+            const p1 = document.getElementById('combi-p1');
+            const p1Txt = document.getElementById('combi-p1-txt');
+            const p2 = document.getElementById('combi-p2');
+            const p2Txt = document.getElementById('combi-p2-txt');
+            const band = document.getElementById('combi-band');
+            const status = document.getElementById('tether-status');
+
+            if (!p1 || !p2) return;
+
+            // Stretch outward like Knuckles' Chaotix Combi-Ring boost!
+            p1.setAttribute('cx', '24');
+            p1Txt.setAttribute('x', '24');
+            p2.setAttribute('cx', '236');
+            p2Txt.setAttribute('x', '236');
+            band.setAttribute('x1', '30');
+            band.setAttribute('x2', '230');
+            band.setAttribute('stroke', '#d52a3f');
+            status.textContent = '● BOOST CHARGED!';
+            status.classList.remove('text-brandGreen');
+            status.classList.add('text-brandRed');
+
+            addRings(2);
+            showToast('COMBI-RING SNAP! +2 RINGS');
+
+            setTimeout(() => {
+                p1.setAttribute('cx', '46');
+                p1Txt.setAttribute('x', '46');
+                p2.setAttribute('cx', '214');
+                p2Txt.setAttribute('x', '214');
+                band.setAttribute('x1', '52');
+                band.setAttribute('x2', '208');
+                band.setAttribute('stroke', '#314ece');
+                status.textContent = '● TENSION: NORMAL';
+                status.classList.remove('text-brandRed');
+                status.classList.add('text-brandGreen');
+            }, 420);
+        }
+
+        function updateCombiPartnerVisuals(charId) {
+            const activeChar = charactersData.find(c => c.id === charId);
+            if (!activeChar) return;
+
+            const hudBadge = document.getElementById('hud-partner-badge');
+            if (hudBadge) {
+                hudBadge.className = `w-6 h-6 rounded ${activeChar.tagColor} text-white border border-ink flex items-center justify-center text-xs`;
+                hudBadge.innerHTML = `<i class="fa-solid ${activeChar.avatarIcon}"></i>`;
+                hudBadge.title = `Combi-Partner: ${activeChar.name}`;
+            }
+
+            const p2Txt = document.getElementById('combi-p2-txt');
+            if (p2Txt) {
+                p2Txt.textContent = activeChar.name.split(' ')[0].toUpperCase().slice(0, 5);
+            }
+        }
+
+        function addRings(amount) {
+            ringCount += amount;
+            const hud = document.getElementById('hud-rings');
+            if (hud) {
+                hud.textContent = String(ringCount).padStart(3, '0');
+            }
+        }
+
+        function toggleSfx() {
+            sfxEnabled = !sfxEnabled;
+            const label = document.getElementById('sfx-label');
+            const btn = document.getElementById('sfx-toggle-btn');
+            label.textContent = sfxEnabled ? 'SFX:ON' : 'SFX:OFF';
+            btn.classList.toggle('bg-brandGreen', sfxEnabled);
+            btn.classList.toggle('text-white', sfxEnabled);
+            btn.classList.toggle('bg-gray-200', !sfxEnabled);
+            btn.classList.toggle('text-ink', !sfxEnabled);
+            if (sfxEnabled) playSfx('ring');
+        }
+
+        function toggleCrt() {
+            crtEnabled = !crtEnabled;
+            document.body.classList.toggle('crt-enabled', crtEnabled);
+            const label = document.getElementById('crt-label');
+            const btn = document.getElementById('crt-toggle-btn');
+            label.textContent = crtEnabled ? 'CRT:ON' : 'CRT:OFF';
+            btn.classList.toggle('bg-brandBlue', crtEnabled);
+            btn.classList.toggle('text-white', crtEnabled);
+            btn.classList.toggle('bg-white', !crtEnabled);
+            btn.classList.toggle('text-ink', !crtEnabled);
+            playSfx('select');
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            playSfx('select');
+            const tabs = ['plot', 'themes', 'characters', 'chat', 'ai'];
+
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const view = document.getElementById(`view-${t}`);
+
+                if (t === tabName) {
+                    btn.classList.remove('bg-white', 'text-ink');
+                    btn.classList.add('bg-brandBlue', 'text-white');
+                    view.classList.remove('hidden');
+                } else {
+                    btn.classList.remove('bg-brandBlue', 'text-white');
+                    btn.classList.add('bg-white', 'text-ink');
+                    view.classList.add('hidden');
+                }
+            });
+
+            if (tabName === 'chat') {
+                scrollChatToBottom();
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 2600);
+        }
+
+        function copyText(text) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                playSfx('ring');
+                addRings(5);
+                showToast('COPIED! +5 RINGS EARNED');
+            } catch (err) {
+                showToast('SELECT TEXT MANUALLY TO COPY');
+            }
+            document.body.removeChild(temp);
+        }
+
+        // --- Render Module 1: Narrative Arc ---
+        function renderArc() {
+            const btnContainer = document.getElementById('arc-buttons');
+            btnContainer.innerHTML = arcStages.map(stage => {
+                const isSelected = stage.id === selectedArcId;
+                return `
+                    <button
+                        onclick="selectArc('${stage.id}')"
+                        class="retro-btn p-3 text-left flex flex-col justify-between ${isSelected ? 'bg-ink text-white' : 'bg-white text-ink'}"
+                    >
+                        <span class="font-arcade text-[9px] px-2 py-1 rounded text-white ${stage.badgeColor} self-start mb-2 border border-ink">
+                            ${stage.step}
+                        </span>
+                        <span class="font-bold text-sm leading-snug">${stage.title}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const active = arcStages.find(s => s.id === selectedArcId);
+            const detailBox = document.getElementById('arc-detail-box');
+            detailBox.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="font-arcade text-[10px] text-brandBlue">${active.step} // DATA LOG</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${active.keyEssays.map(e => `<span class="text-xs font-mono font-bold bg-white border-2 border-ink px-2 py-0.5 rounded">${e}</span>`).join('')}
+                        </div>
+                    </div>
+                    <h4 class="text-lg font-extrabold text-ink">${active.title}</h4>
+                    <p class="text-sm text-gray-800 leading-relaxed">${active.summary}</p>
+                    <div class="pt-3 border-t-2 border-gray-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <p class="text-xs font-mono text-ink">
+                            <strong class="text-brandGreen">CLASS CHEAT CODE:</strong> "${active.classTakeaway}"
+                        </p>
+                        <button onclick="copyText('${active.classTakeaway.replace(/'/g, "\\'")}')" class="retro-btn bg-white px-3 py-1.5 font-arcade text-[9px] shrink-0">
+                            <i class="fa-regular fa-copy mr-1"></i> COPY
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectArc(id) {
+            selectedArcId = id;
+            playSfx('blip');
+            renderArc();
+        }
+
+        // --- Render Module 1B: 5-Star Simulator ---
+        function renderSimulator() {
+            const item = ratingSubjects[currentSimIndex];
+            document.getElementById('sim-index').textContent = currentSimIndex + 1;
+            document.getElementById('sim-title').textContent = item.title;
+            document.getElementById('sim-desc').textContent = item.desc;
+            document.getElementById('sim-result').innerHTML = `
+                <div class="font-arcade text-[9px] text-gray-400">AWAITING PLAYER INPUT...</div>
+                <p class="text-xs text-gray-600 my-2">Pick 1 to 5 stars on the left to compare your score with John Green's actual essay rating!</p>
+                <button onclick="nextSubject()" class="retro-btn bg-gray-100 px-3 py-1.5 font-arcade text-[9px] self-end">
+                    NEXT &gt;&gt;
+                </button>
+            `;
+        }
+
+        function rateSubject(userStars) {
+            const item = ratingSubjects[currentSimIndex];
+            const diff = Math.abs(userStars - item.johnRating);
+            let matchText = diff === 0 ? "PERFECT MATCH!" : (diff <= 1 ? "GREAT SCORE!" : "RIVAL VOTE!");
+            let matchBadge = diff === 0 ? "bg-brandGreen text-white" : (diff <= 1 ? "bg-brandBlue text-white" : "bg-brandRed text-white");
+
+            playSfx('bonus');
+            addRings(10);
+            showToast('+10 CHAOS RINGS COLLECTED!');
+
+            document.getElementById('sim-result').innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-1">
+                        <span class="font-arcade text-[8px] px-2 py-1 rounded border border-ink ${matchBadge}">${matchText}</span>
+                        <span class="font-mono text-xs font-bold">YOU:${userStars}★ | JOHN:${item.johnRating}★</span>
+                    </div>
+                    <p class="text-xs text-gray-800 leading-relaxed">${item.johnReason}</p>
+                </div>
+                <button onclick="nextSubject()" class="retro-btn bg-brandBlue text-white px-3 py-1.5 font-arcade text-[9px] self-end mt-3">
+                    NEXT STAGE &gt;&gt;
+                </button>
+            `;
+        }
+
+        function nextSubject() {
+            currentSimIndex = (currentSimIndex + 1) % ratingSubjects.length;
+            playSfx('blip');
+            renderSimulator();
+        }
+
+        // --- Render Module 2: Themes ---
+        function renderThemes() {
+            const grid = document.getElementById('themes-grid');
+            grid.innerHTML = themesData.map((t, idx) => `
+                <div class="border-3 border-ink rounded-md p-4 bg-gray-50 flex flex-col justify-between space-y-3 shadow-[3px_3px_0px_#111827]">
+                    <div class="space-y-2">
+                        <span class="inline-block font-arcade text-[9px] text-white px-2 py-1 rounded border border-ink ${t.badgeBg}">
+                            EMERALD #0${idx + 1}
+                        </span>
+                        <h3 class="font-extrabold text-base sm:text-lg text-ink">${t.title}</h3>
+                        <p class="text-xs sm:text-sm text-gray-800 leading-relaxed">${t.explanation}</p>
+                        <div class="text-xs font-mono text-gray-700 bg-white border-2 border-ink rounded p-2">
+                            <strong>ESSAYS:</strong> ${t.essays}
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t-2 border-gray-300 space-y-2">
+                        <div class="text-xs italic text-gray-700">"${t.thesis}"</div>
+                        <button onclick="copyText('${t.thesis.replace(/'/g, "\\'")}')" class="retro-btn bg-white w-full py-2 font-arcade text-[9px] hover:bg-ink hover:text-white">
+                            <i class="fa-regular fa-copy mr-1"></i> COPY THESIS (+5 RINGS)
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Render Module 3: Characters ---
+        function renderCharacters() {
+            const grid = document.getElementById('characters-grid');
+            grid.innerHTML = charactersData.map(c => {
+                const statEntries = Object.entries(c.stats || {});
+                return `
+                <div class="border-3 border-ink rounded-md p-4 bg-white flex flex-col justify-between space-y-4 shadow-[3px_3px_0px_#111827]">
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="w-11 h-11 rounded border-2 border-ink ${c.tagColor} text-white flex items-center justify-center text-lg shadow-[2px_2px_0px_#111827]">
+                                <i class="fa-solid ${c.avatarIcon}"></i>
+                            </div>
+                            <span class="font-mono text-xs font-bold bg-gray-100 border-2 border-ink px-2 py-0.5 rounded">
+                                ${c.rating}
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-lg text-ink">${c.name}</h3>
+                            <p class="font-mono text-xs text-brandBlue font-bold">${c.role}</p>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">${c.bio}</p>
+
+                        <!-- 32X Arcade Stat Bars -->
+                        <div class="bg-gray-50 border-2 border-ink rounded p-2 space-y-1.5">
+                            ${statEntries.map(([label, val]) => `
+                                <div>
+                                    <div class="flex justify-between font-arcade text-[8px] text-ink mb-0.5">
+                                        <span>${label}</span>
+                                        <span>${val}%</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-gray-200 border border-ink rounded-sm overflow-hidden">
+                                        <div class="h-full ${c.tagColor}" style="width: ${val}%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <button onclick="openChatWith('${c.id}')" class="retro-btn bg-brandGreen text-white w-full py-2.5 font-arcade text-[9px] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-link"></i>
+                        <span>COMBI-LINK: ${c.name.split(' ')[0].toUpperCase()}</span>
+                    </button>
+                </div>
+            `}).join('');
+        }
+
+        // =========================================================================
+        // 4. RETRO MESSENGER & GEMINI API INTEGRATION
+        // =========================================================================
+
+        function openChatWith(charId) {
+            activeBuddyId = charId;
+            updateCombiPartnerVisuals(charId);
+            playSfx('tether');
+            switchTab('chat');
+            renderChatUI();
+        }
+
+        function renderChatUI() {
+            // Render Partner List
+            const buddyList = document.getElementById('chat-buddy-list');
+            buddyList.innerHTML = charactersData.map(c => {
+                const isActive = c.id === activeBuddyId;
+                return `
+                    <button
+                        onclick="selectBuddy('${c.id}')"
+                        class="w-full p-2.5 rounded border-2 text-left flex items-center gap-2.5 transition ${isActive ? 'bg-brandBlue text-white border-ink shadow-[2px_2px_0px_#111827]' : 'bg-white text-ink border-transparent hover:border-ink'}"
+                    >
+                        <div class="w-8 h-8 rounded border-2 border-ink ${c.tagColor} text-white flex items-center justify-center shrink-0 text-sm">
+                            <i class="fa-solid ${c.avatarIcon}"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-xs truncate">${c.name}</div>
+                            <div class="font-mono text-[10px] truncate ${isActive ? 'text-blue-100' : 'text-gray-500'}">${c.role}</div>
+                        </div>
+                        <span class="w-2.5 h-2.5 rounded-full bg-brandGreen border border-ink shrink-0"></span>
+                    </button>
+                `;
+            }).join('');
+
+            // Render Active Partner Header
+            const activeChar = charactersData.find(c => c.id === activeBuddyId);
+            document.getElementById('chat-header').innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded border-2 border-ink ${activeChar.tagColor} text-white flex items-center justify-center text-lg shadow-[2px_2px_0px_#111827]">
+                        <i class="fa-solid ${activeChar.avatarIcon}"></i>
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-sm sm:text-base text-ink flex items-center gap-2">
+                            <span>${activeChar.name}</span>
+                            <span class="font-arcade text-[8px] bg-brandGreen text-white border border-ink px-1.5 py-0.5 rounded">P2 LINKED</span>
+                        </div>
+                        <p class="font-mono text-xs text-gray-600">${activeChar.role}</p>
+                    </div>
+                </div>
+                <button onclick="clearCurrentChat()" class="retro-btn bg-white px-2.5 py-1.5 font-arcade text-[9px] text-brandRed" title="Reset Chat">
+                    <i class="fa-solid fa-rotate-right"></i> RESET
+                </button>
+            `;
+
+            // Render Message Bubbles
+            const msgContainer = document.getElementById('chat-messages');
+            const history = chatHistories[activeBuddyId] || [];
+            msgContainer.innerHTML = history.map(m => {
+                if (m.sender === 'user') {
+                    return `
+                        <div class="flex justify-end">
+                            <div class="max-w-[82%] bg-brandBlue text-white border-2 border-ink rounded-md px-3.5 py-2.5 text-sm shadow-[3px_3px_0px_#111827]">
+                                <div class="font-arcade text-[8px] text-ringGold mb-1">PLAYER 1 (YOU)</div>
+                                <div class="leading-relaxed whitespace-pre-wrap">${escapeHtml(m.text)}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="flex justify-start">
+                            <div class="max-w-[85%] bg-gray-50 text-ink border-2 border-ink rounded-md px-3.5 py-2.5 text-sm shadow-[3px_3px_0px_#45ba4b]">
+                                <div class="font-arcade text-[8px] text-brandGreen mb-1">PLAYER 2 // ${activeChar.name.toUpperCase()}</div>
+                                <div class="leading-relaxed whitespace-pre-wrap">${escapeHtml(m.text)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            scrollChatToBottom();
+        }
+
+        function selectBuddy(id) {
+            activeBuddyId = id;
+            updateCombiPartnerVisuals(id);
+            playSfx('tether');
+            renderChatUI();
+        }
+
+        function clearCurrentChat() {
+            const firstMsg = chatHistories[activeBuddyId][0];
+            chatHistories[activeBuddyId] = [firstMsg];
+            renderChatUI();
+            showToast('Conversation cleared!');
+        }
+
+        function scrollChatToBottom() {
+            const msgContainer = document.getElementById('chat-messages');
+            if (msgContainer) {
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function sendQuickPrompt(promptText) {
+            const input = document.getElementById('chat-input');
+            input.value = promptText;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('chat-send-btn');
+            const userText = input.value.trim();
+
+            if (!userText) return;
+
+            playSfx('select');
+            // Add user message immediately
+            const currentBuddy = activeBuddyId;
+            chatHistories[currentBuddy].push({ sender: 'user', text: userText });
+            input.value = '';
+            renderChatUI();
+
+            // Show typing indicator
+            const msgContainer = document.getElementById('chat-messages');
+            const typingId = 'typing-' + Date.now();
+            const activeChar = charactersData.find(c => c.id === currentBuddy);
+
+            const typingBubble = document.createElement('div');
+            typingBubble.id = typingId;
+            typingBubble.className = 'flex justify-start';
+            typingBubble.innerHTML = `
+                <div class="bg-gray-100 border-2 border-ink rounded-md px-3.5 py-2 font-arcade text-[9px] text-gray-700 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-brandRed animate-bounce"></span>
+                    <span>${activeChar.name.toUpperCase()} TRANSMITTING...</span>
+                </div>
+            `;
+            msgContainer.appendChild(typingBubble);
+            scrollChatToBottom();
+
+            input.disabled = true;
+            sendBtn.disabled = true;
+
+            try {
+                const reply = await fetchGeminiCharacterReply(activeChar, chatHistories[currentBuddy]);
+                chatHistories[currentBuddy].push({ sender: 'bot', text: reply });
+                playSfx('ring');
+                addRings(5);
+            } catch (err) {
+                chatHistories[currentBuddy].push({
+                    sender: 'bot',
+                    text: `[32X SIGNAL DROP] Whoops—cartridge tilted for a second! Try asking again, or check the Act 1 & Act 2 tabs above for instant ELA notes.`
+                });
+            } finally {
+                input.disabled = false;
+                sendBtn.disabled = false;
+                input.focus();
+                renderChatUI();
+            }
+        }
+
+        // Gemini API Call with Exponential Backoff
+        async function fetchGeminiCharacterReply(character, history) {
+            const apiKey = ""; // Canvas injects key at runtime
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            // Format recent chat turns for Gemini
+            const recentTurns = history.slice(-8).map(msg => ({
+                role: msg.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.text }]
+            }));
+
+            const payload = {
+                contents: recentTurns,
+                systemInstruction: {
+                    parts: [{ text: character.systemPrompt }]
+                }
+            };
+
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let attempt = 0; attempt <= delays.length; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text.trim();
+                    }
+                    throw new Error('Empty candidate response');
+                } catch (error) {
+                    if (attempt === delays.length) {
+                        throw error;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delays[attempt]));
+                }
+            }
+        }
+
+        // =========================================================================
+        // 5. INITIALIZE APP ON LOAD
+        // =========================================================================
+        // 5. DEDICATED ELA & JOHN GREEN AI STUDIO (ACT 05: SPEED SLIDER)
+        // =========================================================================
+
+        function renderAiStudio() {
+            const modeContainer = document.getElementById('ai-mode-buttons');
+            if (!modeContainer) return;
+
+            modeContainer.innerHTML = aiStudioModes.map(mode => {
+                const isSelected = mode.id === activeAiModeId;
+                return `
+                    <button
+                        type="button"
+                        onclick="selectAiMode('${mode.id}')"
+                        class="retro-btn p-3 text-left flex flex-col justify-between ${isSelected ? 'bg-ink text-white' : 'bg-white text-ink'}"
+                    >
+                        <span class="font-arcade text-[8px] px-2 py-0.5 rounded text-white ${mode.color} self-start mb-1.5 border border-ink">
+                            ${mode.badge}
+                        </span>
+                        <span class="font-bold text-xs sm:text-sm">${mode.title}</span>
+                    </button>
+                `;
+            }).join('');
+
+            const activeMode = aiStudioModes.find(m => m.id === activeAiModeId);
+            document.getElementById('ai-input-label').textContent = `2. ${activeMode.label}`;
+            document.getElementById('ai-studio-input').placeholder = activeMode.placeholder;
+
+            const chipsContainer = document.getElementById('ai-quick-chips');
+            chipsContainer.innerHTML = activeMode.chips.map(chip => `
+                <button
+                    type="button"
+                    onclick="useAiChip('${chip.replace(/'/g, "\\'")}')"
+                    class="text-xs font-mono font-bold bg-white border-2 border-ink px-2.5 py-1 rounded hover:bg-brandBlue hover:text-white transition text-left"
+                >
+                    ${escapeHtml(chip)}
+                </button>
+            `).join('');
+
+            renderAiOutputFeed();
+        }
+
+        function selectAiMode(modeId) {
+            activeAiModeId = modeId;
+            playSfx('select');
+            renderAiStudio();
+        }
+
+        function useAiChip(text) {
+            const input = document.getElementById('ai-studio-input');
+            input.value = text;
+            handleAiStudioSubmit(new Event('submit'));
+        }
+
+        function clearAiStudio() {
+            aiStudioHistory = [];
+            playSfx('blip');
+            renderAiOutputFeed();
+            showToast('ELA AI LOG CLEARED!');
+        }
+
+        function copyAiEntry(index) {
+            const entry = aiStudioHistory[index];
+            if (entry) {
+                copyText(entry.answer);
+            }
+        }
+
+        function renderAiOutputFeed() {
+            const outContainer = document.getElementById('ai-studio-output');
+            if (!outContainer) return;
+
+            if (aiStudioHistory.length === 0) {
+                outContainer.innerHTML = `
+                    <div class="border-3 border-dashed border-gray-300 rounded-md p-5 text-center bg-gray-50">
+                        <div class="font-arcade text-[9px] text-gray-400 mb-1">AI OUTPUT BUFFER EMPTY</div>
+                        <p class="text-xs text-gray-600">Click any <strong>One-Click ELA Starter</strong> above or type your own homework question to generate instant notes!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            outContainer.innerHTML = aiStudioHistory.map((item, idx) => `
+                <div class="border-3 border-ink rounded-md bg-white overflow-hidden shadow-[4px_4px_0px_#314ece]">
+                    <div class="bg-gray-100 border-b-2 border-ink px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-arcade text-[8px] bg-brandBlue text-white px-2 py-0.5 rounded border border-ink">${escapeHtml(item.modeTitle.toUpperCase())}</span>
+                            <span class="font-mono text-xs font-bold text-ink truncate max-w-md">${escapeHtml(item.question)}</span>
+                        </div>
+                        <button type="button" onclick="copyAiEntry(${idx})" class="retro-btn bg-white px-2.5 py-1 font-arcade text-[8px] text-ink hover:bg-brandGreen hover:text-white">
+                            <i class="fa-regular fa-copy mr-1"></i> COPY (+5 RINGS)
+                        </button>
+                    </div>
+                    <div class="p-4 text-sm text-gray-800 leading-relaxed whitespace-pre-wrap font-sans">${escapeHtml(item.answer)}</div>
+                </div>
+            `).join('');
+        }
+
+        async function handleAiStudioSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('ai-studio-input');
+            const submitBtn = document.getElementById('ai-studio-submit');
+            const outContainer = document.getElementById('ai-studio-output');
+            const queryText = input.value.trim();
+
+            if (!queryText) {
+                showToast('TYPE AN ELA QUESTION FIRST!');
+                return;
+            }
+
+            const activeMode = aiStudioModes.find(m => m.id === activeAiModeId);
+            playSfx('select');
+            input.disabled = true;
+            submitBtn.disabled = true;
+
+            const loaderId = 'ai-loader-' + Date.now();
+            const loaderEl = document.createElement('div');
+            loaderEl.id = loaderId;
+            loaderEl.className = 'border-3 border-ink rounded-md p-4 bg-gray-50 flex items-center gap-3 font-arcade text-[9px] text-brandBlue shadow-[3px_3px_0px_#d52a3f]';
+            loaderEl.innerHTML = `
+                <span class="w-3 h-3 rounded-full bg-brandRed animate-ping"></span>
+                <span>CHAOTIX ELA AI PROCESSING YOUR REQUEST...</span>
+            `;
+            outContainer.prepend(loaderEl);
+
+            try {
+                const aiReply = await fetchGeminiCharacterReply(
+                    { systemPrompt: activeMode.instruction },
+                    [{ sender: 'user', text: queryText }]
+                );
+
+                aiStudioHistory.unshift({
+                    modeTitle: activeMode.title,
+                    question: queryText,
+                    answer: aiReply
+                });
+
+                input.value = '';
+                playSfx('bonus');
+                addRings(10);
+                showToast('ELA AI COMPLETE! +10 RINGS');
+            } catch (err) {
+                aiStudioHistory.unshift({
+                    modeTitle: activeMode.title,
+                    question: queryText,
+                    answer: '[32X SIGNAL INTERRUPTED] Could not reach the AI server right now—please hit RUN ELA AI again in a second!'
+                });
+            } finally {
+                const existingLoader = document.getElementById(loaderId);
+                if (existingLoader) existingLoader.remove();
+                input.disabled = false;
+                submitBtn.disabled = false;
+                renderAiOutputFeed();
+            }
+        }
+
+        // =========================================================================
+        // 6. INITIALIZE APP ON LOAD
+        // =========================================================================
+        window.onload = function () {
+            renderArc();
+            renderSimulator();
+            renderThemes();
+            renderCharacters();
+            renderChatUI();
+            renderAiStudio();
+        };
+    </script>
+</body>
+</html>
