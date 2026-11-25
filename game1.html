@@ -220,7 +220,7 @@
       touch-action: none;
     }
 
-    /* Overlay Screens (Game Over / Win / Pause) */
+    /* Overlay Screens */
     .overlay {
       position: absolute;
       inset: 0;
@@ -385,6 +385,9 @@
         <h1 class="game-title">PAC-MAZE</h1>
       </div>
       <div class="title-actions">
+        <button id="fpsBtn" class="mini-btn" type="button" title="Toggle FPS Counter & Frame Cap">FPS: 60</button>
+        <button id="crtBtn" class="mini-btn" type="button" title="Toggle Retro CRT Scanline Filter">CRT: ON</button>
+        <button id="controlsBtn" class="mini-btn" type="button" title="Configure Arcade Stick / Controller">PAD: AUTO</button>
         <button id="soundToggleBtn" class="mini-btn" type="button">SFX: ON</button>
         <button id="pauseBtn" class="mini-btn" type="button">PAUSE</button>
         <button id="restartBtn" class="mini-btn" type="button">RESET</button>
@@ -466,12 +469,100 @@
           <button id="playAgainBtn" class="primary-btn" type="button">PLAY AGAIN</button>
         </div>
       </div>
+
+      <!-- Level 18 Boss Fight Tutorial Overlay -->
+      <div id="bossTutorialOverlay" class="overlay hidden">
+        <div class="overlay-box" style="border-color: var(--red);">
+          <div class="overlay-title red">LVL 18 // FINAL BOSS!</div>
+          <p class="overlay-desc" style="text-align: left;">
+            <strong style="color: #ffffff;">HOW TO WIN THE BOSS FIGHT:</strong><br/>
+            &bull; Face off against <strong style="color: var(--red);">RED PAC</strong> in a dot-eating showdown!<br/>
+            &bull; Race through the arena to eat as many dots &amp; power pellets as possible.<br/>
+            &bull; When all dots are cleared, <strong style="color: var(--green);">whoever ate the most dots WINS!</strong><br/>
+            &bull; Watch out for ghosts &mdash; Power Pellets stun ghosts AND give +5 bonus dots!
+          </p>
+          <button id="startBossBtn" class="primary-btn" type="button">START BOSS FIGHT</button>
+        </div>
+      </div>
+
+      <!-- Secret Stage Select Overlay (Unlocked via Up, Down, Left, Right on Title Screen) -->
+      <div id="stageSelectOverlay" class="overlay hidden">
+        <div class="overlay-box" style="border-color: var(--green);">
+          <div class="overlay-title green">STAGE SELECT</div>
+          <p class="overlay-desc" style="font-size: 0.78rem;">Cheat Code Activated! Pick any stage (1&ndash;18):</p>
+          <div id="stageGrid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; width: 100%;"></div>
+          <button id="closeStageSelectBtn" class="mini-btn" type="button" style="margin-top: 4px;">BACK TO TITLE</button>
+        </div>
+      </div>
+
+      <!-- Character Color Select Overlay (Default Yellow + 5 Custom Colors) -->
+      <div id="colorSelectOverlay" class="overlay hidden">
+        <div class="overlay-box" style="border-color: var(--blue); max-width: 440px;">
+          <div class="overlay-title blue" style="font-size: 1.35rem;">SELECT YOUR PAC-MAN</div>
+          <p class="overlay-desc" style="font-size: 0.78rem;">Choose Default Yellow or 1 of 5 Arcade Colors:</p>
+          <div id="colorGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%;"></div>
+          <button id="startWithColorBtn" class="primary-btn" type="button">START GAME (YELLOW)</button>
+        </div>
+      </div>
+
+      <!-- Arcade Joystick / Controller Configuration Overlay -->
+      <div id="controlsOverlay" class="overlay hidden">
+        <div class="overlay-box" style="border-color: var(--blue); max-width: 440px; gap: 10px;">
+          <div class="overlay-title blue" style="font-size: 1.25rem;">ARCADE / PAD SETUP</div>
+          <p id="padStatusText" class="overlay-desc" style="font-size: 0.78rem; color: var(--green);">
+            No USB/Bluetooth controller detected yet. Press any button on your stick/pad!
+          </p>
+
+          <!-- Mode Toggle: Automatic vs Custom Mapped -->
+          <div style="display: flex; gap: 6px; width: 100%;">
+            <button id="modeAutoBtn" class="mini-btn" type="button" style="flex: 1; padding: 7px;">MODE: AUTOMATIC</button>
+            <button id="modeCustomBtn" class="mini-btn" type="button" style="flex: 1; padding: 7px;">MODE: CUSTOM MAP</button>
+          </div>
+
+          <p id="remapPrompt" class="overlay-desc" style="font-size: 0.76rem; min-height: 20px; color: #ffd700;">
+            Automatic works instantly with standard D-Pads, Analog Sticks &amp; Arcade Encoders.
+          </p>
+
+          <!-- Remappable Action Rows -->
+          <div id="mappingList" style="display: flex; flex-direction: column; gap: 5px; width: 100%; text-align: left; font-size: 0.78rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; border: 1px solid var(--blue); padding: 5px 8px;">
+              <span>MOVE UP</span>
+              <button class="mini-btn remap-btn" data-action="UP" type="button">AUTO / D-PAD UP</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; border: 1px solid var(--blue); padding: 5px 8px;">
+              <span>MOVE DOWN</span>
+              <button class="mini-btn remap-btn" data-action="DOWN" type="button">AUTO / D-PAD DOWN</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; border: 1px solid var(--blue); padding: 5px 8px;">
+              <span>MOVE LEFT</span>
+              <button class="mini-btn remap-btn" data-action="LEFT" type="button">AUTO / D-PAD LEFT</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; border: 1px solid var(--blue); padding: 5px 8px;">
+              <span>MOVE RIGHT</span>
+              <button class="mini-btn remap-btn" data-action="RIGHT" type="button">AUTO / D-PAD RIGHT</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; border: 1px solid var(--blue); padding: 5px 8px;">
+              <span>MINI-HOP</span>
+              <button class="mini-btn remap-btn" data-action="HOP" type="button">AUTO / BTN 0 (A)</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; border: 1px solid var(--blue); padding: 5px 8px;">
+              <span>START / PAUSE</span>
+              <button class="mini-btn remap-btn" data-action="PAUSE" type="button">AUTO / START (BTN 9)</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 6px; width: 100%; margin-top: 2px;">
+            <button id="resetMapBtn" class="mini-btn" type="button" style="flex: 1; border-color: var(--red);">RESET DEFAULT</button>
+            <button id="closeControlsBtn" class="primary-btn" type="button" style="flex: 1; padding: 7px 12px; font-size: 0.82rem;">DONE</button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Minimal Footer & Tactile WASD Buttons -->
     <footer class="controls-footer">
       <div class="hint-text">
-        Auto-Move Arcade: <kbd>CLICK</kbd> direction or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &bull; <kbd>SPACE</kbd> hop &bull; <kbd>P</kbd> pause
+        Auto-Move Arcade: <kbd>CLICK</kbd> / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>STICK</kbd> &bull; <kbd>SPACE</kbd>/Btn Hop &bull; <kbd>P</kbd>/Start
       </div>
       <div class="wasd-pad" aria-label="Directional Touch Controls">
         <button class="pad-btn pad-w" data-dir="UP" type="button">W</button>
@@ -484,384 +575,798 @@
 
   <script>
     // =========================================================================
-    //  PAC-MAZE — EASY TWEAK SETTINGS (Change these numbers to customize!)
+    //  DOM ELEMENTS, GAME CONSTANTS & STATE INITIALIZATION
     // =========================================================================
-    const PLAYER_SPEED           = 4.6;   // Arcade Pac-Man speed (tiles per second)
-    const GHOST_SPEED            = 3.4;   // Colored ghosts base speed (scales slightly per level)
-    const FRIGHTENED_GHOST_SPEED = 2.1;   // Slowed blue ghost speed during Power Pellet mode
-    const EATEN_GHOST_SPEED      = 7.5;   // Fast eye-return speed back to the ghost house
-    const POWER_PELLET_DURATION  = 7.5;   // Seconds ghosts stay blue & edible after eating a Big Pellet
-    const CORNER_SNAP_WINDOW     = 0.44;  // Arcade pre-turn cornering forgiveness (in tiles)
-    const JUMP_FORCE             = 5.5;   // Mini-hop upward impulse when pressing Spacebar
-    const GRAVITY                = 18.0;  // Downward gravity pulling mini-hop back to the floor
-    const GHOST_SPAWN_RATE       = 3.8;   // Seconds between new colored ghosts spawning from center
-    const MAX_GHOSTS             = 4;     // Maximum colored ghosts active in the maze at once
-    const TOTAL_KEYS_NEEDED      = 5;     // Number of keys needed to unlock the Exit Gate
-    const REQUIRED_DOT_RATIO     = 0.60;  // Fraction of dots required to unlock Exit (0.60 = 60%)
-    const STARTING_LIVES         = 5;     // Number of lives before Game Over
-    const DOT_SCORE              = 10;    // Points awarded per small dot collected
-    const POWER_PELLET_SCORE     = 50;    // Points awarded per Big Power Pellet collected
-    const KEY_SCORE              = 250;   // Points awarded per key collected
-    const ESCAPE_BONUS           = 1000;  // Bonus points awarded for escaping each level
-    // =========================================================================
+    const arcadeShell = document.getElementById("arcadeShell");
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-    // User's Favorite Retro Color Palette & Base Colors
-    const COLORS = {
-      bg:          "#000000",
-      wallOutline: "#314ece",
-      wallFill:    "#070d26",
-      red:         "#d52a3f",
-      blue:        "#314ece",
-      green:       "#45ba4b",
-      player:      "#ffd700",
-      dot:         "#ffdfba",
-      powerPellet: "#ffffff",
-      ghostDoor:   "#d52a3f"
-    };
+    // HUD & Button Elements
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const highScoreDisplay = document.getElementById("highScoreDisplay");
+    const levelLabel = document.getElementById("levelLabel");
+    const livesDisplay = document.getElementById("livesDisplay");
+    const dotsDisplay = document.getElementById("dotsDisplay");
+    const keysDisplay = document.getElementById("keysDisplay");
+    const exitBadge = document.getElementById("exitBadge");
 
-    // Per-Level Maze Color Themes (Cycles as you beat levels!)
-    const LEVEL_THEMES = [
-      { wallOutline: "#314ece", wallFill: "#070d26", name: "COBALT GRID" },
-      { wallOutline: "#45ba4b", wallFill: "#061b08", name: "EMERALD CIRCUIT" },
-      { wallOutline: "#d52a3f", wallFill: "#21060b", name: "CRIMSON SECTOR" },
-      { wallOutline: "#29d8ff", wallFill: "#051922", name: "CYBER CYAN" },
-      { wallOutline: "#c84bff", wallFill: "#1a0726", name: "NEON VIOLET" },
-      { wallOutline: "#ff9d2e", wallFill: "#241404", name: "SOLAR AMBER" }
-    ];
+    const controlsBtn = document.getElementById("controlsBtn");
+    const fpsBtn = document.getElementById("fpsBtn");
+    const crtBtn = document.getElementById("crtBtn");
+    const soundToggleBtn = document.getElementById("soundToggleBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const restartBtn = document.getElementById("restartBtn");
 
-    // Classic Arcade Ghost Quartet (Blinky, Pinky, Inky, Clyde)
-    const GHOST_PALETTE = [
-      { name: "BLINKY", color: "#d52a3f", aiType: 0 }, // Direct chaser
-      { name: "PINKY",  color: "#ff77b7", aiType: 1 }, // 4-tile ahead ambusher
-      { name: "INKY",   color: "#29d8ff", aiType: 2 }, // Blinky-vector flanker
-      { name: "CLYDE",  color: "#ff9d2e", aiType: 3 }  // Proximity-shy chaser
-    ];
+    // Overlays & Modal Controls
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const resumeBtn = document.getElementById("resumeBtn");
+    const gameOverOverlay = document.getElementById("gameOverOverlay");
+    const gameOverStats = document.getElementById("gameOverStats");
+    const retryBtn = document.getElementById("retryBtn");
+    const winOverlay = document.getElementById("winOverlay");
+    const winStats = document.getElementById("winStats");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+    const bossTutorialOverlay = document.getElementById("bossTutorialOverlay");
+    const startBossBtn = document.getElementById("startBossBtn");
+    const stageSelectOverlay = document.getElementById("stageSelectOverlay");
+    const stageGrid = document.getElementById("stageGrid");
+    const closeStageSelectBtn = document.getElementById("closeStageSelectBtn");
+    const colorSelectOverlay = document.getElementById("colorSelectOverlay");
+    const colorGrid = document.getElementById("colorGrid");
+    const startWithColorBtn = document.getElementById("startWithColorBtn");
+    const controlsOverlay = document.getElementById("controlsOverlay");
+    const padStatusText = document.getElementById("padStatusText");
+    const modeAutoBtn = document.getElementById("modeAutoBtn");
+    const modeCustomBtn = document.getElementById("modeCustomBtn");
+    const remapPrompt = document.getElementById("remapPrompt");
+    const remapButtons = document.querySelectorAll(".remap-btn");
+    const resetMapBtn = document.getElementById("resetMapBtn");
+    const closeControlsBtn = document.getElementById("closeControlsBtn");
+    const padButtons = document.querySelectorAll(".pad-btn");
 
-    // Direction Vectors
+    // Core Arcade Constants
+    const COLS = 25;
+    const ROWS = 23;
+    const MAX_LEVELS = 18;
+    const STARTING_LIVES = 5;
+    const TOTAL_KEYS_NEEDED = 5;
+    const REQUIRED_DOT_RATIO = 0.72;
+    const MAX_GHOSTS = 4;
+    const GHOST_SPAWN_RATE = 4.5;
+
+    const PLAYER_SPEED = 5.4;
+    const BOSS_SPEED = 5.0;
+    const GHOST_SPEED = 4.35;
+    const FRIGHTENED_GHOST_SPEED = 2.75;
+    const EATEN_GHOST_SPEED = 8.4;
+    const CORNER_SNAP_WINDOW = 0.34;
+    const POWER_PELLET_DURATION = 7.5;
+    const JUMP_FORCE = 8.8;
+    const GRAVITY = 24.0;
+
+    const DOT_SCORE = 10;
+    const POWER_PELLET_SCORE = 50;
+    const KEY_SCORE = 250;
+    const ESCAPE_BONUS = 1000;
+
+    const TITLE_DEMO_DELAY = 25.0;
+    const DEMO_PLAY_DURATION = 15.0;
+    const SECRET_CODE = ["UP", "DOWN", "LEFT", "RIGHT"];
+
     const DIRS = {
-      NONE:  { x: 0,  y: 0,  angle: 0,            key: "NONE" },
-      UP:    { x: 0,  y: -1, angle: -Math.PI / 2, key: "UP" },
-      DOWN:  { x: 0,  y: 1,  angle: Math.PI / 2,  key: "DOWN" },
-      LEFT:  { x: -1, y: 0,  angle: Math.PI,      key: "LEFT" },
-      RIGHT: { x: 1,  y: 0,  angle: 0,            key: "RIGHT" }
+      NONE:  { key: "NONE",  x: 0,  y: 0,  angle: 0 },
+      RIGHT: { key: "RIGHT", x: 1,  y: 0,  angle: 0 },
+      DOWN:  { key: "DOWN",  x: 0,  y: 1,  angle: Math.PI / 2 },
+      LEFT:  { key: "LEFT",  x: -1, y: 0,  angle: Math.PI },
+      UP:    { key: "UP",    x: 0,  y: -1, angle: -Math.PI / 2 }
     };
 
-    // Multi-Level 25 x 23 Arcade Maze Blueprints
-    // '#' = Maze Wall | '.' = Dot | 'O' = Big Power Pellet (4 per level!)
-    // 'K' = Green Key (5 per level!) | 'E' = Openable Top Escape Exit (unobstructed!)
-    // 'D' = Ghost House Door | 'G' = Ghost Spawn House | 'P' = Player Spawn
+    const COLORS = {
+      red: "#d52a3f",
+      blue: "#314ece",
+      green: "#45ba4b",
+      bg: "#000000",
+      wallOutline: "#314ece",
+      wallFill: "#08102b",
+      dot: "#ffdfba",
+      powerPellet: "#ffffff",
+      player: "#ffd700",
+      ghostDoor: "#ff77b7"
+    };
+
+    const PAC_COLOR_OPTIONS = [
+      { id: "yellow", name: "YELLOW (DEFAULT)", hex: "#ffd700" },
+      { id: "red",    name: "CRIMSON RED",      hex: "#d52a3f" },
+      { id: "blue",   name: "COBALT BLUE",      hex: "#314ece" },
+      { id: "green",  name: "EMERALD GREEN",    hex: "#45ba4b" },
+      { id: "cyan",   name: "CYBER CYAN",       hex: "#29d8ff" },
+      { id: "pink",   name: "NEON PINK",        hex: "#ff77b7" }
+    ];
+
+    const LEVEL_THEMES = [
+      { wallOutline: "#314ece", wallFill: "#071029", name: "CLASSIC COBALT" },
+      { wallOutline: "#45ba4b", wallFill: "#061d09", name: "EMERALD CIRCUIT" },
+      { wallOutline: "#d52a3f", wallFill: "#21060b", name: "CRIMSON MATRIX" }
+    ];
+
+    const GHOST_PALETTE = [
+      { name: "BLINKY", color: "#d52a3f", aiType: 0 },
+      { name: "PINKY",  color: "#ff77b7", aiType: 1 },
+      { name: "INKY",   color: "#29d8ff", aiType: 2 },
+      { name: "CLYDE",  color: "#ff9d2e", aiType: 3 }
+    ];
+
+    // 3 Verified 25x23 Maze Blueprints (No blocks above Ghost House Door D in Level 2)
     const MAZE_LEVELS = [
-      // LEVEL 1 — Classic Dense Arcade Maze (4 Big Pellets, 5 Keys, Zero Large Gaps)
       [
         "############E############",
-        "#O...K.............K...O#",
-        "#.####.#####.#####.####.#",
-        "#.####.#####.#####.####.#",
-        "#..........#.#..........#",
-        "#.####.###.#.#.###.####.#",
-        "#....#.....#.#.....#....#",
-        "####.#.###.....###.#.####",
-        "#....#...###D###...#....#",
-        "#.####.#.#GGGGG#.#.####.#",
-        "#.####.#.#GGGGG#.#.####.#",
-        ".........#######.........",
-        "#.####.#.#######.#.####.#",
-        "#....#.............#....#",
-        "####.#.###.#.#.###.#.####",
-        "#....#.....#K#.....#....#",
-        "#.##.#####.#.#.#####.##.#",
-        "#.##.......#.#.......##.#",
-        "#O...#####.....#####...O#",
-        "#.##.#...###.###...#.##.#",
-        "#.##.#.#....P....#.#.##.#",
-        "#K.......#######.......K#",
-        "#########################"
-      ],
-      // LEVEL 2 — Twin Chambers Dense Arcade Maze (Open Ghost Exit & Open Loops)
-      [
-        "############E############",
-        "#O..........K..........O#",
-        "#.###.####.###.####.###.#",
-        "#.###.####.###.####.###.#",
-        "#...K......###......K...#",
-        "###.###.##.....##.###.###",
-        "#...#...##.###.##...#...#",
-        "#.###.###.......###.###.#",
-        "#.........##D##.........#",
-        "#.####.#.#GGGGG#.#.####.#",
-        "#.####.#.#GGGGG#.#.####.#",
-        ".........#######.........",
-        "#.####.#.#######.#.####.#",
-        "#.####.............####.#",
-        "#..........#.#..........#",
-        "#.###.####.#.#.####.###.#",
-        "#...#......#.#......#...#",
-        "###.#.####.....####.#.###",
-        "#O....#...#####...#....O#",
-        "#.###.#.#.......#.#.###.#",
-        "#.###...###.P.###...###.#",
-        "#K....#.....#.....#....K#",
-        "#########################"
-      ],
-      // LEVEL 3 — Grid Arena Dense Arcade Maze (Zero Large Gaps & Open Loops)
-      [
-        "############E############",
-        "#O...K.............K...O#",
-        "#.###.###.#####.###.###.#",
-        "#.....#...........#.....#",
-        "#.###.#.###.#.###.#.###.#",
-        "#...#.......#.......#...#",
-        "###.#.#####.#.#####.#.###",
-        "#.....#...........#.....#",
-        "#.###.#...##D##...#.###.#",
-        "#...#..#.#GGGGG#.#..#...#",
-        "#.###..#.#GGGGG#.#..###.#",
-        ".........#######.........",
-        "#.###..#.#######.#..###.#",
-        "#...#...............#...#",
-        "###.#.###.##.##.###.#.###",
-        "#.....#.....K.....#.....#",
-        "#.#####.###.#.###.#####.#",
+        "#O..........#..........O#",
+        "#.####.####.#.####.####.#",
+        "#.#  #.#  #.#.#  #.#  #.#",
+        "#.####.####.#.####.####.#",
+        "#..K........K........K..#",
+        "#.####.##.#####.##.####.#",
+        "#......##...#...##......#",
+        "######.####.#.####.######",
+        "     #.##.......##.#     ",
+        "######.##.##D##.##.######",
+        "..........#GGG#..........",
+        "######.##.#####.##.######",
+        "     #.##.......##.#     ",
+        "######.##.#####.##.######",
         "#...........#...........#",
-        "#O.###.####...####.###.O#",
-        "#..#.................#..#",
-        "##.#.###.###P###.###.#.##",
-        "#K.......#.....#.......K#",
+        "#.####.####.#.####.####.#",
+        "#O..##......P......##..O#",
+        "###.##.##.#####.##.##.###",
+        "#...K..##...#...##..K...#",
+        "#.#########.#.#########.#",
+        "#.......................#",
+        "#########################"
+      ],
+      [
+        "############E############",
+        "#O....#...........#....O#",
+        "#.##..#.#########.#..##.#",
+        "#.##..#.....#.....#..##.#",
+        "#.....#####.#.#####.....#",
+        "#.###...K.......K...###.#",
+        "#.# #.##.#######.##.# #.#",
+        "#.###.##.........##.###.#",
+        "#........###D###........#",
+        "#####.##.#GGGGG#.##.#####",
+        "    #.##.#######.##.#    ",
+        "......##....K....##......",
+        "    #.##.#######.##.#    ",
+        "#####.##.........##.#####",
+        "#........#######........#",
+        "#.###.##....#....##.###.#",
+        "#O..#.##.##.#.##.##.#..O#",
+        "###.#....##.P.##....#.###",
+        "#...####....#....####...#",
+        "#.K......##.#.##......K.#",
+        "#.######.##.#.##.######.#",
+        "#.......................#",
+        "#########################"
+      ],
+      [
+        "############E############",
+        "#O..K.......#.......K..O#",
+        "#.####.####.#.####.####.#",
+        "#......#.........#......#",
+        "#.####.#.#######.#.####.#",
+        "#.#......#..K..#......#.#",
+        "#.#.####.#.###.#.####.#.#",
+        "#........#.....#........#",
+        "#####.##.###D###.##.#####",
+        "    #.##.#GGGGG#.##.#    ",
+        "#####.##.#######.##.#####",
+        "..........#...#..........",
+        "#####.###.#.#.#.###.#####",
+        "    #.#.....#.....#.#    ",
+        "#####.#.#########.#.#####",
+        "#...........P...........#",
+        "#.####.####.#.####.####.#",
+        "#O..##......#......##..O#",
+        "###.##.####.#.####.##.###",
+        "#...K.......#.......K...#",
+        "#.####.###########.####.#",
+        "#.......................#",
         "#########################"
       ]
     ];
 
-    const ROWS = MAZE_LEVELS[0].length;
-    const COLS = MAZE_LEVELS[0][0].length;
+    // Level 18 Final Boss Showdown Arena (Player vs Red Pac)
+    const BOSS_ARENA_BLUEPRINT = [
+      "#########################",
+      "#O..........#..........O#",
+      "#.####.####.#.####.####.#",
+      "#.#  #......#......#  #.#",
+      "#.####.####.#.####.####.#",
+      "#.......................#",
+      "#.####.##.#####.##.####.#",
+      "#......##...#...##......#",
+      "######.####.#.####.######",
+      "     #.##.......##.#     ",
+      "######.##.##D##.##.######",
+      "..........#GGG#..........",
+      "######.##.#####.##.######",
+      "     #.##.......##.#     ",
+      "######.##.#####.##.######",
+      "#...........#...........#",
+      "#.####.####.#.####.####.#",
+      "#O..##......#......##..O#",
+      "###.##.##.#####.##.##.###",
+      "#......##...#...##......#",
+      "#.#########.#.#########.#",
+      "#.....P...........B.....#",
+      "#########################"
+    ];
 
-    // DOM Elements
-    const canvas          = document.getElementById("gameCanvas");
-    const ctx             = canvas.getContext("2d");
-    const arcadeShell     = document.getElementById("arcadeShell");
-    const scoreDisplay    = document.getElementById("scoreDisplay");
-    const highScoreDisplay= document.getElementById("highScoreDisplay");
-    const levelLabel      = document.getElementById("levelLabel");
-    const livesDisplay    = document.getElementById("livesDisplay");
-    const dotsDisplay     = document.getElementById("dotsDisplay");
-    const keysDisplay     = document.getElementById("keysDisplay");
-    const exitBadge       = document.getElementById("exitBadge");
-
-    const pauseOverlay    = document.getElementById("pauseOverlay");
-    const gameOverOverlay = document.getElementById("gameOverOverlay");
-    const winOverlay      = document.getElementById("winOverlay");
-    const gameOverStats   = document.getElementById("gameOverStats");
-    const winStats        = document.getElementById("winStats");
-
-    const soundToggleBtn  = document.getElementById("soundToggleBtn");
-    const pauseBtn        = document.getElementById("pauseBtn");
-    const restartBtn      = document.getElementById("restartBtn");
-    const resumeBtn       = document.getElementById("resumeBtn");
-    const retryBtn        = document.getElementById("retryBtn");
-    const playAgainBtn    = document.getElementById("playAgainBtn");
-    const padButtons      = document.querySelectorAll(".pad-btn");
-
-    // Game State
+    // Mutable Game State
     let tileSize = 24;
     let grid = [];
-    let gameState = "START"; // "START" | "READY" | "PLAYING" | "PAUSED" | "DYING" | "GAMEOVER" | "WIN"
-    let titleAnimTime = 0;   // Elapsed timer for animated cast roll-call title screen
     let score = 0;
     let highScore = 0;
-    let isNewHighScore = false;
+    try {
+      highScore = parseInt(localStorage.getItem("pac_maze_high_score") || "0", 10) || 0;
+    } catch (_) {}
+
     let currentLevel = 1;
     let lives = STARTING_LIVES;
+    let isNewHighScore = false;
     let dotsCollected = 0;
     let totalDots = 0;
-    let dotsRequired = 0;
+    let requiredDots = 0;
     let keysCollected = 0;
     let exitUnlocked = false;
-    let stateBannerTimer = 0;
-    let deathAnimTimer = 0;
-    let lastTime = 0;
-    let pulseTimer = 0;
-    let wakaToggle = false;
 
-    // Power Pellet & Ghost Scatter/Chase Wave Timers
-    let frightenedTimer = 0;
-    let ghostEatCombo = 0;
-    let waveTimer = 0;
-    let waveIndex = 0;
-    let isScatterMode = true;
-    const WAVE_DURATIONS = [7, 20, 7, 20, 5, 20, 5, 9999];
+    let gameState = "START"; // START, COLOR_SELECT, STAGE_SELECT, TUTORIAL, READY, PLAYING, PAUSED, DYING, GAMEOVER, WIN, DEMO
+    let stateTimer = 0;
+    let titleAnimTime = 0;
+    let demoTimer = 0;
+    let globalPulse = 0;
+    let lastTimestamp = 0;
+    let wakaStep = 0;
+    let soundEnabled = true;
 
-    // Floating Score Popups (e.g., 200, 400, 800, 1600, +250)
-    let scorePopups = [];
-
-    // Click Direction Visual Indicator
-    let clickIndicator = { x: 0, y: 0, dir: DIRS.NONE, timer: 0 };
-
-    // Player & Ghost Entities
-    let playerSpawn = { col: 12, row: 20 };
-    let ghostSpawn  = { col: 12, row: 9 };
-    let exitTile    = { col: 12, row: 0 };
+    // Live FPS Counter & Frame Cap Options ("60", "MAX", "30", "OFF")
+    const FPS_MODES = ["60", "MAX", "30", "OFF"];
+    let fpsModeIndex = 0;
+    let currentFps = 60;
+    let fpsFrameCounter = 0;
+    let fpsAccumTime = 0;
+    let lastRenderTimestamp = 0;
+    let crtEnabled = true;
+    let scanlinePattern = null;
+    let cachedMazeCanvas = null;
+    let cachedMazeKey = "";
+    let selectedPacColor = PAC_COLOR_OPTIONS[0];
+    let pendingStartLevel = 1;
+    let pendingInitialDir = null;
+    let titleCodeBuffer = [];
 
     let player = {
       x: 12.5,
-      y: 20.5,
-      dir: DIRS.LEFT,
-      nextDir: DIRS.LEFT,
-      z: 0,
-      vz: 0,
+      y: 17.5,
+      spawnX: 12.5,
+      spawnY: 17.5,
+      dir: DIRS.RIGHT,
+      nextDir: DIRS.RIGHT,
+      facingAngle: 0,
       mouthPhase: 0,
-      facingAngle: Math.PI
+      z: 0,
+      vz: 0
     };
 
+    let bossRival = null;
     let ghosts = [];
-    let ghostSpawnTimer = 0;
-    let nextGhostTypeIndex = 0;
+    let ghostSpawnTiles = [];
+    let ghostDoorTile = { c: 12, r: 10 };
+    let spawnTimer = 0;
+    let modeTimer = 0;
+    let scatterMode = true;
+    let frightenedTimer = 0;
+    let ghostEatCombo = 0;
+    let floatingPopups = [];
+    let clickMarker = { x: 0, y: 0, dir: DIRS.NONE, alpha: 0 };
 
-    // =========================================================================
-    //  HIGH SCORE STORAGE (Safe LocalStorage Persistence)
-    // =========================================================================
-    const HIGH_SCORE_KEY = "pac_maze_high_score_v1";
+    // Gamepad & Arcade Stick State
+    const DEFAULT_PAD_MAPPING = {
+      UP:    { type: "axis", index: 1, dir: -1 },
+      DOWN:  { type: "axis", index: 1, dir: 1 },
+      LEFT:  { type: "axis", index: 0, dir: -1 },
+      RIGHT: { type: "axis", index: 0, dir: 1 },
+      HOP:   { type: "button", index: 0 },
+      PAUSE: { type: "button", index: 9 }
+    };
 
-    function loadHighScore() {
+    let padControlMode = "AUTO";
+    let padMapping = JSON.parse(JSON.stringify(DEFAULT_PAD_MAPPING));
+    let activePadIndex = null;
+    let listeningAction = null;
+    let prevPadStates = {};
+
+    try {
+      const savedMode = localStorage.getItem("pac_maze_pad_mode");
+      const savedMap = localStorage.getItem("pac_maze_pad_map");
+      if (savedMode === "AUTO" || savedMode === "CUSTOM") padControlMode = savedMode;
+      if (savedMap) padMapping = { ...padMapping, ...JSON.parse(savedMap) };
+    } catch (_) {}
+
+    function savePadSettings() {
       try {
-        const saved = localStorage.getItem(HIGH_SCORE_KEY);
-        const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed) && parsed > 0) {
-          highScore = parsed;
+        localStorage.setItem("pac_maze_pad_mode", padControlMode);
+        localStorage.setItem("pac_maze_pad_map", JSON.stringify(padMapping));
+      } catch (_) {}
+      updatePadUI();
+    }
+
+    function formatBindingLabel(action) {
+      if (padControlMode === "AUTO") {
+        if (action === "UP") return "AUTO / D-PAD UP";
+        if (action === "DOWN") return "AUTO / D-PAD DOWN";
+        if (action === "LEFT") return "AUTO / D-PAD LEFT";
+        if (action === "RIGHT") return "AUTO / D-PAD RIGHT";
+        if (action === "HOP") return "AUTO / BTN 0 (A)";
+        if (action === "PAUSE") return "AUTO / START (BTN 9)";
+      }
+      const b = padMapping[action];
+      if (!b) return "UNBOUND";
+      if (b.type === "button") return `BUTTON ${b.index}`;
+      return `AXIS ${b.index} (${b.dir > 0 ? "+" : "-"})`;
+    }
+
+    function updatePadUI() {
+      if (controlsBtn) {
+        controlsBtn.textContent = `PAD: ${padControlMode}`;
+      }
+      if (modeAutoBtn && modeCustomBtn) {
+        modeAutoBtn.style.background = padControlMode === "AUTO" ? "var(--blue)" : "#000000";
+        modeCustomBtn.style.background = padControlMode === "CUSTOM" ? "var(--blue)" : "#000000";
+      }
+      if (padStatusText) {
+        const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+        let connectedPad = null;
+        for (let i = 0; i < pads.length; i++) {
+          if (pads[i] && pads[i].connected) {
+            connectedPad = pads[i];
+            break;
+          }
         }
-      } catch (e) {
-        highScore = 0;
+        if (connectedPad) {
+          padStatusText.textContent = `CONNECTED: ${connectedPad.id.slice(0, 34)}`;
+          padStatusText.style.color = "var(--green)";
+        } else {
+          padStatusText.textContent = "No USB/Bluetooth controller detected yet. Press any button on your stick/pad!";
+          padStatusText.style.color = "#8a96b8";
+        }
+      }
+      remapButtons.forEach((btn) => {
+        const action = btn.dataset.action;
+        if (listeningAction === action) {
+          btn.textContent = "PRESS INPUT...";
+          btn.style.borderColor = "#ffd700";
+        } else {
+          btn.textContent = formatBindingLabel(action);
+          btn.style.borderColor = "var(--blue)";
+        }
+      });
+    }
+
+    // =========================================================================
+    //  8-BIT PIXEL ART RENDERING ENGINE (AUTHENTIC 1980 ARCADE SPRITES)
+    // =========================================================================
+    // Authentic 13x13 Arcade Pac-Man Sprite Bitmaps (Facing Right; rotated for other dirs)
+    const ARCADE_PACMAN_FRAMES = [
+      // Frame 0: Closed Circle
+      [
+        "....XXXXX....",
+        "..XXXXXXXXX..",
+        ".XXXXXXXXXXX.",
+        ".XXXXXXXXXXX.",
+        "XXXXXXXXXXXXX",
+        "XXXXXXXXXXXXX",
+        "XXXXXXXXXXXXX",
+        "XXXXXXXXXXXXX",
+        "XXXXXXXXXXXXX",
+        ".XXXXXXXXXXX.",
+        ".XXXXXXXXXXX.",
+        "..XXXXXXXXX..",
+        "....XXXXX...."
+      ],
+      // Frame 1: Half-Open Chomp
+      [
+        "....XXXXX....",
+        "..XXXXXXXXX..",
+        ".XXXXXXXXXXX.",
+        ".XXXXXXXXXX..",
+        "XXXXXXXX.....",
+        "XXXXXX.......",
+        "XXXX.........",
+        "XXXXXX.......",
+        "XXXXXXXX.....",
+        ".XXXXXXXXXX..",
+        ".XXXXXXXXXXX.",
+        "..XXXXXXXXX..",
+        "....XXXXX...."
+      ],
+      // Frame 2: Wide-Open Arcade Chomp
+      [
+        "....XXXXX....",
+        "..XXXXXXXX...",
+        ".XXXXXXXX....",
+        ".XXXXXXX.....",
+        "XXXXXX.......",
+        "XXXXX........",
+        "XXXX.........",
+        "XXXXX........",
+        "XXXXXX.......",
+        ".XXXXXXX.....",
+        ".XXXXXXXX....",
+        "..XXXXXXXX...",
+        "....XXXXX...."
+      ]
+    ];
+
+    // Authentic Arcade Death Animation Frames
+    const ARCADE_PACMAN_DEATH_FRAMES = [
+      [
+        "....XXXXX....",
+        "..XXXXXXXXX..",
+        ".XXXXXXXXXXX.",
+        "XXXXXXXXXXXXX",
+        "XXXXXXXXXXXXX",
+        "XXXXX...XXXXX",
+        "XXXX.....XXXX",
+        "XXX.......XXX",
+        "XX.........XX",
+        ".X.........X."
+      ],
+      [
+        "...XX...XX...",
+        "..XXX...XXX..",
+        ".XXXX...XXXX.",
+        "XXXXX...XXXXX",
+        "XXXX.....XXXX",
+        "XXX.......XXX",
+        "XX.........XX",
+        ".X.........X."
+      ],
+      [
+        "..X.......X..",
+        ".XX.......XX.",
+        "XXX.......XXX",
+        "XX.........XX",
+        "X...........X"
+      ],
+      [
+        ".....X.X.....",
+        "....X...X....",
+        "..X.......X..",
+        "....X...X....",
+        ".....X.X....."
+      ]
+    ];
+
+    // Authentic 14x14 1980 Namco Arcade Ghost Body Bitmaps (2 Skirt Frames)
+    const ARCADE_GHOST_FRAMES = [
+      [
+        ".....XXXX.....",
+        "...XXXXXXXX...",
+        "..XXXXXXXXXX..",
+        ".XXXXXXXXXXXX.",
+        ".XXXXXXXXXXXX.",
+        ".XXXXXXXXXXXX.",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XX.XXX..XXX.XX",
+        "X...XX..XX...X"
+      ],
+      [
+        ".....XXXX.....",
+        "...XXXXXXXX...",
+        "..XXXXXXXXXX..",
+        ".XXXXXXXXXXXX.",
+        ".XXXXXXXXXXXX.",
+        ".XXXXXXXXXXXX.",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXXXXXXXXXXXXX",
+        "XXX.XXXXXX.XXX",
+        ".XX..XXXX..XX."
+      ]
+    ];
+
+    function drawPixelSprite(matrix, cx, cy, targetDiameter, color, rotateSteps = 0) {
+      const rows = matrix.length;
+      const cols = matrix[0].length;
+      const p = Math.max(1.5, targetDiameter / cols);
+      const halfW = (cols * p) / 2;
+      const halfH = (rows * p) / 2;
+
+      ctx.save();
+      ctx.translate(Math.round(cx), Math.round(cy));
+      if (rotateSteps !== 0) {
+        ctx.rotate((rotateSteps * Math.PI) / 2);
+      }
+      ctx.fillStyle = color;
+
+      for (let r = 0; r < rows; r++) {
+        const line = matrix[r];
+        for (let c = 0; c < cols; c++) {
+          if (line[c] === "X") {
+            ctx.fillRect(
+              Math.floor(-halfW + c * p),
+              Math.floor(-halfH + r * p),
+              Math.ceil(p),
+              Math.ceil(p)
+            );
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    function getRotateStepsFromAngle(angle) {
+      // 0 = RIGHT, 1 = DOWN, 2 = LEFT, 3 = UP
+      const norm = ((Math.round(angle / (Math.PI / 2)) % 4) + 4) % 4;
+      return norm;
+    }
+
+    function draw8BitCircle(cx, cy, radius, color, mouthOpenRatio = 0, facingAngle = 0) {
+      const diameter = radius * 2;
+      // Solid circle when mouthOpenRatio === 0 (e.g., Power Pellets)
+      if (mouthOpenRatio <= 0) {
+        drawPixelSprite(ARCADE_PACMAN_FRAMES[0], cx, cy, diameter, color, 0);
+        return;
+      }
+
+      let frameIdx = 1;
+      if (mouthOpenRatio < 0.2) frameIdx = 0;
+      else if (mouthOpenRatio > 0.6) frameIdx = 2;
+
+      const rotSteps = getRotateStepsFromAngle(facingAngle);
+      drawPixelSprite(ARCADE_PACMAN_FRAMES[frameIdx], cx, cy, diameter, color, rotSteps);
+    }
+
+    function draw8BitGhost(cx, cy, radius, bodyColor, dir, isFrightened = false, isFlashing = false, isEaten = false) {
+      const diameter = radius * 2;
+      const p = Math.max(1.5, diameter / 14);
+      const frame = Math.floor(globalPulse * 8) % 2;
+      const sprite = ARCADE_GHOST_FRAMES[frame];
+
+      const startX = Math.round(cx - 7 * p);
+      const startY = Math.round(cy - 7 * p);
+
+      // 1. Draw Ghost Body (unless eaten, in which case only floating arcade eyes show)
+      if (!isEaten) {
+        let fill = bodyColor;
+        if (isFrightened) {
+          fill = isFlashing ? "#ffffff" : "#314ece";
+        }
+        ctx.fillStyle = fill;
+        for (let r = 0; r < 14; r++) {
+          const line = sprite[r];
+          for (let c = 0; c < 14; c++) {
+            if (line[c] === "X") {
+              ctx.fillRect(
+                Math.floor(startX + c * p),
+                Math.floor(startY + r * p),
+                Math.ceil(p),
+                Math.ceil(p)
+              );
+            }
+          }
+        }
+      }
+
+      // 2. Draw Authentic 1980 Arcade Ghost Eyes & Frightened Face
+      if (isFrightened && !isEaten) {
+        const faceColor = isFlashing ? "#d52a3f" : "#ffdfba";
+        ctx.fillStyle = faceColor;
+        // Two square frightened eyes
+        ctx.fillRect(Math.floor(startX + 4 * p), Math.floor(startY + 5 * p), Math.ceil(2 * p), Math.ceil(2 * p));
+        ctx.fillRect(Math.floor(startX + 8 * p), Math.floor(startY + 5 * p), Math.ceil(2 * p), Math.ceil(2 * p));
+        // Classic 1980 arcade zigzag wavy mouth
+        const waveCols = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        const waveRows = [10, 9, 9, 10, 10, 9, 9, 10, 10, 9];
+        for (let i = 0; i < waveCols.length; i++) {
+          ctx.fillRect(
+            Math.floor(startX + waveCols[i] * p),
+            Math.floor(startY + waveRows[i] * p),
+            Math.ceil(p),
+            Math.ceil(p)
+          );
+        }
+      } else {
+        // Directional offset for authentic 4x5 white sclera + 2x2 blue pupils
+        const shiftX = dir.x * p;
+        const shiftY = dir.y * p;
+        const leftEyeX = startX + 2 * p + shiftX;
+        const rightEyeX = startX + 8 * p + shiftX;
+        const eyeY = startY + 3 * p + shiftY;
+
+        ctx.fillStyle = "#ffffff";
+        // Left & Right 4x5 rounded arcade sclera
+        ctx.fillRect(Math.floor(leftEyeX + p), Math.floor(eyeY), Math.ceil(2 * p), Math.ceil(5 * p));
+        ctx.fillRect(Math.floor(leftEyeX), Math.floor(eyeY + p), Math.ceil(4 * p), Math.ceil(3 * p));
+
+        ctx.fillRect(Math.floor(rightEyeX + p), Math.floor(eyeY), Math.ceil(2 * p), Math.ceil(5 * p));
+        ctx.fillRect(Math.floor(rightEyeX), Math.floor(eyeY + p), Math.ceil(4 * p), Math.ceil(3 * p));
+
+        // 2x2 Royal Blue Pupils looking in movement direction
+        const pupilOffX = dir.x === -1 ? 0 : dir.x === 1 ? 2 * p : p;
+        const pupilOffY = dir.y === -1 ? 0 : dir.y === 1 ? 3 * p : 2 * p;
+        ctx.fillStyle = "#2121ff";
+        ctx.fillRect(Math.floor(leftEyeX + pupilOffX), Math.floor(eyeY + pupilOffY), Math.ceil(2 * p), Math.ceil(2 * p));
+        ctx.fillRect(Math.floor(rightEyeX + pupilOffX), Math.floor(eyeY + pupilOffY), Math.ceil(2 * p), Math.ceil(2 * p));
       }
     }
 
-    function saveHighScore() {
-      try {
-        localStorage.setItem(HIGH_SCORE_KEY, String(highScore));
-      } catch (e) {
-        // Ignore storage restrictions in private browsing
+    function openControlsConfig() {
+      ensureAudio();
+      if (gameState === "PLAYING" || gameState === "READY") {
+        gameState = "PAUSED";
       }
+      listeningAction = null;
+      remapPrompt.textContent = padControlMode === "AUTO"
+        ? "Automatic works instantly with D-Pads, Analog Sticks & Arcade Encoders."
+        : "Click any action button below, then press your Arcade Joystick or Button.";
+      updatePadUI();
+      controlsOverlay.classList.remove("hidden");
     }
 
-    function addScore(points) {
-      score += points;
-      if (score > highScore) {
-        highScore = score;
-        isNewHighScore = true;
-        saveHighScore();
+    function closeControlsConfig() {
+      listeningAction = null;
+      controlsOverlay.classList.add("hidden");
+      if (gameState === "PAUSED" && pauseOverlay.classList.contains("hidden")) {
+        gameState = "PLAYING";
       }
     }
 
     // =========================================================================
-    //  8-BIT ARCADE SOUND ENGINE (Web Audio API — Zero External Files!)
+    //  SYNTHESIZED RETRO 8-BIT AUDIO (PAC-MAN Classic Sound Effects!)
     // =========================================================================
     let audioCtx = null;
-    let soundEnabled = true;
 
     function ensureAudio() {
-      if (!soundEnabled) return null;
+      if (!soundEnabled) return;
       if (!audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          audioCtx = new AudioContextClass();
-        }
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
       }
       if (audioCtx && audioCtx.state === "suspended") {
         audioCtx.resume();
       }
-      return audioCtx;
     }
 
-    function playTone(freq, duration, type = "square", volume = 0.08, endFreq = null, delay = 0) {
-      if (!soundEnabled) return;
-      const ac = ensureAudio();
-      if (!ac) return;
+    function playTone(freq, duration, type = "square", volume = 0.08, delay = 0) {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const start = audioCtx.currentTime + delay;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(volume, start);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + duration);
+      } catch (_) {
+        // Ignore blocked audio before user gesture
+      }
+    }
 
-      const start = ac.currentTime + delay;
-      const osc = ac.createOscillator();
-      const gain = ac.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, start);
-      if (endFreq !== null) {
+    function playFreqSweep(startFreq, endFreq, duration, type = "triangle", volume = 0.1, delay = 0) {
+      if (!soundEnabled || !audioCtx) return;
+      try {
+        const start = audioCtx.currentTime + delay;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(startFreq, start);
         osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFreq), start + duration);
+        gain.gain.setValueAtTime(volume, start);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + duration);
+      } catch (_) {}
+    }
+
+    function playSound(event) {
+      ensureAudio();
+      if (!soundEnabled || !audioCtx) return;
+
+      switch (event) {
+        case "start": {
+          // Classic PAC-MAN Opening Jingle
+          const notes = [
+            [493.88, 0.00, 0.11], // B4
+            [987.77, 0.12, 0.11], // B5
+            [739.99, 0.24, 0.11], // F#5
+            [622.25, 0.36, 0.11], // D#5
+            [987.77, 0.48, 0.07], // B5
+            [739.99, 0.56, 0.14], // F#5
+            [622.25, 0.72, 0.22], // D#5
+            [523.25, 0.96, 0.11], // C5
+            [1046.5, 1.08, 0.11], // C6
+            [783.99, 1.20, 0.11], // G5
+            [659.25, 1.32, 0.11], // E5
+            [1046.5, 1.44, 0.07], // C6
+            [783.99, 1.52, 0.14], // G5
+            [659.25, 1.68, 0.22]  // E5
+          ];
+          notes.forEach(([f, d, dur]) => playTone(f, dur, "square", 0.065, d));
+          break;
+        }
+        case "dot":
+          // Classic PAC-MAN alternating two-tone "Waka-Waka"
+          if (wakaStep % 2 === 0) {
+            playFreqSweep(260, 440, 0.075, "triangle", 0.085);
+          } else {
+            playFreqSweep(440, 260, 0.075, "triangle", 0.085);
+          }
+          wakaStep++;
+          break;
+        case "power":
+          // Classic PAC-MAN Power Pellet siren warble
+          playFreqSweep(280, 740, 0.14, "square", 0.08, 0.00);
+          playFreqSweep(740, 320, 0.14, "square", 0.08, 0.14);
+          playFreqSweep(320, 820, 0.14, "square", 0.08, 0.28);
+          break;
+        case "eatGhost":
+          // Classic PAC-MAN Ghost Chomp sweep
+          playFreqSweep(190, 960, 0.26, "sawtooth", 0.11, 0.00);
+          playTone(1180, 0.12, "square", 0.08, 0.24);
+          break;
+        case "key":
+          // Retro key pickup + extra life chime
+          playTone(587.33, 0.09, "square", 0.08, 0.00);
+          playTone(880.00, 0.09, "square", 0.08, 0.09);
+          playTone(1174.66, 0.18, "square", 0.09, 0.18);
+          break;
+        case "unlock":
+          playTone(330, 0.09, "square", 0.08, 0.00);
+          playTone(440, 0.09, "square", 0.08, 0.09);
+          playTone(659, 0.09, "square", 0.08, 0.18);
+          playTone(880, 0.22, "square", 0.09, 0.27);
+          break;
+        case "jump":
+          playFreqSweep(240, 560, 0.11, "square", 0.06);
+          break;
+        case "hit":
+          // Classic PAC-MAN descending spiral death sound
+          for (let i = 0; i < 8; i++) {
+            const top = 660 - i * 52;
+            playFreqSweep(top, top - 110, 0.08, "sawtooth", 0.085, i * 0.085);
+          }
+          playTone(130, 0.16, "square", 0.09, 0.72);
+          playTone(98,  0.22, "square", 0.09, 0.88);
+          break;
+        case "win":
+          // Stage Clear / Intermission fanfare
+          playTone(523.25, 0.11, "square", 0.08, 0.00);
+          playTone(659.25, 0.11, "square", 0.08, 0.12);
+          playTone(783.99, 0.11, "square", 0.08, 0.24);
+          playTone(1046.5, 0.28, "square", 0.09, 0.36);
+          break;
       }
-      gain.gain.setValueAtTime(volume, start);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-
-      osc.connect(gain);
-      gain.connect(ac.destination);
-      osc.start(start);
-      osc.stop(start + duration);
-    }
-
-    // Classic PAC-MAN Startup Jingle
-    function sfxGameStart() {
-      const notes = [
-        [493.88, 0.00], [987.77, 0.11], [739.99, 0.22], [622.25, 0.33],
-        [987.77, 0.44], [739.99, 0.52], [622.25, 0.66],
-        [523.25, 0.85], [1046.5, 0.96], [783.99, 1.07], [659.25, 1.18],
-        [1046.5, 1.29], [783.99, 1.37], [659.25, 1.50]
-      ];
-      notes.forEach(([freq, t]) => {
-        playTone(freq, 0.10, "square", 0.06, null, t);
-      });
-    }
-
-    // Classic two-tone PAC-MAN "waka-waka" dot sound
-    function sfxDot() {
-      wakaToggle = !wakaToggle;
-      if (wakaToggle) {
-        playTone(260, 0.075, "triangle", 0.08, 430);
-      } else {
-        playTone(430, 0.075, "triangle", 0.08, 260);
-      }
-    }
-
-    // Classic Big Power Pellet warble sound
-    function sfxPowerPellet() {
-      for (let i = 0; i < 4; i++) {
-        playTone(320 + i * 90, 0.07, "square", 0.07, 640 + i * 90, i * 0.065);
-      }
-    }
-
-    // Classic PAC-MAN Ghost Chomp sweep
-    function sfxEatGhost() {
-      playTone(180, 0.28, "sawtooth", 0.09, 980);
-      playTone(420, 0.16, "square", 0.07, 1250, 0.12);
-    }
-
-    function sfxKey() {
-      playTone(587, 0.08, "square", 0.08, 880, 0);
-      playTone(880, 0.14, "square", 0.08, 1175, 0.08);
-    }
-
-    function sfxUnlock() {
-      const notes = [523, 659, 784, 1046];
-      notes.forEach((n, i) => playTone(n, 0.10, "square", 0.08, null, i * 0.07));
-    }
-
-    function sfxHop() {
-      playTone(240, 0.10, "square", 0.06, 520);
-    }
-
-    // Classic PAC-MAN descending death spiral
-    function sfxHit() {
-      const freqs = [520, 490, 460, 430, 400, 370, 340, 310, 280, 220, 140];
-      freqs.forEach((f, i) => {
-        playTone(f, 0.075, "sawtooth", 0.075, f * 0.85, i * 0.065);
-      });
-    }
-
-    // Stage Clear Fanfare
-    function sfxWin() {
-      const notes = [523, 659, 784, 1046, 784, 1046, 1318];
-      notes.forEach((n, i) => playTone(n, 0.11, "square", 0.08, null, i * 0.085));
     }
 
     // =========================================================================
-    //  MAZE TILE & TUNNEL HELPERS
+    //  MAZE & ENTITY INITIALIZATION
     // =========================================================================
-    function getLevelTheme() {
-      return LEVEL_THEMES[(currentLevel - 1) % LEVEL_THEMES.length];
-    }
-
     function wrapCol(c) {
       return ((c % COLS) + COLS) % COLS;
     }
@@ -872,239 +1377,284 @@
     }
 
     function isWalkableForPlayer(c, r) {
-      const t = getTile(c, r);
-      if (t === "#" || t === "D" || t === "G") return false;
+      const tile = getTile(c, r);
+      if (tile === "#" || tile === "D" || tile === "G") return false;
+      // Top Exit Door (E) never blocks movement; escaping occurs once unlocked
       return true;
     }
 
-    function isWalkableForGhost(c, r, allowHouse) {
-      const t = getTile(c, r);
-      if (t === "#") return false;
-      if ((t === "D" || t === "G") && !allowHouse) return false;
+    function isWalkableForGhost(c, r, allowHouse = false) {
+      const tile = getTile(c, r);
+      if (tile === "#") return false;
+      // Top Exit Door (E) never blocks ghosts either
+      if (!allowHouse && (tile === "D" || tile === "G")) return false;
       return true;
     }
 
-    function addScorePopup(x, y, text, color = "#45ba4b") {
-      scorePopups.push({ x, y, text, color, timer: 1.0 });
-    }
+    function resetPositionsAfterHit() {
+      player.x = player.spawnX;
+      player.y = player.spawnY;
+      player.dir = DIRS.RIGHT;
+      player.nextDir = DIRS.RIGHT;
+      player.facingAngle = 0;
+      player.z = 0;
+      player.vz = 0;
+      frightenedTimer = 0;
+      ghostEatCombo = 0;
 
-    // =========================================================================
-    //  INITIALIZATION & RESPONSIVE SIZING
-    // =========================================================================
-    function resizeCanvas() {
-      const maxWidth  = Math.min(window.innerWidth - 20, 660);
-      const maxHeight = Math.max(300, window.innerHeight - 230);
-      tileSize = Math.max(14, Math.floor(Math.min(maxWidth / COLS, maxHeight / ROWS)));
-      canvas.width  = COLS * tileSize;
-      canvas.height = ROWS * tileSize;
+      ghosts = [];
+      spawnTimer = 0;
+      spawnGhost(0, true);
+      spawnGhost(1, false);
+      spawnGhost(2, false);
+      spawnGhost(3, false);
 
-      // Keep top bar, HUD, and footer flush with the board width
-      if (arcadeShell) {
-        arcadeShell.style.maxWidth = `${canvas.width + 4}px`;
+      if (bossRival) {
+        bossRival.x = bossRival.spawnX;
+        bossRival.y = bossRival.spawnY;
+        bossRival.dir = DIRS.LEFT;
+        bossRival.facingAngle = Math.PI;
+        bossRival.stunTimer = 0;
       }
     }
 
-    function initLevel(resetFullRun = true) {
-      if (resetFullRun) {
+    function initLevel(keepScore = false) {
+      if (!keepScore) {
         score = 0;
-        isNewHighScore = false;
         currentLevel = 1;
         lives = STARTING_LIVES;
+        isNewHighScore = false;
       }
 
-      const blueprint = MAZE_LEVELS[(currentLevel - 1) % MAZE_LEVELS.length];
-      grid = blueprint.map(row => row.split(""));
+      const isBossStage = (currentLevel === MAX_LEVELS);
+      const blueprint = isBossStage
+        ? BOSS_ARENA_BLUEPRINT
+        : MAZE_LEVELS[(currentLevel - 1) % MAZE_LEVELS.length];
 
-      // Ensure open corners across every maze level (carves out any accidental dead-end)
-      for (let r = 1; r < ROWS - 1; r++) {
-        for (let c = 1; c < COLS - 1; c++) {
-          if (grid[r][c] !== "#" && grid[r][c] !== "G" && grid[r][c] !== "D") {
-            let openNeighbors = 0;
-            if (grid[r - 1][c] !== "#") openNeighbors++;
-            if (grid[r + 1][c] !== "#") openNeighbors++;
-            if (grid[r][c - 1] !== "#") openNeighbors++;
-            if (grid[r][c + 1] !== "#") openNeighbors++;
-            if (openNeighbors < 2) {
-              const candidates = [
-                [r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]
-              ].filter(([nr, nc]) => nr > 0 && nr < ROWS - 1 && nc > 0 && nc < COLS - 1 && grid[nr][nc] === "#");
-              if (candidates.length > 0) {
-                const [cr, cc] = candidates[0];
-                grid[cr][cc] = ".";
+      // Apply current level's maze color theme (Crimson Red theme on Level 18 Boss!)
+      const theme = isBossStage
+        ? { wallOutline: "#d52a3f", wallFill: "#21060b", name: "FINAL BOSS ARENA" }
+        : LEVEL_THEMES[(currentLevel - 1) % LEVEL_THEMES.length];
+      COLORS.wallOutline = theme.wallOutline;
+      COLORS.wallFill = theme.wallFill;
+
+      grid = blueprint.map(row => row.split(""));
+      dotsCollected = 0;
+      totalDots = 0;
+      keysCollected = 0;
+      exitUnlocked = false;
+      spawnTimer = 0;
+      modeTimer = 0;
+      scatterMode = true;
+      frightenedTimer = 0;
+      ghostEatCombo = 0;
+      floatingPopups = [];
+      clickMarker.alpha = 0;
+      ghostSpawnTiles = [];
+      bossRival = null;
+
+      let bossSpawn = { x: 18.5, y: 21.5 };
+
+      // Parse Maze Characters
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const ch = grid[r][c];
+          if (ch === "." || ch === "O") {
+            totalDots++;
+          } else if (ch === "P") {
+            player.spawnX = c + 0.5;
+            player.spawnY = r + 0.5;
+            grid[r][c] = " ";
+          } else if (ch === "B") {
+            bossSpawn = { x: c + 0.5, y: r + 0.5 };
+            grid[r][c] = " ";
+          } else if (ch === "G") {
+            ghostSpawnTiles.push({ c, r });
+          } else if (ch === "D") {
+            ghostDoorTile = { c, r };
+          }
+        }
+      }
+
+      // Open any accidental 1-exit dead-end pockets & keep paths around the Exit (E) and Ghost House completely unblocked
+      for (let pass = 0; pass < 4; pass++) {
+        for (let r = 1; r < ROWS - 1; r++) {
+          for (let c = 1; c < COLS - 1; c++) {
+            const ch = grid[r][c];
+            if (ch === "#" || ch === "G" || ch === "D") continue;
+
+            // Ensure the corridor tile directly below the top Exit (E) is always open
+            if (r === 1 && grid[0][c] === "E" && grid[1][c] === "#") {
+              grid[1][c] = ".";
+              totalDots++;
+            }
+
+            const dirs = [
+              { dc: 0, dr: -1 },
+              { dc: 0, dr: 1 },
+              { dc: -1, dr: 0 },
+              { dc: 1, dr: 0 }
+            ];
+            let openCount = 0;
+            for (const d of dirs) {
+              const adj = grid[r + d.dr][c + d.dc];
+              if (adj !== "#" && adj !== "G") openCount++;
+            }
+            if (openCount <= 1) {
+              for (const d of dirs) {
+                const nr = r + d.dr;
+                const nc = c + d.dc;
+                if (nr > 0 && nr < ROWS - 1 && nc > 0 && nc < COLS - 1 && grid[nr][nc] === "#") {
+                  grid[nr][nc] = ".";
+                  totalDots++;
+                  break;
+                }
               }
             }
           }
         }
       }
 
-      dotsCollected = 0;
-      totalDots = 0;
-      keysCollected = 0;
-      exitUnlocked = false;
-      frightenedTimer = 0;
-      ghostEatCombo = 0;
-      waveTimer = 0;
-      waveIndex = 0;
-      isScatterMode = true;
-      scorePopups = [];
-      ghosts = [];
-      ghostSpawnTimer = 0;
-      nextGhostTypeIndex = 0;
-      clickIndicator.timer = 0;
-
-      // Parse blueprint symbols
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const cell = grid[r][c];
-          if (cell === "." || cell === "O") {
-            totalDots++;
-          } else if (cell === "P") {
-            playerSpawn = { col: c, row: r };
-            grid[r][c] = " ";
-          } else if (cell === "E") {
-            exitTile = { col: c, row: r };
-          } else if (cell === "D") {
-            ghostSpawn = { col: c, row: r + 1 };
-          }
+      // Guarantee the corridor directly above the Ghost House Door (D) and Exit (E) are never blocked
+      for (let c = 0; c < COLS; c++) {
+        if (grid[0][c] === "E" && grid[1][c] === "#") {
+          grid[1][c] = ".";
+          totalDots++;
         }
       }
+      if (ghostDoorTile.r > 1 && grid[ghostDoorTile.r - 1][ghostDoorTile.c] === "#") {
+        grid[ghostDoorTile.r - 1][ghostDoorTile.c] = " ";
+      }
 
-      dotsRequired = Math.ceil(totalDots * REQUIRED_DOT_RATIO);
-      resetPositions();
+      if (isBossStage) {
+        bossRival = {
+          x: bossSpawn.x,
+          y: bossSpawn.y,
+          spawnX: bossSpawn.x,
+          spawnY: bossSpawn.y,
+          dir: DIRS.LEFT,
+          facingAngle: Math.PI,
+          dotsEaten: 0,
+          mouthPhase: 0,
+          stunTimer: 0
+        };
+      }
+
+      requiredDots = isBossStage ? totalDots : Math.ceil(totalDots * REQUIRED_DOT_RATIO);
+      resetPositionsAfterHit();
       updateHUD();
     }
 
-    function resetPositions() {
-      player.x = playerSpawn.col + 0.5;
-      player.y = playerSpawn.row + 0.5;
-      player.dir = DIRS.LEFT;
-      player.nextDir = DIRS.LEFT;
-      player.z = 0;
-      player.vz = 0;
-      player.facingAngle = Math.PI;
-
-      frightenedTimer = 0;
-      ghostEatCombo = 0;
-      ghosts = [];
-      nextGhostTypeIndex = 0;
-      spawnGhost(true);
-      spawnGhost(false);
-      ghostSpawnTimer = GHOST_SPAWN_RATE * 0.6;
-    }
-
-    function spawnGhost(outsideHouse = false) {
+    function spawnGhost(forceTypeIndex = null, startOutside = false) {
       if (ghosts.length >= MAX_GHOSTS) return;
-      const meta = GHOST_PALETTE[nextGhostTypeIndex % GHOST_PALETTE.length];
-      nextGhostTypeIndex++;
+      const typeIdx = forceTypeIndex !== null ? forceTypeIndex : (ghosts.length % GHOST_PALETTE.length);
+      const spec = GHOST_PALETTE[typeIdx];
+      const spawn = ghostSpawnTiles[Math.floor(Math.random() * ghostSpawnTiles.length)] || { c: 12, r: 9 };
 
-      const spawnX = ghostSpawn.col + 0.5;
-      const spawnY = outsideHouse ? (ghostSpawn.row - 1.5) : (ghostSpawn.row + 0.5);
+      const startX = startOutside ? ghostDoorTile.c + 0.5 : spawn.c + 0.5;
+      const startY = startOutside ? (ghostDoorTile.r - 1) + 0.5 : spawn.r + 0.5;
+      const startDir = startOutside ? (Math.random() < 0.5 ? DIRS.LEFT : DIRS.RIGHT) : DIRS.UP;
 
       ghosts.push({
-        x: spawnX,
-        y: spawnY,
-        dir: outsideHouse ? (Math.random() < 0.5 ? DIRS.LEFT : DIRS.RIGHT) : DIRS.UP,
-        color: meta.color,
-        name: meta.name,
-        aiType: meta.aiType,
-        inHouse: !outsideHouse,
+        x: startX,
+        y: startY,
+        dir: startDir,
+        name: spec.name,
+        color: spec.color,
+        aiType: spec.aiType,
+        inHouse: !startOutside,
         eaten: false
       });
     }
 
     // =========================================================================
-    //  HUD & OVERLAY MANAGEMENT
+    //  RESPONSIVE CANVAS SIZING (PIXEL-SNAPPED FOR CRISP 8-BIT ART)
     // =========================================================================
-    function updateHUD() {
-      scoreDisplay.textContent = score;
-      highScoreDisplay.textContent = highScore;
-      levelLabel.textContent = `Lvl ${currentLevel} // Lives`;
-      livesDisplay.textContent = "♥".repeat(Math.max(0, lives));
-      dotsDisplay.textContent = `${dotsCollected} / ${dotsRequired}`;
+    function resizeCanvas() {
+      const shellWidth = Math.min(window.innerWidth - 16, 680);
+      const availableHeight = window.innerHeight - 210;
+      const rawTile = Math.floor(Math.min(shellWidth / COLS, Math.max(220, availableHeight) / ROWS));
+      tileSize = Math.max(14, rawTile);
 
-      const pips = keysDisplay.querySelectorAll(".key-pip");
-      pips.forEach((pip, index) => {
-        if (index < keysCollected) {
-          pip.classList.add("collected");
-        } else {
-          pip.classList.remove("collected");
-        }
-      });
+      const boardPixelWidth = tileSize * COLS;
+      const boardPixelHeight = tileSize * ROWS;
 
-      if (exitUnlocked) {
-        exitBadge.textContent = "EXIT OPEN!";
-        exitBadge.className = "exit-badge unlocked";
+      canvas.width = boardPixelWidth;
+      canvas.height = boardPixelHeight;
+      canvas.style.width = `${boardPixelWidth}px`;
+      canvas.style.height = `${boardPixelHeight}px`;
+      scanlinePattern = null;
+      cachedMazeCanvas = null;
+      cachedMazeKey = "";
+
+      // Snap the HUD & Header width cleanly to the game board width on desktop
+      if (window.innerWidth > 560) {
+        arcadeShell.style.maxWidth = `${boardPixelWidth + 24}px`;
       } else {
-        exitBadge.textContent = "LOCKED";
-        exitBadge.className = "exit-badge locked";
+        arcadeShell.style.maxWidth = "100%";
       }
     }
 
-    function hideAllOverlays() {
-      pauseOverlay.classList.add("hidden");
-      gameOverOverlay.classList.add("hidden");
-      winOverlay.classList.add("hidden");
-    }
-
-    function startNewGame() {
-      ensureAudio();
-      sfxGameStart();
-      hideAllOverlays();
-      initLevel(true);
-      gameState = "READY";
-      stateBannerTimer = 1.65;
-    }
-
-    function advanceToNextLevel() {
-      currentLevel++;
-      sfxGameStart();
-      hideAllOverlays();
-      initLevel(false);
-      gameState = "READY";
-      stateBannerTimer = 1.65;
-    }
+    window.addEventListener("resize", resizeCanvas);
 
     // =========================================================================
-    //  TRUE ARCADE PAC-MAN MOVEMENT & CORNERING LOGIC
+    //  ARCADE PAC-MAN MOVEMENT, CORNERING & AUTO-RUN
     // =========================================================================
     function setPlayerDirection(dir) {
-      if (!dir || dir === DIRS.NONE) return;
       ensureAudio();
 
+      if (gameState === "DEMO") {
+        stopAttractDemoAndReturnToTitle();
+        return;
+      }
+
       if (gameState === "START") {
-        startNewGame();
-        player.nextDir = dir;
+        if (recordTitleCodeInput(dir.key)) {
+          return;
+        }
+        openColorSelect(1, dir);
         return;
       }
 
       if (gameState !== "PLAYING" && gameState !== "READY") return;
 
       player.nextDir = dir;
-      // If currently stationary against a wall, immediately launch if new direction is clear
-      if (player.dir === DIRS.NONE) {
-        const col = Math.floor(player.x);
-        const row = Math.floor(player.y);
-        if (isWalkableForPlayer(col + dir.x, row + dir.y)) {
-          player.dir = dir;
-          player.facingAngle = dir.angle;
-        }
+
+      // Instant 180-degree reversal in any corridor just like classic arcade Pac-Man
+      if (player.dir !== DIRS.NONE && dir.x === -player.dir.x && dir.y === -player.dir.y) {
+        player.dir = dir;
+        player.facingAngle = dir.angle;
       }
     }
 
     function triggerMiniHop() {
+      ensureAudio();
       if (gameState !== "PLAYING") return;
       if (player.z === 0) {
         player.vz = JUMP_FORCE;
-        sfxHop();
+        playSound("jump");
       }
     }
 
-    function isOppositeDir(d1, d2) {
-      return d1 !== DIRS.NONE && d2 !== DIRS.NONE && d1.x === -d2.x && d1.y === -d2.y;
+    function addScore(points) {
+      score += points;
+      if (score > highScore) {
+        highScore = score;
+        isNewHighScore = true;
+        try {
+          localStorage.setItem("pac_maze_high_score", String(highScore));
+        } catch (_) {}
+      }
+    }
+
+    function addPopup(x, y, text, color) {
+      floatingPopups.push({ x, y, text, color, timer: 0.95 });
     }
 
     function updatePlayer(dt) {
-      // Mini-hop vertical physics
+      player.mouthPhase += dt * 13;
+
+      // 1. Mini-hop vertical physics
       if (player.z > 0 || player.vz > 0) {
         player.z += player.vz * dt;
         player.vz -= GRAVITY * dt;
@@ -1114,46 +1664,49 @@
         }
       }
 
-      const col = Math.floor(player.x);
+      // 2. Current tile & offset from tile center (-0.5 to +0.5)
+      const col = wrapCol(Math.floor(player.x));
       const row = Math.floor(player.y);
-      const centerX = col + 0.5;
+      const centerX = Math.floor(player.x) + 0.5;
       const centerY = row + 0.5;
+      const offX = player.x - centerX;
+      const offY = player.y - centerY;
 
-      // 1. Instant 180-degree reversal in any corridor
-      if (player.nextDir !== DIRS.NONE && isOppositeDir(player.dir, player.nextDir)) {
-        player.dir = player.nextDir;
-        player.facingAngle = player.dir.angle;
-      }
-
-      // 2. Classic Arcade Pre-Turn & Intersection Cornering
+      // 3. Arcade Buffered Turn & Corner-Snapping
       if (player.nextDir !== DIRS.NONE && player.nextDir !== player.dir) {
         const targetCol = col + player.nextDir.x;
         const targetRow = row + player.nextDir.y;
 
         if (isWalkableForPlayer(targetCol, targetRow)) {
-          const distToCenter = Math.hypot(player.x - centerX, player.y - centerY);
-          if (distToCenter <= CORNER_SNAP_WINDOW) {
-            player.x = centerX;
-            player.y = centerY;
+          const isPerpendicular = (player.dir === DIRS.NONE) ||
+            (player.nextDir.x !== 0 && player.dir.y !== 0) ||
+            (player.nextDir.y !== 0 && player.dir.x !== 0);
+
+          if (isPerpendicular) {
+            const distFromCenter = Math.hypot(offX, offY);
+            if (distFromCenter <= CORNER_SNAP_WINDOW) {
+              player.x = centerX;
+              player.y = centerY;
+              player.dir = player.nextDir;
+              player.facingAngle = player.dir.angle;
+            }
+          } else {
             player.dir = player.nextDir;
             player.facingAngle = player.dir.angle;
           }
         }
       }
 
-      // 3. Continuous Arcade Movement & Exact Wall Stopping
+      // 4. Advance Automatically Along Current Direction
       if (player.dir !== DIRS.NONE) {
-        const moveDist = PLAYER_SPEED * dt;
-        let nextX = player.x + player.dir.x * moveDist;
-        let nextY = player.y + player.dir.y * moveDist;
-
-        // Horizontal side warp tunnel wrap (Row 11)
-        if (nextX < 0) nextX += COLS;
-        if (nextX >= COLS) nextX -= COLS;
+        const step = PLAYER_SPEED * dt;
+        let nextX = player.x + player.dir.x * step;
+        let nextY = player.y + player.dir.y * step;
 
         const aheadCol = col + player.dir.x;
         const aheadRow = row + player.dir.y;
 
+        // If wall is directly ahead, stop cleanly at exact tile center
         if (!isWalkableForPlayer(aheadCol, aheadRow)) {
           if (player.dir.x > 0 && nextX > centerX) {
             nextX = centerX;
@@ -1170,878 +1723,1342 @@
           }
         }
 
+        // Wrap smoothly through side warp tunnels
+        if (nextX < 0) nextX += COLS;
+        if (nextX >= COLS) nextX -= COLS;
+
         player.x = nextX;
         player.y = nextY;
       }
 
-      // Animate Pac-Man chomp only when moving
-      if (player.dir !== DIRS.NONE) {
-        player.mouthPhase += dt * 15;
-      } else {
-        player.mouthPhase = 0.6;
-      }
-
-      // 4. Tile Pickups (Dots, Big Power Pellets, Keys, and Unlocked Exit)
+      // 5. Check Tile Pickups & Exit Escape
       const pCol = wrapCol(Math.floor(player.x));
       const pRow = Math.floor(player.y);
-      const tile = grid[pRow]?.[pCol];
+      const currentTile = getTile(pCol, pRow);
 
-      if (tile === ".") {
+      if (currentTile === ".") {
         grid[pRow][pCol] = " ";
         dotsCollected++;
         addScore(DOT_SCORE);
-        sfxDot();
-        checkUnlockCondition();
+        playSound("dot");
+        checkExitUnlock();
         updateHUD();
-      } else if (tile === "O") {
+        if (currentLevel === MAX_LEVELS && dotsCollected >= totalDots) {
+          finishBossFight();
+          return;
+        }
+      } else if (currentTile === "O") {
+        // Big Power Pellet! Turns all active ghosts blue & edible!
         grid[pRow][pCol] = " ";
         dotsCollected++;
         addScore(POWER_PELLET_SCORE);
         frightenedTimer = POWER_PELLET_DURATION;
         ghostEatCombo = 0;
 
-        // Reverse all active ghosts immediately when a Big Pellet is eaten (classic arcade behavior!)
-        ghosts.forEach(g => {
-          if (!g.eaten && !g.inHouse && g.dir !== DIRS.NONE) {
-            const rev = [DIRS.UP, DIRS.DOWN, DIRS.LEFT, DIRS.RIGHT].find(
-              d => d.x === -g.dir.x && d.y === -g.dir.y
-            );
-            if (rev && isWalkableForGhost(Math.floor(g.x) + rev.x, Math.floor(g.y) + rev.y, false)) {
-              g.dir = rev;
-            }
+        // Immediately reverse all active outside ghosts like the arcade game
+        for (const g of ghosts) {
+          if (!g.inHouse && !g.eaten) {
+            g.dir = getOppositeDir(g.dir);
           }
-        });
+        }
 
-        sfxPowerPellet();
-        addScorePopup(player.x, player.y - 0.5, "POWER!", "#ffffff");
-        checkUnlockCondition();
+        if (currentLevel === MAX_LEVELS && bossRival) {
+          // Bonus +5 dot boost in the Level 18 Boss Fight!
+          dotsCollected += 5;
+          bossRival.stunTimer = 3.0;
+          addPopup(player.x, player.y - 0.5, "+5 DOTS!", "#45ba4b");
+        } else {
+          addPopup(player.x, player.y - 0.5, "POWER!", "#29d8ff");
+        }
+        playSound("power");
+        checkExitUnlock();
         updateHUD();
-      } else if (tile === "K") {
+        if (currentLevel === MAX_LEVELS && dotsCollected >= totalDots) {
+          finishBossFight();
+          return;
+        }
+      } else if (currentTile === "K") {
         grid[pRow][pCol] = " ";
         keysCollected++;
         addScore(KEY_SCORE);
-        sfxKey();
-        addScorePopup(player.x, player.y - 0.5, `+${KEY_SCORE}`, "#45ba4b");
-        checkUnlockCondition();
+        addPopup(player.x, player.y - 0.5, "+250 KEY", "#45ba4b");
+        playSound("key");
+        checkExitUnlock();
         updateHUD();
-      } else if (tile === "E" && exitUnlocked) {
+      } else if (currentTile === "E" && exitUnlocked && currentLevel < MAX_LEVELS) {
+        // Level Cleared! Advance to next maze & new color theme!
         addScore(ESCAPE_BONUS);
-        sfxWin();
-        updateHUD();
-        addScorePopup(player.x, player.y + 0.5, `CLEAR +${ESCAPE_BONUS}!`, "#45ba4b");
-        advanceToNextLevel();
+        playSound("win");
+        const clearedLvl = currentLevel;
+        const themeName = LEVEL_THEMES[(clearedLvl - 1) % LEVEL_THEMES.length].name;
+        addPopup(player.x, player.y + 0.8, `LVL ${clearedLvl} CLEAR! +${ESCAPE_BONUS}`, "#45ba4b");
+
+        currentLevel++;
+        initLevel(true);
+        if (currentLevel === MAX_LEVELS) {
+          gameState = "TUTORIAL";
+          bossTutorialOverlay.classList.remove("hidden");
+        } else {
+          gameState = "READY";
+          stateTimer = 1.6;
+          addPopup(player.x, player.y - 0.8, `${themeName} -> LVL ${currentLevel}`, "#ffffff");
+        }
         return;
       }
-    }
 
-    function checkUnlockCondition() {
-      if (!exitUnlocked && keysCollected >= TOTAL_KEYS_NEEDED && dotsCollected >= dotsRequired) {
-        exitUnlocked = true;
-        sfxUnlock();
-      }
-    }
+      // 6. Check Ghost Collisions (Eat Frightened Ghosts OR Lose a Life)
+      for (const ghost of ghosts) {
+        if (ghost.eaten) continue;
 
-    // =========================================================================
-    //  AUTHENTIC ARCADE GHOST AI (Blinky, Pinky, Inky, Clyde + Frightened + Eyes)
-    // =========================================================================
-    function getGhostTargetTile(g) {
-      const pCol = Math.floor(player.x);
-      const pRow = Math.floor(player.y);
-
-      // Eaten eyes race straight back into the Ghost House
-      if (g.eaten) {
-        return { col: ghostSpawn.col, row: ghostSpawn.row };
-      }
-
-      // Scatter mode sends each ghost to its signature arcade corner
-      if (isScatterMode) {
-        if (g.aiType === 0) return { col: COLS - 2, row: 1 };        // Blinky: Top-Right
-        if (g.aiType === 1) return { col: 1,        row: 1 };        // Pinky: Top-Left
-        if (g.aiType === 2) return { col: COLS - 2, row: ROWS - 2 }; // Inky: Bottom-Right
-        return { col: 1, row: ROWS - 2 };                            // Clyde: Bottom-Left
-      }
-
-      // Chase mode per classic arcade ghost personality
-      if (g.aiType === 0) {
-        // BLINKY: Targets Pac-Man's exact tile
-        return { col: pCol, row: pRow };
-      }
-      if (g.aiType === 1) {
-        // PINKY: Targets 4 tiles ahead of Pac-Man's heading
-        return {
-          col: pCol + player.dir.x * 4,
-          row: pRow + player.dir.y * 4
-        };
-      }
-      if (g.aiType === 2) {
-        // INKY: Vectors from Blinky through 2 tiles ahead of Pac-Man
-        const blinky = ghosts.find(other => other.aiType === 0) || g;
-        const pivotC = pCol + player.dir.x * 2;
-        const pivotR = pRow + player.dir.y * 2;
-        return {
-          col: pivotC + (pivotC - Math.floor(blinky.x)),
-          row: pivotR + (pivotR - Math.floor(blinky.y))
-        };
-      }
-      // CLYDE: Chases when > 8 tiles away, retreats to bottom-left corner when close
-      const dist = Math.hypot(g.x - player.x, g.y - player.y);
-      if (dist > 8) {
-        return { col: pCol, row: pRow };
-      }
-      return { col: 1, row: ROWS - 2 };
-    }
-
-    function updateGhosts(dt) {
-      // Handle frightened mode countdown
-      if (frightenedTimer > 0) {
-        frightenedTimer = Math.max(0, frightenedTimer - dt);
-        if (frightenedTimer === 0) {
-          ghostEatCombo = 0;
-        }
-      } else {
-        // Advance classic Scatter / Chase wave timer
-        waveTimer += dt;
-        if (waveTimer >= WAVE_DURATIONS[waveIndex]) {
-          waveTimer = 0;
-          waveIndex = Math.min(WAVE_DURATIONS.length - 1, waveIndex + 1);
-          isScatterMode = (waveIndex % 2 === 0);
-        }
-      }
-
-      // Spawn additional colored ghosts over time up to MAX_GHOSTS
-      if (ghosts.length < MAX_GHOSTS) {
-        ghostSpawnTimer += dt;
-        if (ghostSpawnTimer >= GHOST_SPAWN_RATE) {
-          ghostSpawnTimer = 0;
-          spawnGhost(false);
-        }
-      }
-
-      const levelSpeedBonus = (currentLevel - 1) * 0.25;
-      const allDirs = [DIRS.UP, DIRS.LEFT, DIRS.DOWN, DIRS.RIGHT];
-
-      for (let i = 0; i < ghosts.length; i++) {
-        const g = ghosts[i];
-        const col = Math.floor(g.x);
-        const row = Math.floor(g.y);
-        const centerX = col + 0.5;
-        const centerY = row + 0.5;
-
-        // Ghost exiting the central Ghost House
-        if (g.inHouse) {
-          const exitX = ghostSpawn.col + 0.5;
-          const targetY = ghostSpawn.row - 1.5;
-
-          if (Math.abs(g.x - exitX) > 0.08) {
-            g.x += Math.sign(exitX - g.x) * (GHOST_SPEED + levelSpeedBonus) * dt;
-          } else {
-            g.x = exitX;
-            g.dir = DIRS.UP;
-            g.y -= (GHOST_SPEED + levelSpeedBonus) * dt;
-            if (g.y <= targetY) {
-              g.y = targetY;
-              g.inHouse = false;
-              g.dir = Math.random() < 0.5 ? DIRS.LEFT : DIRS.RIGHT;
-            }
-          }
-          continue;
-        }
-
-        // Eaten eyes reaching the Ghost House respawn immediately
-        if (g.eaten && Math.hypot(g.x - (ghostSpawn.col + 0.5), g.y - (ghostSpawn.row + 0.5)) < 0.45) {
-          g.eaten = false;
-          g.inHouse = true;
-          g.x = ghostSpawn.col + 0.5;
-          g.y = ghostSpawn.row + 0.5;
-          continue;
-        }
-
-        const speed = g.eaten
-          ? EATEN_GHOST_SPEED
-          : (frightenedTimer > 0 ? FRIGHTENED_GHOST_SPEED : (GHOST_SPEED + levelSpeedBonus));
-        const distToCenter = Math.hypot(g.x - centerX, g.y - centerY);
-
-        // Choose best direction at tile intersections
-        if (distToCenter < speed * dt * 1.15) {
-          const validDirs = allDirs.filter(d => {
-            if (d.x === -g.dir.x && d.y === -g.dir.y) return false;
-            return isWalkableForGhost(col + d.x, row + d.y, g.eaten);
-          });
-
-          let chosenDir = g.dir;
-
-          if (validDirs.length > 0) {
-            if (frightenedTimer > 0 && !g.eaten) {
-              // Frightened blue ghosts wander unpredictably away from Pac-Man
-              chosenDir = validDirs[Math.floor(Math.random() * validDirs.length)];
-            } else {
-              const target = getGhostTargetTile(g);
-              let bestDist = Infinity;
-              for (const d of validDirs) {
-                const dist = Math.hypot((col + d.x) - target.col, (row + d.y) - target.row);
-                if (dist < bestDist) {
-                  bestDist = dist;
-                  chosenDir = d;
-                }
-              }
-            }
-          } else {
-            const reverse = allDirs.find(d => d.x === -g.dir.x && d.y === -g.dir.y);
-            if (reverse && isWalkableForGhost(col + reverse.x, row + reverse.y, g.eaten)) {
-              chosenDir = reverse;
-            }
-          }
-
-          if (chosenDir !== g.dir) {
-            g.x = centerX;
-            g.y = centerY;
-            g.dir = chosenDir;
-          }
-        }
-
-        g.x += g.dir.x * speed * dt;
-        g.y += g.dir.y * speed * dt;
-        if (g.x < 0) g.x += COLS;
-        if (g.x >= COLS) g.x -= COLS;
-
-        // Player vs Ghost collision check
-        const hitDist = Math.hypot(g.x - player.x, g.y - player.y);
-        if (hitDist < 0.62 && player.z < 0.45 && !g.eaten) {
-          if (frightenedTimer > 0) {
-            // Eat frightened ghost for escalating arcade combo points!
-            g.eaten = true;
-            const comboPoints = 200 * Math.pow(2, Math.min(3, ghostEatCombo));
-            ghostEatCombo++;
-            addScore(comboPoints);
-            sfxEatGhost();
-            addScorePopup(g.x, g.y - 0.3, `+${comboPoints}`, "#29d8ff");
+        const dist = Math.hypot(player.x - ghost.x, player.y - ghost.y);
+        if (dist < 0.62 && player.z < 0.45) {
+          if (frightenedTimer > 0 && !ghost.inHouse) {
+            // Chomp blue ghost for 200 -> 400 -> 800 -> 1600 arcade combo points!
+            ghost.eaten = true;
+            ghostEatCombo = Math.min(4, ghostEatCombo + 1);
+            const pts = 200 * Math.pow(2, ghostEatCombo - 1);
+            addScore(pts);
+            addPopup(ghost.x, ghost.y - 0.4, `+${pts}`, "#29d8ff");
+            playSound("eatGhost");
             updateHUD();
-          } else {
-            handlePlayerHit();
+          } else if (!ghost.inHouse) {
+            if (gameState === "DEMO") {
+              resetPositionsAfterHit();
+              return;
+            }
+            // Caught by an active ghost -> Lose 1 Life
+            lives--;
+            updateHUD();
+            playSound("hit");
+            gameState = "DYING";
+            stateTimer = 1.15;
             return;
           }
         }
       }
     }
 
-    function handlePlayerHit() {
-      sfxHit();
-      lives--;
-      updateHUD();
-      gameState = "DYING";
-      deathAnimTimer = 1.05;
+    function checkExitUnlock() {
+      if (currentLevel === MAX_LEVELS) return;
+      if (!exitUnlocked && keysCollected >= TOTAL_KEYS_NEEDED && dotsCollected >= requiredDots) {
+        exitUnlocked = true;
+        playSound("unlock");
+      }
     }
 
     // =========================================================================
-    //  8-BIT ARCADE PIXEL-ART CANVAS RENDERER
+    //  ARCADE GHOST AI (SCATTER, CHASE, FRIGHTENED & EYE-RETURN BEHAVIORS)
     // =========================================================================
-    function draw8BitRect(x, y, w, h, color) {
-      ctx.fillStyle = color;
-      ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+    function getOppositeDir(dir) {
+      if (dir === DIRS.UP) return DIRS.DOWN;
+      if (dir === DIRS.DOWN) return DIRS.UP;
+      if (dir === DIRS.LEFT) return DIRS.RIGHT;
+      if (dir === DIRS.RIGHT) return DIRS.LEFT;
+      return DIRS.NONE;
     }
 
-    function drawMaze() {
-      const p = Math.max(2, Math.floor(tileSize / 12)); // 8-bit pixel unit
-      const theme = getLevelTheme();
+    function getArcadeGhostTarget(ghost) {
+      // Eaten ghost eyes sprint directly back to their Ghost House spawner tile
+      if (ghost.eaten) {
+        const home = ghostSpawnTiles[ghost.aiType % Math.max(1, ghostSpawnTiles.length)] || { c: 12, r: 9 };
+        return { x: home.c + 0.5, y: home.r + 0.5 };
+      }
 
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const cell = grid[r][c];
-          const x = c * tileSize;
-          const y = r * tileSize;
+      // Scatter Mode: Each ghost patrols its signature arcade corner
+      if (scatterMode) {
+        switch (ghost.aiType) {
+          case 0: return { x: COLS - 2, y: 1 };        // Blinky -> Top-Right
+          case 1: return { x: 2, y: 1 };               // Pinky  -> Top-Left
+          case 2: return { x: COLS - 2, y: ROWS - 2 }; // Inky   -> Bottom-Right
+          case 3: return { x: 2, y: ROWS - 2 };        // Clyde  -> Bottom-Left
+        }
+      }
 
-          if (cell === "#") {
-            const topWall    = r > 0 && grid[r - 1][c] === "#";
-            const bottomWall = r < ROWS - 1 && grid[r + 1][c] === "#";
-            const leftWall   = c > 0 && grid[r][c - 1] === "#";
-            const rightWall  = c < COLS - 1 && grid[r][c + 1] === "#";
+      // Chase Mode: Authentic Arcade Personality Targeting
+      switch (ghost.aiType) {
+        case 0: // BLINKY (Red): Targets Pac-Man's exact tile
+          return { x: player.x, y: player.y };
 
-            const inset = p * 2;
-            const bx = leftWall ? x : x + inset;
-            const by = topWall ? y : y + inset;
-            const bw = (rightWall ? x + tileSize : x + tileSize - inset) - bx;
-            const bh = (bottomWall ? y + tileSize : y + tileSize - inset) - by;
+        case 1: // PINKY (Pink): Targets 4 tiles ahead of Pac-Man to ambush
+          return {
+            x: player.x + player.dir.x * 4,
+            y: player.y + player.dir.y * 4
+          };
 
-            draw8BitRect(bx, by, bw, bh, theme.wallFill);
+        case 2: { // INKY (Cyan): Uses Blinky's vector + 2 tiles ahead of Pac-Man
+          const aheadX = player.x + player.dir.x * 2;
+          const aheadY = player.y + player.dir.y * 2;
+          const blinky = ghosts.find(g => g.aiType === 0) || ghost;
+          return {
+            x: aheadX + (aheadX - blinky.x),
+            y: aheadY + (aheadY - blinky.y)
+          };
+        }
 
-            ctx.fillStyle = theme.wallOutline;
-            if (!topWall)    draw8BitRect(bx, by, bw, p, theme.wallOutline);
-            if (!bottomWall) draw8BitRect(bx, by + bh - p, bw, p, theme.wallOutline);
-            if (!leftWall)   draw8BitRect(bx, by, p, bh, theme.wallOutline);
-            if (!rightWall)  draw8BitRect(bx + bw - p, by, p, bh, theme.wallOutline);
-          } else if (cell === ".") {
-            const dotSize = Math.max(3, p * 2);
-            draw8BitRect(
-              x + (tileSize - dotSize) / 2,
-              y + (tileSize - dotSize) / 2,
-              dotSize,
-              dotSize,
-              COLORS.dot
-            );
-          } else if (cell === "O") {
-            // Classic flashing 8-bit Big Power Pellet
-            const blink = Math.floor(pulseTimer * 6) % 2 === 0;
-            if (blink) {
-              const bigSize = Math.max(8, p * 5);
-              const bx = x + (tileSize - bigSize) / 2;
-              const by = y + (tileSize - bigSize) / 2;
-              draw8BitRect(bx + p, by, bigSize - p * 2, bigSize, COLORS.powerPellet);
-              draw8BitRect(bx, by + p, bigSize, bigSize - p * 2, COLORS.powerPellet);
+        case 3: { // CLYDE (Orange): Chases when > 8 tiles away, retreats when close
+          const dist = Math.hypot(player.x - ghost.x, player.y - ghost.y);
+          if (dist > 8) {
+            return { x: player.x, y: player.y };
+          }
+          return { x: 2, y: ROWS - 2 };
+        }
+
+        default:
+          return { x: player.x, y: player.y };
+      }
+    }
+
+    function updateGhosts(dt) {
+      // Update Frightened (Blue Ghost) timer
+      if (frightenedTimer > 0) {
+        frightenedTimer = Math.max(0, frightenedTimer - dt);
+        if (frightenedTimer === 0) {
+          ghostEatCombo = 0;
+        }
+      } else {
+        // Alternate Arcade Scatter (7s) and Chase (18s) waves
+        modeTimer += dt;
+        const cycleDuration = scatterMode ? 7.0 : 18.0;
+        if (modeTimer >= cycleDuration) {
+          modeTimer = 0;
+          scatterMode = !scatterMode;
+          for (const g of ghosts) {
+            if (!g.inHouse && !g.eaten) {
+              g.dir = getOppositeDir(g.dir);
             }
-          } else if (cell === "K") {
-            draw8BitKey(x + tileSize / 2, y + tileSize / 2, tileSize * 0.42);
-          } else if (cell === "D") {
-            draw8BitRect(x, y + tileSize * 0.42, tileSize, p * 2, COLORS.ghostDoor);
-          } else if (cell === "E") {
-            draw8BitExitGate(x, y, tileSize);
           }
         }
       }
-    }
 
-    function draw8BitKey(cx, cy, size) {
-      const p = Math.max(2, Math.floor(size / 5));
-      const bob = Math.floor(Math.sin(pulseTimer * 5) * p);
-      const x = cx - p * 4;
-      const y = cy - p * 2 + bob;
+      // Spawn additional colored ghosts up to MAX_GHOSTS
+      spawnTimer += dt;
+      if (spawnTimer >= GHOST_SPAWN_RATE && ghosts.length < MAX_GHOSTS) {
+        spawnTimer = 0;
+        spawnGhost();
+      }
 
-      draw8BitRect(x, y, p * 3, p, COLORS.green);
-      draw8BitRect(x, y + p, p, p * 2, COLORS.green);
-      draw8BitRect(x + p * 2, y + p, p, p * 2, COLORS.green);
-      draw8BitRect(x, y + p * 3, p * 3, p, COLORS.green);
-      draw8BitRect(x + p * 3, y + p, p * 5, p * 2, COLORS.green);
-      draw8BitRect(x + p * 5, y + p * 3, p, p * 2, COLORS.green);
-      draw8BitRect(x + p * 7, y + p * 3, p, p * 2, COLORS.green);
-    }
+      const allDirs = [DIRS.UP, DIRS.LEFT, DIRS.DOWN, DIRS.RIGHT];
 
-    function draw8BitExitGate(x, y, size) {
-      const p = Math.max(2, Math.floor(size / 12));
-      const gateColor = exitUnlocked ? COLORS.green : COLORS.red;
+      for (const ghost of ghosts) {
+        const col = wrapCol(Math.floor(ghost.x));
+        const row = Math.floor(ghost.y);
+        const centerX = Math.floor(ghost.x) + 0.5;
+        const centerY = row + 0.5;
 
-      draw8BitRect(x + p, y + p, size - p * 2, size - p * 2, "#000000");
-      draw8BitRect(x + p, y + p, size - p * 2, p * 2, gateColor);
-      draw8BitRect(x + p, y + size - p * 3, size - p * 2, p * 2, gateColor);
+        // 1. Exiting the central Ghost House
+        if (ghost.inHouse) {
+          const exitX = ghostDoorTile.c + 0.5;
+          const exitY = (ghostDoorTile.r - 1) + 0.5;
+          const stepOut = GHOST_SPEED * 0.78 * dt;
 
-      if (!exitUnlocked) {
-        const bars = 3;
-        for (let i = 0; i < bars; i++) {
-          const bx = x + p * 2 + i * Math.floor((size - p * 4) / bars);
-          draw8BitRect(bx, y + p, p * 2, size - p * 2, COLORS.red);
+          if (Math.abs(ghost.x - exitX) > stepOut) {
+            ghost.x += Math.sign(exitX - ghost.x) * stepOut;
+            ghost.dir = exitX > ghost.x ? DIRS.RIGHT : DIRS.LEFT;
+          } else {
+            ghost.x = exitX;
+            ghost.y -= stepOut;
+            ghost.dir = DIRS.UP;
+            if (ghost.y <= exitY) {
+              ghost.y = exitY;
+              ghost.inHouse = false;
+              ghost.dir = Math.random() < 0.5 ? DIRS.LEFT : DIRS.RIGHT;
+            }
+          }
+          continue;
         }
-      } else {
-        const blink = Math.floor(pulseTimer * 6) % 2 === 0;
-        if (blink) {
-          draw8BitRect(x + size * 0.35, y + size * 0.28, size * 0.3, size * 0.44, COLORS.green);
+
+        // 2. Eaten Ghost Eyes returning inside the Ghost House spawner to regenerate
+        if (ghost.eaten) {
+          const home = ghostSpawnTiles[ghost.aiType % Math.max(1, ghostSpawnTiles.length)] || { c: 12, r: 9 };
+          const homeX = home.c + 0.5;
+          const homeY = home.r + 0.5;
+          const curTile = getTile(col, row);
+
+          if (curTile === "G" || Math.hypot(ghost.x - homeX, ghost.y - homeY) < 0.55) {
+            ghost.eaten = false;
+            ghost.inHouse = true;
+            ghost.x = homeX;
+            ghost.y = homeY;
+            ghost.dir = DIRS.UP;
+            continue;
+          }
+
+          // Smooth grid-stepped return pathfinding so fast eyes never overshoot or freeze at intersections
+          const eyeStep = EATEN_GHOST_SPEED * dt;
+          const distToCenter = Math.hypot(ghost.x - centerX, ghost.y - centerY);
+          const opposite = getOppositeDir(ghost.dir);
+
+          if (distToCenter <= eyeStep || ghost.dir === DIRS.NONE || !isWalkableForGhost(col + ghost.dir.x, row + ghost.dir.y, true)) {
+            ghost.x = centerX;
+            ghost.y = centerY;
+
+            // Aim at the Ghost House door entrance first, then straight into the spawner box
+            const doorEntranceY = (ghostDoorTile.r - 1) + 0.5;
+            const target = (ghost.y < doorEntranceY - 0.1 || Math.abs(ghost.x - (ghostDoorTile.c + 0.5)) > 0.6)
+              ? { x: ghostDoorTile.c + 0.5, y: doorEntranceY }
+              : { x: homeX, y: homeY };
+
+            const validDirs = allDirs.filter(d => d !== opposite && isWalkableForGhost(col + d.x, row + d.y, true));
+            const choices = validDirs.length > 0
+              ? validDirs
+              : allDirs.filter(d => isWalkableForGhost(col + d.x, row + d.y, true));
+
+            if (choices.length > 0) {
+              let bestDir = choices[0];
+              let bestDist = Infinity;
+              for (const d of choices) {
+                const dist = Math.hypot((col + d.x + 0.5) - target.x, (row + d.y + 0.5) - target.y);
+                if (dist < bestDist) {
+                  bestDist = dist;
+                  bestDir = d;
+                }
+              }
+              ghost.dir = bestDir;
+            }
+          }
+
+          ghost.x += ghost.dir.x * eyeStep;
+          ghost.y += ghost.dir.y * eyeStep;
+          if (ghost.dir.x !== 0) ghost.y = centerY;
+          if (ghost.dir.y !== 0) ghost.x = centerX;
+          if (ghost.x < 0) ghost.x += COLS;
+          if (ghost.x >= COLS) ghost.x -= COLS;
+          continue;
         }
+
+        // Determine speed based on Ghost State & Level Progression
+        const levelSpeedBonus = Math.min(1.35, 1 + (currentLevel - 1) * 0.05);
+        const activeSpeed = (frightenedTimer > 0 ? FRIGHTENED_GHOST_SPEED : GHOST_SPEED) * levelSpeedBonus;
+
+        const step = activeSpeed * dt;
+        const distToCenter = Math.hypot(ghost.x - centerX, ghost.y - centerY);
+        const aheadBlocked = !isWalkableForGhost(col + ghost.dir.x, row + ghost.dir.y, false);
+
+        // Make turn decisions cleanly at tile centers OR immediately if blocked/stationary
+        if (distToCenter <= step * 0.95 || aheadBlocked || ghost.dir === DIRS.NONE) {
+          if (distToCenter <= step * 0.95) {
+            ghost.x = centerX;
+            ghost.y = centerY;
+          }
+
+          const opposite = getOppositeDir(ghost.dir);
+          const validDirs = allDirs.filter(d => {
+            if (d === opposite) return false;
+            return isWalkableForGhost(col + d.x, row + d.y, false);
+          });
+
+          const choices = validDirs.length > 0
+            ? validDirs
+            : allDirs.filter(d => isWalkableForGhost(col + d.x, row + d.y, false));
+
+          if (choices.length > 0) {
+            if (frightenedTimer > 0) {
+              // Frightened blue ghosts pick random intersections
+              ghost.dir = choices[Math.floor(Math.random() * choices.length)];
+            } else {
+              // Choose direction minimizing distance to target tile (arcade style)
+              const target = getArcadeGhostTarget(ghost);
+              let bestDir = choices[0];
+              let bestDist = Infinity;
+
+              for (const d of choices) {
+                const dist = Math.hypot((col + d.x + 0.5) - target.x, (row + d.y + 0.5) - target.y);
+                if (dist < bestDist) {
+                  bestDist = dist;
+                  bestDir = d;
+                }
+              }
+              ghost.dir = bestDir;
+            }
+          } else {
+            ghost.x = centerX;
+            ghost.y = centerY;
+          }
+        }
+
+        // Prevent wall clipping while moving; if blocked mid-tile, snap to center so it can turn immediately
+        let moveX = ghost.dir.x * step;
+        let moveY = ghost.dir.y * step;
+        if (!isWalkableForGhost(col + ghost.dir.x, row + ghost.dir.y, false)) {
+          if (ghost.dir.x > 0 && ghost.x + moveX > centerX) moveX = centerX - ghost.x;
+          if (ghost.dir.x < 0 && ghost.x + moveX < centerX) moveX = centerX - ghost.x;
+          if (ghost.dir.y > 0 && ghost.y + moveY > centerY) moveY = centerY - ghost.y;
+          if (ghost.dir.y < 0 && ghost.y + moveY < centerY) moveY = centerY - ghost.y;
+        }
+
+        ghost.x += moveX;
+        ghost.y += moveY;
+
+        // Keep ghosts locked smoothly to the exact centerline of their corridor lane
+        if (ghost.dir.x !== 0) {
+          ghost.y += (centerY - ghost.y) * Math.min(1, dt * 24);
+          if (Math.abs(centerY - ghost.y) < 0.02) ghost.y = centerY;
+        } else if (ghost.dir.y !== 0) {
+          ghost.x += (centerX - ghost.x) * Math.min(1, dt * 24);
+          if (Math.abs(centerX - ghost.x) < 0.02) ghost.x = centerX;
+        }
+
+        // Wrap ghosts smoothly through side tunnels
+        if (ghost.x < 0) ghost.x += COLS;
+        if (ghost.x >= COLS) ghost.x -= COLS;
       }
     }
 
-    // 8-Bit Pixel-Art Pac-Man Sprite (with classic arcade death collapse!)
-    function drawPlayer() {
-      const cx = player.x * tileSize;
-      const cy = player.y * tileSize - player.z * (tileSize * 0.45);
-      const r  = Math.floor(tileSize * 0.42);
-      const p  = Math.max(2, Math.floor(r / 5));
+    // =========================================================================
+    //  ATTRACT-MODE DEMO AI & LEVEL 18 RED PAC BOSS FIGHT
+    // =========================================================================
+    function startAttractDemo() {
+      titleCodeBuffer = [];
+      demoTimer = DEMO_PLAY_DURATION;
+      initLevel(false);
+      gameState = "DEMO";
+      hideAllOverlays();
+    }
 
-      if (player.z > 0.02) {
-        draw8BitRect(cx - r * 0.6, player.y * tileSize + r * 0.55, r * 1.2, p, "rgba(69, 186, 75, 0.7)");
+    function stopAttractDemoAndReturnToTitle() {
+      demoTimer = 0;
+      titleAnimTime = 0;
+      gameState = "START";
+      hideAllOverlays();
+      updateHUD();
+    }
+
+    function updateDemoAI() {
+      const col = wrapCol(Math.floor(player.x));
+      const row = Math.floor(player.y);
+      const centerX = Math.floor(player.x) + 0.5;
+      const centerY = row + 0.5;
+
+      // Only decide at tile intersections or if blocked
+      const aheadBlocked = !isWalkableForPlayer(col + player.dir.x, row + player.dir.y);
+      if (Math.hypot(player.x - centerX, player.y - centerY) > 0.16 && !aheadBlocked) return;
+
+      const allDirs = [DIRS.UP, DIRS.LEFT, DIRS.DOWN, DIRS.RIGHT];
+      const opposite = getOppositeDir(player.dir);
+      let choices = allDirs.filter(d => d !== opposite && isWalkableForPlayer(col + d.x, row + d.y));
+      if (choices.length === 0) {
+        choices = allDirs.filter(d => isWalkableForPlayer(col + d.x, row + d.y));
+      }
+      if (choices.length === 0) return;
+
+      // Find closest dot, power pellet, or key
+      let target = { x: 12.5, y: 11.5 };
+      let nearest = Infinity;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const ch = grid[r][c];
+          if (ch === "." || ch === "O" || ch === "K") {
+            const d = Math.hypot((c + 0.5) - player.x, (r + 0.5) - player.y);
+            if (d < nearest) {
+              nearest = d;
+              target = { x: c + 0.5, y: r + 0.5 };
+            }
+          }
+        }
       }
 
-      if (gameState === "DYING") {
-        // Arcade spinning / shrinking collapse animation
-        const progress = Math.max(0, 1 - deathAnimTimer / 1.05);
-        const shrink = Math.max(0, 1 - progress);
-        if (shrink > 0.1) {
-          ctx.save();
-          ctx.translate(cx, cy);
-          ctx.rotate(progress * Math.PI * 5);
-          const sr = r * shrink;
-          draw8BitRect(-sr * 0.7, -sr * 0.7, sr * 1.4, sr * 1.4, COLORS.player);
-          ctx.restore();
+      let bestDir = choices[0];
+      let bestScore = -Infinity;
+      for (const d of choices) {
+        const nx = col + d.x + 0.5;
+        const ny = row + d.y + 0.5;
+        let evalScore = -Math.hypot(nx - target.x, ny - target.y);
+
+        // Steer clear of active ghosts unless powered up
+        for (const g of ghosts) {
+          if (g.inHouse || g.eaten) continue;
+          const gDist = Math.hypot(nx - g.x, ny - g.y);
+          if (frightenedTimer > 0) {
+            evalScore += (12 - gDist) * 1.5;
+          } else if (gDist < 4.5) {
+            evalScore -= (5.0 - gDist) * 28;
+          }
         }
+
+        if (evalScore > bestScore) {
+          bestScore = evalScore;
+          bestDir = d;
+        }
+      }
+
+      player.nextDir = bestDir;
+      if (aheadBlocked) {
+        player.dir = bestDir;
+        player.facingAngle = bestDir.angle;
+      }
+    }
+
+    function updateBossRival(dt) {
+      if (!bossRival || currentLevel !== MAX_LEVELS) return;
+
+      bossRival.mouthPhase += dt * 13;
+      if (bossRival.stunTimer > 0) {
+        bossRival.stunTimer = Math.max(0, bossRival.stunTimer - dt);
         return;
       }
 
-      ctx.save();
-      ctx.translate(Math.round(cx), Math.round(cy));
-      ctx.rotate(player.facingAngle);
+      const col = wrapCol(Math.floor(bossRival.x));
+      const row = Math.floor(bossRival.y);
+      const centerX = Math.floor(bossRival.x) + 0.5;
+      const centerY = row + 0.5;
+      const step = BOSS_SPEED * dt;
 
-      const frame = Math.floor(player.mouthPhase) % 3;
-      const gridMap = [
-        [
-          "  XXXXX  ",
-          " XXXXXXX ",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          " XXXXXXX ",
-          "  XXXXX  "
-        ],
-        [
-          "  XXXXX  ",
-          " XXXXXXX ",
-          "XXXXXX   ",
-          "XXXX     ",
-          "XXX      ",
-          "XXXX     ",
-          "XXXXXX   ",
-          " XXXXXXX ",
-          "  XXXXX  "
-        ],
-        [
-          "  XXXXX  ",
-          " XXXXX   ",
-          "XXXX     ",
-          "XX       ",
-          "X        ",
-          "XX       ",
-          "XXXX     ",
-          " XXXXX   ",
-          "  XXXXX  "
-        ]
-      ][frame];
+      if (Math.hypot(bossRival.x - centerX, bossRival.y - centerY) <= step * 0.95) {
+        bossRival.x = centerX;
+        bossRival.y = centerY;
 
-      const offset = -4.5 * p;
-      for (let row = 0; row < 9; row++) {
-        for (let col = 0; col < 9; col++) {
-          if (gridMap[row][col] === "X") {
-            draw8BitRect(offset + col * p, offset + row * p, p, p, COLORS.player);
-          }
-        }
-      }
-
-      ctx.restore();
-    }
-
-    // 8-Bit Pixel-Art Arcade Ghost Sprite (Normal, Frightened Blue/White, and Eaten Eyes!)
-    function drawGhosts() {
-      const animFrame = Math.floor(pulseTimer * 8) % 2;
-
-      for (const g of ghosts) {
-        const cx = Math.round(g.x * tileSize);
-        const cy = Math.round(g.y * tileSize);
-        const r  = Math.floor(tileSize * 0.42);
-        const p  = Math.max(2, Math.floor(r / 5));
-        const ox = cx - 4.5 * p;
-        const oy = cy - 4.5 * p;
-
-        if (!g.eaten) {
-          let bodyColor = g.color;
-          if (frightenedTimer > 0) {
-            // Classic flashing blue & white during last 2 seconds of Power Pellet!
-            const flashing = frightenedTimer < 2.0 && Math.floor(pulseTimer * 10) % 2 === 0;
-            bodyColor = flashing ? "#ffffff" : "#314ece";
-          }
-
-          const ghostGrid = animFrame === 0 ? [
-            "  XXXXX  ",
-            " XXXXXXX ",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XX XXX XX",
-            "X   X   X"
-          ] : [
-            "  XXXXX  ",
-            " XXXXXXX ",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXX X XXX",
-            " X     X "
-          ];
-
-          for (let row = 0; row < 9; row++) {
-            for (let col = 0; col < 9; col++) {
-              if (ghostGrid[row][col] === "X") {
-                draw8BitRect(ox + col * p, oy + row * p, p, p, bodyColor);
+        // Find nearest dot or power pellet in the Boss Arena
+        let nearestTarget = null;
+        let nearestDist = Infinity;
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const ch = grid[r][c];
+            if (ch === "." || ch === "O") {
+              const weight = ch === "O" ? 0.45 : 1.0;
+              const d = Math.hypot((c + 0.5) - bossRival.x, (r + 0.5) - bossRival.y) * weight;
+              if (d < nearestDist) {
+                nearestDist = d;
+                nearestTarget = { x: c + 0.5, y: r + 0.5 };
               }
             }
           }
         }
 
-        // Frightened wavy mouth vs Normal/Eaten directional eyes
-        if (frightenedTimer > 0 && !g.eaten) {
-          const faceColor = (frightenedTimer < 2.0 && Math.floor(pulseTimer * 10) % 2 === 0) ? "#d52a3f" : "#ffdfba";
-          draw8BitRect(ox + 2.5 * p, oy + 3 * p, p, p, faceColor);
-          draw8BitRect(ox + 5.5 * p, oy + 3 * p, p, p, faceColor);
-          draw8BitRect(ox + 2 * p, oy + 6 * p, p * 5, p * 0.8, faceColor);
-        } else {
-          const eyeOffsetX = g.dir.x * (p * 0.8);
-          const eyeOffsetY = g.dir.y * (p * 0.8);
-
-          draw8BitRect(ox + 2 * p + eyeOffsetX * 0.4, oy + 2.5 * p + eyeOffsetY * 0.4, p * 2, p * 2.5, "#ffffff");
-          draw8BitRect(ox + 5 * p + eyeOffsetX * 0.4, oy + 2.5 * p + eyeOffsetY * 0.4, p * 2, p * 2.5, "#ffffff");
-
-          draw8BitRect(ox + 2.5 * p + eyeOffsetX, oy + 3.2 * p + eyeOffsetY, p, p * 1.2, "#000000");
-          draw8BitRect(ox + 5.5 * p + eyeOffsetX, oy + 3.2 * p + eyeOffsetY, p, p * 1.2, "#000000");
+        const allDirs = [DIRS.UP, DIRS.LEFT, DIRS.DOWN, DIRS.RIGHT];
+        const opposite = getOppositeDir(bossRival.dir);
+        let choices = allDirs.filter(d => d !== opposite && isWalkableForPlayer(col + d.x, row + d.y));
+        if (choices.length === 0) {
+          choices = allDirs.filter(d => isWalkableForPlayer(col + d.x, row + d.y));
         }
+
+        if (choices.length > 0 && nearestTarget) {
+          let bestDir = choices[0];
+          let bestDist = Infinity;
+          for (const d of choices) {
+            const dist = Math.hypot((col + d.x + 0.5) - nearestTarget.x, (row + d.y + 0.5) - nearestTarget.y);
+            if (dist < bestDist) {
+              bestDist = dist;
+              bestDir = d;
+            }
+          }
+          bossRival.dir = bestDir;
+          bossRival.facingAngle = bestDir.angle;
+        }
+      }
+
+      bossRival.x += bossRival.dir.x * step;
+      bossRival.y += bossRival.dir.y * step;
+      if (bossRival.x < 0) bossRival.x += COLS;
+      if (bossRival.x >= COLS) bossRival.x -= COLS;
+
+      // Red Pac eats dots & power pellets
+      const bCol = wrapCol(Math.floor(bossRival.x));
+      const bRow = Math.floor(bossRival.y);
+      const tile = getTile(bCol, bRow);
+
+      if (tile === ".") {
+        grid[bRow][bCol] = " ";
+        dotsCollected++;
+        bossRival.dotsEaten++;
+        updateHUD();
+      } else if (tile === "O") {
+        grid[bRow][bCol] = " ";
+        dotsCollected += 6;
+        bossRival.dotsEaten += 5;
+        addPopup(bossRival.x, bossRival.y - 0.5, "BOSS +5!", "#d52a3f");
+        updateHUD();
+      }
+
+      if (dotsCollected >= totalDots) {
+        finishBossFight();
+      }
+    }
+
+    function finishBossFight() {
+      if (!bossRival || gameState === "WIN" || gameState === "GAMEOVER") return;
+      const myDots = Math.max(0, dotsCollected - bossRival.dotsEaten);
+      const bossDots = bossRival.dotsEaten;
+
+      if (myDots >= bossDots) {
+        addScore(5000);
+        updateHUD();
+        playSound("win");
+        gameState = "WIN";
+        const recordText = isNewHighScore ? " ★ NEW HIGH SCORE! ★" : "";
+        winStats.textContent = `BOSS DEFEATED! You ate ${myDots} dots vs Red Pac's ${bossDots} dots! Final Score: ${score}${recordText}`;
+        winOverlay.classList.remove("hidden");
+      } else {
+        playSound("hit");
+        gameState = "GAMEOVER";
+        const recordText = isNewHighScore ? " ★ NEW HIGH SCORE! ★" : "";
+        gameOverStats.textContent = `RED PAC WON THE BOSS FIGHT (${bossDots} to ${myDots} dots)! Final Score: ${score}${recordText}`;
+        gameOverOverlay.classList.remove("hidden");
+      }
+    }
+
+    // =========================================================================
+    //  8-BIT PIXEL ART RENDERING ENGINE
+    // =========================================================================
+    function draw8BitKey(cx, cy) {
+      const p = Math.max(2, Math.floor(tileSize / 11));
+      const keyPixels = [
+        "..XXXX..",
+        ".XX..XX.",
+        ".XX..XX.",
+        "..XXXX..",
+        "...XX...",
+        "...XXXX.",
+        "...XX...",
+        "...XXXX."
+      ];
+      const startX = Math.round(cx - 4 * p);
+      const startY = Math.round(cy - 4 * p);
+
+      ctx.fillStyle = COLORS.green;
+      for (let r = 0; r < keyPixels.length; r++) {
+        for (let c = 0; c < keyPixels[r].length; c++) {
+          if (keyPixels[r][c] === "X") {
+            ctx.fillRect(startX + c * p, startY + r * p, p, p);
+          }
+        }
+      }
+    }
+
+    function drawMaze() {
+      // Cache static double-line maze walls onto an offscreen canvas so FPS never drops!
+      const mazeKey = `${currentLevel}_${tileSize}_${COLORS.wallOutline}_${COLORS.wallFill}`;
+      if (!cachedMazeCanvas || cachedMazeKey !== mazeKey) {
+        cachedMazeCanvas = document.createElement("canvas");
+        cachedMazeCanvas.width = canvas.width;
+        cachedMazeCanvas.height = canvas.height;
+        const mCtx = cachedMazeCanvas.getContext("2d");
+
+        const lineW = Math.max(2, Math.floor(tileSize * 0.11));
+        const pad = Math.max(3, Math.floor(tileSize * 0.22));
+        const rad = Math.max(3, Math.floor(tileSize * 0.24));
+
+        const isWallAt = (r, c) => {
+          if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return false;
+          return grid[r][c] === "#";
+        };
+
+        // Helper: Draws a continuous rounded polygon contour around contiguous wall tiles
+        const drawWallContour = (inset, strokeColor, strokeWidth, fillColor = null) => {
+          mCtx.save();
+          mCtx.strokeStyle = strokeColor;
+          mCtx.lineWidth = strokeWidth;
+          mCtx.lineJoin = "round";
+          mCtx.lineCap = "round";
+          if (fillColor) mCtx.fillStyle = fillColor;
+
+          for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+              if (!isWallAt(r, c)) continue;
+
+              const x = c * tileSize;
+              const y = r * tileSize;
+
+              const top = isWallAt(r - 1, c);
+              const bottom = isWallAt(r + 1, c);
+              const left = isWallAt(r, c - 1);
+              const right = isWallAt(r, c + 1);
+
+              const topLeft = isWallAt(r - 1, c - 1);
+              const topRight = isWallAt(r - 1, c + 1);
+              const bottomLeft = isWallAt(r + 1, c - 1);
+              const bottomRight = isWallAt(r + 1, c + 1);
+
+              const x0 = left ? x : x + inset;
+              const y0 = top ? y : y + inset;
+              const x1 = right ? x + tileSize : x + tileSize - inset;
+              const y1 = bottom ? y + tileSize : y + tileSize - inset;
+
+              if (fillColor) {
+                mCtx.fillRect(x0, y0, x1 - x0, y1 - y0);
+              }
+
+              // Outer straight edges with rounded outer corner arcs
+              mCtx.beginPath();
+
+              // Top edge
+              if (!top) {
+                const sx = left ? x : x0 + rad;
+                const ex = right ? x + tileSize : x1 - rad;
+                mCtx.moveTo(sx, y0);
+                mCtx.lineTo(ex, y0);
+              }
+              // Top-Right outer rounded corner
+              if (!top && !right) {
+                mCtx.moveTo(x1 - rad, y0);
+                mCtx.quadraticCurveTo(x1, y0, x1, y0 + rad);
+              }
+              // Right edge
+              if (!right) {
+                const sy = top ? y : y0 + rad;
+                const ey = bottom ? y + tileSize : y1 - rad;
+                mCtx.moveTo(x1, sy);
+                mCtx.lineTo(x1, ey);
+              }
+              // Bottom-Right outer rounded corner
+              if (!bottom && !right) {
+                mCtx.moveTo(x1, y1 - rad);
+                mCtx.quadraticCurveTo(x1, y1, x1 - rad, y1);
+              }
+              // Bottom edge
+              if (!bottom) {
+                const sx = right ? x + tileSize : x1 - rad;
+                const ex = left ? x : x0 + rad;
+                mCtx.moveTo(sx, y1);
+                mCtx.lineTo(ex, y1);
+              }
+              // Bottom-Left outer rounded corner
+              if (!bottom && !left) {
+                mCtx.moveTo(x0 + rad, y1);
+                mCtx.quadraticCurveTo(x0, y1, x0, y1 - rad);
+              }
+              // Left edge
+              if (!left) {
+                const sy = bottom ? y + tileSize : y1 - rad;
+                const ey = top ? y : y0 + rad;
+                mCtx.moveTo(x0, sy);
+                mCtx.lineTo(x0, ey);
+              }
+              // Top-Left outer rounded corner
+              if (!top && !left) {
+                mCtx.moveTo(x0, y0 + rad);
+                mCtx.quadraticCurveTo(x0, y0, x0 + rad, y0);
+              }
+
+              // Concave inner corner connectors where two perpendicular walls meet around an open diagonal
+              if (top && left && !topLeft) {
+                mCtx.moveTo(x, y + inset);
+                mCtx.quadraticCurveTo(x + inset, y + inset, x + inset, y);
+              }
+              if (top && right && !topRight) {
+                mCtx.moveTo(x + tileSize - inset, y);
+                mCtx.quadraticCurveTo(x + tileSize - inset, y + inset, x + tileSize, y + inset);
+              }
+              if (bottom && left && !bottomLeft) {
+                mCtx.moveTo(x, y + tileSize - inset);
+                mCtx.quadraticCurveTo(x + inset, y + tileSize - inset, x + inset, y + tileSize);
+              }
+              if (bottom && right && !bottomRight) {
+                mCtx.moveTo(x + tileSize - inset, y + tileSize);
+                mCtx.quadraticCurveTo(x + tileSize - inset, y + tileSize - inset, x + tileSize, y + tileSize - inset);
+              }
+
+              mCtx.stroke();
+            }
+          }
+          mCtx.restore();
+        };
+
+        // 1. Classic 1980 Namco Double-Line Outer + Inner Wall Contours
+        drawWallContour(pad, COLORS.wallOutline, lineW, COLORS.wallFill);
+        drawWallContour(pad + lineW * 1.45, COLORS.wallOutline, Math.max(1.5, lineW * 0.72), null);
+        cachedMazeKey = mazeKey;
+      }
+
+      ctx.drawImage(cachedMazeCanvas, 0, 0);
+
+      // 2. Render Dots, Power Pellets, Keys, Ghost House Door & Top Exit
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const tile = grid[r][c];
+          const x = c * tileSize;
+          const y = r * tileSize;
+          const cx = x + tileSize / 2;
+          const cy = y + tileSize / 2;
+
+          if (tile === ".") {
+            const dotSize = Math.max(3, Math.floor(tileSize * 0.18));
+            ctx.fillStyle = COLORS.dot;
+            ctx.fillRect(
+              Math.round(cx - dotSize / 2),
+              Math.round(cy - dotSize / 2),
+              dotSize,
+              dotSize
+            );
+          } else if (tile === "O") {
+            const flashOn = Math.floor(globalPulse * 6) % 2 === 0;
+            const bigR = Math.max(5, Math.floor(tileSize * 0.34));
+            draw8BitCircle(cx, cy, bigR, flashOn ? COLORS.powerPellet : COLORS.player, 0, 0);
+          } else if (tile === "K") {
+            const bob = Math.floor(Math.sin(globalPulse * 5 + c) * 2);
+            draw8BitKey(cx, cy + bob);
+          } else if (tile === "D") {
+            // Classic 1980 Pink Ghost House Gate bar
+            ctx.fillStyle = COLORS.ghostDoor;
+            const barH = Math.max(3, Math.floor(tileSize * 0.22));
+            ctx.fillRect(x, Math.round(cy - barH / 2), tileSize, barH);
+          } else if (tile === "E") {
+            if (exitUnlocked) {
+              const flash = Math.floor(globalPulse * 6) % 2 === 0;
+              ctx.fillStyle = flash ? COLORS.green : "#7dff84";
+              ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+              ctx.fillStyle = "#000000";
+              ctx.font = `bold ${Math.max(9, Math.floor(tileSize * 0.36))}px "Courier New", monospace`;
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText("GO", cx, cy);
+            } else {
+              ctx.fillStyle = "#220509";
+              ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+              ctx.strokeStyle = COLORS.red;
+              ctx.lineWidth = 2;
+              ctx.strokeRect(x + 3, y + 3, tileSize - 6, tileSize - 6);
+              ctx.fillStyle = COLORS.red;
+              ctx.fillRect(
+                Math.round(cx - tileSize * 0.16),
+                Math.round(cy - tileSize * 0.16),
+                Math.round(tileSize * 0.32),
+                Math.round(tileSize * 0.32)
+              );
+            }
+          }
+        }
+      }
+    }
+
+    function drawPlayer() {
+      const px = player.x * tileSize;
+      const py = player.y * tileSize;
+      const jumpOffset = player.z * tileSize * 0.45;
+      const radius = Math.floor(tileSize * 0.56);
+
+      if (clickMarker.alpha > 0 && clickMarker.dir !== DIRS.NONE) {
+        ctx.save();
+        ctx.globalAlpha = clickMarker.alpha;
+        ctx.fillStyle = COLORS.green;
+        const mx = Math.round(clickMarker.x * tileSize);
+        const my = Math.round(clickMarker.y * tileSize);
+        const s = Math.max(3, Math.floor(tileSize * 0.16));
+        ctx.fillRect(mx - s, my - s, s * 2, s * 2);
+        ctx.fillRect(mx + clickMarker.dir.x * s * 2 - s / 2, my + clickMarker.dir.y * s * 2 - s / 2, s, s);
+        ctx.restore();
+      }
+
+      if (player.nextDir !== DIRS.NONE && player.nextDir !== player.dir && gameState === "PLAYING") {
+        const indX = Math.round(px + player.nextDir.x * (radius + 5));
+        const indY = Math.round(py + player.nextDir.y * (radius + 5));
+        ctx.fillStyle = COLORS.green;
+        ctx.fillRect(indX - 2, indY - 2, 4, 4);
+      }
+
+      if (player.z > 0.02) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+        ctx.fillRect(Math.round(px - radius * 0.6), Math.round(py + radius * 0.7), Math.round(radius * 1.2), 3);
+      }
+
+      if (gameState === "DYING") {
+        const progress = Math.min(0.99, Math.max(0, 1 - stateTimer / 1.15));
+        const deathIdx = Math.floor(progress * ARCADE_PACMAN_DEATH_FRAMES.length);
+        drawPixelSprite(
+          ARCADE_PACMAN_DEATH_FRAMES[deathIdx],
+          px,
+          py - jumpOffset,
+          radius * 2,
+          COLORS.player,
+          0
+        );
+        return;
+      }
+
+      const chompFrames = [0, 1, 2, 1];
+      const frameIdx = player.dir === DIRS.NONE
+        ? 1
+        : chompFrames[Math.floor(player.mouthPhase) % chompFrames.length];
+
+      drawPixelSprite(
+        ARCADE_PACMAN_FRAMES[frameIdx],
+        px,
+        py - jumpOffset,
+        radius * 2,
+        COLORS.player,
+        getRotateStepsFromAngle(player.facingAngle)
+      );
+    }
+
+    function drawBossRival() {
+      if (!bossRival || currentLevel !== MAX_LEVELS) return;
+      const px = bossRival.x * tileSize;
+      const py = bossRival.y * tileSize;
+      const radius = Math.floor(tileSize * 0.56);
+
+      const chompFrames = [0, 1, 2, 1];
+      const frameIdx = chompFrames[Math.floor(bossRival.mouthPhase) % chompFrames.length];
+      const color = (bossRival.stunTimer > 0 && Math.floor(globalPulse * 10) % 2 === 0)
+        ? "#ffffff"
+        : COLORS.red;
+
+      drawPixelSprite(
+        ARCADE_PACMAN_FRAMES[frameIdx],
+        px,
+        py,
+        radius * 2,
+        color,
+        getRotateStepsFromAngle(bossRival.facingAngle)
+      );
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = `bold ${Math.max(8, Math.floor(tileSize * 0.32))}px "Courier New", monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      ctx.fillText("BOSS", Math.round(px), Math.round(py - radius - 2));
+    }
+
+    function drawGhosts() {
+      const radius = Math.floor(tileSize * 0.50);
+      const isFrightened = frightenedTimer > 0;
+      const isFlashing = isFrightened && frightenedTimer < 2.2 && (Math.floor(globalPulse * 8) % 2 === 0);
+
+      for (const ghost of ghosts) {
+        const gx = ghost.x * tileSize;
+        const gy = ghost.y * tileSize;
+        draw8BitGhost(
+          gx,
+          gy,
+          radius,
+          ghost.color,
+          ghost.dir,
+          isFrightened && !ghost.inHouse,
+          isFlashing,
+          ghost.eaten
+        );
       }
     }
 
     function drawPopups() {
-      ctx.font = `bold ${Math.max(11, Math.floor(tileSize * 0.55))}px "Courier New", monospace`;
+      ctx.font = `bold ${Math.max(11, Math.floor(tileSize * 0.48))}px "Courier New", monospace`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      for (const pop of scorePopups) {
-        const px = pop.x * tileSize;
-        const py = (pop.y - (1 - pop.timer) * 0.8) * tileSize;
-        ctx.fillStyle = "#000000";
-        ctx.fillText(pop.text, px + 2, py + 2);
+      for (const pop of floatingPopups) {
         ctx.fillStyle = pop.color;
-        ctx.fillText(pop.text, px, py);
-      }
-    }
-
-    // =========================================================================
-    //  ANIMATED 8-BIT ARCADE TITLE & CHARACTER ROLL-CALL SCREEN
-    // =========================================================================
-    function draw8BitSpriteAt(cx, cy, size, type, color, facingAngle = 0) {
-      const p = Math.max(2, Math.floor(size / 9));
-      const ox = Math.round(cx - 4.5 * p);
-      const oy = Math.round(cy - 4.5 * p);
-      const animFrame = Math.floor(pulseTimer * 8) % 2;
-
-      if (type === "PACMAN") {
-        ctx.save();
-        ctx.translate(Math.round(cx), Math.round(cy));
-        ctx.rotate(facingAngle);
-        const frame = Math.floor(pulseTimer * 12) % 3;
-        const pacGrid = [
-          [
-            "  XXXXX  ",
-            " XXXXXXX ",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            "XXXXXXXXX",
-            " XXXXXXX ",
-            "  XXXXX  "
-          ],
-          [
-            "  XXXXX  ",
-            " XXXXXXX ",
-            "XXXXXX   ",
-            "XXXX     ",
-            "XXX      ",
-            "XXXX     ",
-            "XXXXXX   ",
-            " XXXXXXX ",
-            "  XXXXX  "
-          ],
-          [
-            "  XXXXX  ",
-            " XXXXX   ",
-            "XXXX     ",
-            "XX       ",
-            "X        ",
-            "XX       ",
-            "XXXX     ",
-            " XXXXX   ",
-            "  XXXXX  "
-          ]
-        ][frame];
-        const off = -4.5 * p;
-        for (let r = 0; r < 9; r++) {
-          for (let c = 0; c < 9; c++) {
-            if (pacGrid[r][c] === "X") {
-              draw8BitRect(off + c * p, off + r * p, p, p, color);
-            }
-          }
-        }
-        ctx.restore();
-      } else {
-        const ghostGrid = animFrame === 0 ? [
-          "  XXXXX  ",
-          " XXXXXXX ",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XX XXX XX",
-          "X   X   X"
-        ] : [
-          "  XXXXX  ",
-          " XXXXXXX ",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXXXXXXXX",
-          "XXX X XXX",
-          " X     X "
-        ];
-        for (let r = 0; r < 9; r++) {
-          for (let c = 0; c < 9; c++) {
-            if (ghostGrid[r][c] === "X") {
-              draw8BitRect(ox + c * p, oy + r * p, p, p, color);
-            }
-          }
-        }
-        // Classic right-looking eyes for the roll-call lineup
-        const eyeOff = p * 0.8;
-        draw8BitRect(ox + 2 * p + eyeOff * 0.4, oy + 2.5 * p, p * 2, p * 2.5, "#ffffff");
-        draw8BitRect(ox + 5 * p + eyeOff * 0.4, oy + 2.5 * p, p * 2, p * 2.5, "#ffffff");
-        draw8BitRect(ox + 2.5 * p + eyeOff, oy + 3.2 * p, p, p * 1.2, "#000000");
-        draw8BitRect(ox + 5.5 * p + eyeOff, oy + 3.2 * p, p, p * 1.2, "#000000");
+        ctx.fillText(pop.text, Math.round(pop.x * tileSize), Math.round(pop.y * tileSize));
       }
     }
 
     function drawTitleScreen() {
       const w = canvas.width;
       const h = canvas.height;
-      const t = titleAnimTime;
+      const cx = w / 2;
 
-      // Retro 2000s / 8-bit outer border frame
+      // Crisp 8-bit outer border in user's favorite blue
       ctx.strokeStyle = COLORS.blue;
       ctx.lineWidth = 4;
       ctx.strokeRect(10, 10, w - 20, h - 20);
 
-      // Animated Title Header: PAC-MAZE
-      const titleY = Math.max(46, h * 0.11);
+      // Decorative pixel corner accents (Red, Green, Blue)
+      ctx.fillStyle = COLORS.red;
+      ctx.fillRect(10, 10, 12, 12);
+      ctx.fillStyle = COLORS.green;
+      ctx.fillRect(w - 22, 10, 12, 12);
+      ctx.fillStyle = COLORS.green;
+      ctx.fillRect(10, h - 22, 12, 12);
+      ctx.fillStyle = COLORS.red;
+      ctx.fillRect(w - 22, h - 22, 12, 12);
+
+      // Game Title Banner Box
+      const bannerW = Math.min(w - 48, 380);
+      const bannerH = Math.max(54, Math.floor(h * 0.14));
+      const bannerX = Math.round(cx - bannerW / 2);
+      const bannerY = Math.round(h * 0.06);
+
+      ctx.fillStyle = "#060811";
+      ctx.fillRect(bannerX, bannerY, bannerW, bannerH);
+      ctx.strokeStyle = COLORS.blue;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(bannerX, bannerY, bannerW, bannerH);
+
+      // Three Retro Status Pips inside Title Banner
+      const pipSize = Math.max(6, Math.floor(tileSize * 0.28));
+      ctx.fillStyle = COLORS.red;
+      ctx.fillRect(bannerX + 12, bannerY + 12, pipSize, pipSize);
+      ctx.fillStyle = COLORS.blue;
+      ctx.fillRect(bannerX + 12 + pipSize * 1.6, bannerY + 12, pipSize, pipSize);
+      ctx.fillStyle = COLORS.green;
+      ctx.fillRect(bannerX + 12 + pipSize * 3.2, bannerY + 12, pipSize, pipSize);
+
+      // Main "PAC-MAZE" Title Text
+      ctx.fillStyle = "#ffffff";
+      ctx.font = `bold ${Math.max(22, Math.floor(tileSize * 1.25))}px "Courier New", monospace`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
+      ctx.fillText("PAC-MAZE", Math.round(cx), Math.round(bannerY + bannerH * 0.56));
 
-      // Retro 3D drop shadow
-      ctx.font = `bold ${Math.max(26, Math.floor(w * 0.082))}px "Courier New", monospace`;
-      ctx.fillStyle = COLORS.red;
-      ctx.fillText("PAC-MAZE", w / 2 + 3, titleY + 3);
-      ctx.fillStyle = COLORS.blue;
-      ctx.fillText("PAC-MAZE", w / 2 - 2, titleY - 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillText("PAC-MAZE", w / 2, titleY);
-
-      // Subtitle & High Score Badge
-      ctx.font = `bold ${Math.max(11, Math.floor(w * 0.025))}px "Courier New", monospace`;
-      ctx.fillStyle = COLORS.green;
-      ctx.fillText(`HIGH SCORE: ${highScore}   //   8-BIT EDITION`, w / 2, titleY + Math.max(24, h * 0.052));
-
-      // Divider line
-      const divY = titleY + Math.max(40, h * 0.085);
-      draw8BitRect(w * 0.12, divY, w * 0.76, 3, COLORS.blue);
-
-      // Cast Roll Call: Ghosts & Pac-Man march onto screen and reveal their names!
+      // Animated Cast Roll Call (Ghosts + Pac-Man march on screen & reveal their names!)
       const cast = [
-        { type: "GHOST",  name: "BLINKY", role: "CHASER",   color: "#d52a3f", delay: 0.25 },
-        { type: "GHOST",  name: "PINKY",  role: "AMBUSHER", color: "#ff77b7", delay: 0.75 },
-        { type: "GHOST",  name: "INKY",   role: "FLANKER",  color: "#29d8ff", delay: 1.25 },
-        { type: "GHOST",  name: "CLYDE",  role: "WILDCARD", color: "#ff9d2e", delay: 1.75 },
-        { type: "PACMAN", name: "PAC-MAN",role: "ESCAPEE",  color: "#ffd700", delay: 2.25 }
+        { name: "BLINKY", role: "SHADOW",  color: "#d52a3f", isPlayer: false, delay: 0.35 },
+        { name: "PINKY",  role: "SPEEDY",  color: "#ff77b7", isPlayer: false, delay: 1.05 },
+        { name: "INKY",   role: "BASHFUL", color: "#29d8ff", isPlayer: false, delay: 1.75 },
+        { name: "CLYDE",  role: "POKEY",   color: "#ff9d2e", isPlayer: false, delay: 2.45 },
+        { name: "PAC-MAN",role: "ESCAPER", color: "#ffd700", isPlayer: true,  delay: 3.15 }
       ];
 
-      const rowStartY = divY + Math.max(30, h * 0.068);
-      const rowStepY  = Math.max(36, Math.floor((h * 0.56) / cast.length));
-      const targetSpriteX = w * 0.22;
-      const nameStartX    = w * 0.34;
-      const roleRightX    = w * 0.86;
-      const spriteSize    = Math.max(20, Math.floor(tileSize * 1.05));
+      const listStartY = Math.round(h * 0.26);
+      const rowStepY = Math.max(30, Math.floor(h * 0.095));
+      const spriteRadius = Math.max(10, Math.floor(tileSize * 0.54));
+      const charFontSize = Math.max(11, Math.floor(tileSize * 0.54));
 
-      ctx.font = `bold ${Math.max(13, Math.floor(w * 0.032))}px "Courier New", monospace`;
+      ctx.font = `bold ${charFontSize}px "Courier New", monospace`;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
 
-      cast.forEach((member, idx) => {
-        const elapsed = t - member.delay;
-        if (elapsed <= 0) return;
+      // Center the sprite + text block horizontally around the canvas center
+      const sampleLabelWidth = ctx.measureText('BLINKY   - "SHADOW"').width;
+      const spriteToTextGap = Math.max(14, Math.floor(tileSize * 0.75));
+      const totalRowWidth = spriteRadius * 2 + spriteToTextGap + sampleLabelWidth;
+      const targetSpriteX = Math.round(cx - totalRowWidth / 2 + spriteRadius);
+      const nameStartX = Math.round(targetSpriteX + spriteRadius + spriteToTextGap);
 
-        // Slide sprite in smoothly from off-screen left
-        const slideProgress = Math.min(1, elapsed / 0.45);
-        const easeOut = 1 - Math.pow(1 - slideProgress, 3);
-        const spriteX = -30 + (targetSpriteX + 30) * easeOut;
-        const rowY = rowStartY + idx * rowStepY;
+      cast.forEach((char, idx) => {
+        const localT = titleAnimTime - char.delay;
+        if (localT <= 0) return;
 
-        draw8BitSpriteAt(spriteX, rowY, spriteSize, member.type, member.color, 0);
+        // Slide character smoothly from the left edge onto their centered spot
+        const slideProgress = Math.min(1, localT / 0.45);
+        const ease = 1 - Math.pow(1 - slideProgress, 3);
+        const curX = -24 + (targetSpriteX + 24) * ease;
+        const rowY = listStartY + idx * rowStepY;
 
-        // Typewriter reveal for character name & role once sprite arrives
-        const textElapsed = Math.max(0, elapsed - 0.22);
-        const charsToShow = Math.min(member.name.length, Math.floor(textElapsed * 24));
-        const shownName = member.name.slice(0, charsToShow);
+        if (char.isPlayer) {
+          const chomp = [0.08, 0.48, 0.78, 0.48][Math.floor(globalPulse * 10) % 4];
+          draw8BitCircle(curX, rowY, spriteRadius, char.color, chomp, 0);
+        } else {
+          draw8BitGhost(curX, rowY, spriteRadius, char.color, DIRS.RIGHT, false, false, false);
+        }
 
-        ctx.textAlign = "left";
-        ctx.fillStyle = member.color;
-        ctx.fillText(shownName, nameStartX, rowY);
-
-        if (charsToShow >= member.name.length) {
-          ctx.textAlign = "right";
-          ctx.fillStyle = "#8a96b8";
-          ctx.fillText(`"${member.role}"`, roleRightX, rowY);
+        // Typewriter reveal for character name and role once sprite arrives
+        if (slideProgress > 0.35) {
+          const textT = Math.max(0, localT - 0.18);
+          const fullLabel = `${char.name.padEnd(8, " ")} - "${char.role}"`;
+          const visibleChars = Math.min(fullLabel.length, Math.floor(textT * 28));
+          ctx.fillStyle = char.color;
+          ctx.fillText(fullLabel.slice(0, visibleChars), nameStartX, rowY);
         }
       });
 
-      // Bottom Arcade Chase Parade & Blinking "CLICK OR PRESS ANY KEY" Prompt
-      const bottomY = h - Math.max(44, h * 0.095);
-      draw8BitRect(w * 0.12, bottomY - 26, w * 0.76, 3, COLORS.blue);
+      // Objective & High Score Summary Line
+      const infoY = Math.round(h * 0.77);
+      ctx.textAlign = "center";
+      ctx.font = `bold ${Math.max(10, Math.floor(tileSize * 0.44))}px "Courier New", monospace`;
+      ctx.fillStyle = COLORS.green;
+      ctx.fillText("COLLECT 5 KEYS + DOTS TO ESCAPE", Math.round(cx), infoY);
 
-      const blink = Math.floor(pulseTimer * 3.5) % 2 === 0;
-      if (blink) {
-        ctx.textAlign = "center";
-        ctx.font = `bold ${Math.max(13, Math.floor(w * 0.031))}px "Courier New", monospace`;
-        ctx.fillStyle = COLORS.green;
-        ctx.fillText("> CLICK ANYWHERE OR PRESS ANY KEY <", w / 2, bottomY);
+      ctx.fillStyle = "#8a96b8";
+      ctx.fillText(`HIGH SCORE: ${highScore}`, Math.round(cx), infoY + Math.max(16, Math.floor(tileSize * 0.65)));
+
+      // Blinking Arcade Prompt (No Start Button Needed — Click Anywhere or Press Any Key!)
+      const blinkOn = Math.floor(globalPulse * 2.5) % 2 === 0;
+      if (blinkOn) {
+        ctx.fillStyle = "#ffffff";
+        ctx.font = `bold ${Math.max(12, Math.floor(tileSize * 0.56))}px "Courier New", monospace`;
+        ctx.fillText("CLICK SCREEN OR PRESS KEY TO PLAY", Math.round(cx), Math.round(h * 0.90));
+      }
+
+      // Subtle countdown indicator in bottom corner before 25s demo starts
+      const secsLeft = Math.max(0, Math.ceil(TITLE_DEMO_DELAY - titleAnimTime));
+      if (secsLeft <= 10 && secsLeft > 0) {
+        ctx.fillStyle = "#8a96b8";
+        ctx.font = `bold ${Math.max(9, Math.floor(tileSize * 0.36))}px "Courier New", monospace`;
+        ctx.textAlign = "right";
+        ctx.fillText(`DEMO IN ${secsLeft}S`, w - 22, h - 18);
       }
     }
 
     function drawBanners() {
-      // Visual click-to-steer indicator on the board
-      if (clickIndicator.timer > 0 && clickIndicator.dir !== DIRS.NONE) {
-        const ix = clickIndicator.x;
-        const iy = clickIndicator.y;
-        const s  = Math.max(5, Math.floor(tileSize * 0.28));
-        ctx.save();
-        ctx.translate(ix, iy);
-        ctx.rotate(clickIndicator.dir.angle);
-        draw8BitRect(-s, -s * 0.4, s * 1.4, s * 0.8, COLORS.green);
-        draw8BitRect(0, -s * 0.8, s * 0.6, s * 1.6, COLORS.green);
-        ctx.restore();
-      }
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
 
-      // Upcoming queued turn chevron at player's next intersection
-      if (gameState === "PLAYING" && player.nextDir !== DIRS.NONE && player.nextDir !== player.dir) {
-        const px = player.x * tileSize + player.nextDir.x * (tileSize * 0.55);
-        const py = player.y * tileSize + player.nextDir.y * (tileSize * 0.55);
-        const s  = Math.max(3, Math.floor(tileSize * 0.14));
-        draw8BitRect(px - s, py - s, s * 2, s * 2, COLORS.green);
-      }
-
-      // Classic Arcade "READY!" Banner
-      if (gameState === "READY") {
-        const bw = tileSize * 9;
-        const bh = tileSize * 2.2;
-        const bx = (canvas.width - bw) / 2;
-        const by = (ghostSpawn.row + 2.3) * tileSize;
-
-        draw8BitRect(bx, by, bw, bh, "#000000");
+      if (gameState === "DEMO") {
+        // Blinking 8-bit "DEMO PLAY" arcade attract-mode banner
+        const bannerW = tileSize * 13;
+        const bannerH = tileSize * 1.4;
+        ctx.fillStyle = "rgba(0, 0, 0, 0.82)";
+        ctx.fillRect(Math.round(cx - bannerW / 2), Math.round(tileSize * 0.35), bannerW, bannerH);
         ctx.strokeStyle = COLORS.blue;
         ctx.lineWidth = 2;
-        ctx.strokeRect(bx, by, bw, bh);
+        ctx.strokeRect(Math.round(cx - bannerW / 2), Math.round(tileSize * 0.35), bannerW, bannerH);
 
-        ctx.fillStyle = COLORS.player;
-        ctx.font = `bold ${Math.max(14, Math.floor(tileSize * 0.72))}px "Courier New", monospace`;
+        const blink = Math.floor(globalPulse * 2.5) % 2 === 0;
+        ctx.fillStyle = blink ? COLORS.green : "#ffffff";
+        ctx.font = `bold ${Math.max(11, Math.floor(tileSize * 0.52))}px "Courier New", monospace`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(`LVL ${currentLevel} READY!`, canvas.width / 2, by + bh / 2);
+        ctx.fillText(
+          `DEMO PLAY (${Math.ceil(demoTimer)}S) - CLICK TO START`,
+          Math.round(cx),
+          Math.round(tileSize * 1.05)
+        );
+        return;
+      }
+
+      if (gameState === "READY") {
+        const bannerW = tileSize * 9;
+        const bannerH = tileSize * 1.5;
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(Math.round(cx - bannerW / 2), Math.round(cy - bannerH / 2), bannerW, bannerH);
+        ctx.strokeStyle = COLORS.green;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(Math.round(cx - bannerW / 2), Math.round(cy - bannerH / 2), bannerW, bannerH);
+
+        ctx.fillStyle = COLORS.player;
+        ctx.font = `bold ${Math.max(12, Math.floor(tileSize * 0.62))}px "Courier New", monospace`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`LVL ${currentLevel} READY!`, Math.round(cx), Math.round(cy));
       }
     }
 
     function drawScanlines() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.16)";
-      for (let y = 0; y < canvas.height; y += 4) {
-        ctx.fillRect(0, y, canvas.width, 1);
+      if (!crtEnabled) return;
+      if (!scanlinePattern) {
+        const pCanvas = document.createElement("canvas");
+        pCanvas.width = 4;
+        pCanvas.height = 4;
+        const pCtx = pCanvas.getContext("2d");
+        pCtx.fillStyle = "rgba(0, 0, 0, 0.16)";
+        pCtx.fillRect(0, 0, 4, 2);
+        scanlinePattern = ctx.createPattern(pCanvas, "repeat");
       }
+      ctx.fillStyle = scanlinePattern;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawFpsOverlay() {
+      const mode = FPS_MODES[fpsModeIndex];
+      if (mode === "OFF") return;
+
+      const label = mode === "MAX" ? `${currentFps} FPS (MAX)` : `${currentFps}/${mode} FPS`;
+      ctx.save();
+      ctx.font = `bold ${Math.max(10, Math.floor(tileSize * 0.42))}px "Courier New", monospace`;
+      const padX = 6;
+      const boxW = Math.ceil(ctx.measureText(label).width) + padX * 2;
+      const boxH = Math.max(18, Math.floor(tileSize * 0.72));
+      const bx = canvas.width - boxW - 6;
+      const by = 6;
+
+      ctx.fillStyle = "rgba(6, 8, 17, 0.85)";
+      ctx.fillRect(bx, by, boxW, boxH);
+      ctx.strokeStyle = COLORS.green;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(bx, by, boxW, boxH);
+
+      ctx.fillStyle = COLORS.green;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, Math.round(bx + boxW / 2), Math.round(by + boxH / 2) + 1);
+      ctx.restore();
     }
 
     function render() {
       ctx.fillStyle = COLORS.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (gameState === "START") {
+      if (gameState === "START" || gameState === "COLOR_SELECT") {
         drawTitleScreen();
         drawScanlines();
+        drawFpsOverlay();
         return;
       }
 
       drawMaze();
-      drawPlayer();
       drawGhosts();
+      drawBossRival();
+      drawPlayer();
       drawPopups();
       drawBanners();
       drawScanlines();
+      drawFpsOverlay();
     }
 
     // =========================================================================
-    //  MAIN GAME LOOP
+    //  HUD UPDATES
     // =========================================================================
-    function gameLoop(timestamp) {
-      if (!lastTime) lastTime = timestamp;
-      const dt = Math.min(0.05, (timestamp - lastTime) / 1000);
-      lastTime = timestamp;
-      pulseTimer += dt;
+    function updateHUD() {
+      scoreDisplay.textContent = score;
+      highScoreDisplay.textContent = highScore;
+      levelLabel.textContent = currentLevel === MAX_LEVELS
+        ? `BOSS LVL ${currentLevel} // Lives`
+        : `Lvl ${currentLevel}/${MAX_LEVELS} // Lives`;
+      livesDisplay.textContent = lives > 0 ? "♥".repeat(lives) : "0";
 
-      if (gameState === "START") {
-        titleAnimTime += dt;
-      }
-
-      if (clickIndicator.timer > 0) {
-        clickIndicator.timer = Math.max(0, clickIndicator.timer - dt);
-      }
-
-      for (let i = scorePopups.length - 1; i >= 0; i--) {
-        scorePopups[i].timer -= dt;
-        if (scorePopups[i].timer <= 0) {
-          scorePopups.splice(i, 1);
+      const isBossStage = (currentLevel === MAX_LEVELS && bossRival);
+      if (isBossStage) {
+        const myDots = Math.max(0, dotsCollected - bossRival.dotsEaten);
+        dotsDisplay.textContent = `YOU ${myDots} : ${bossRival.dotsEaten} BOSS`;
+        exitBadge.textContent = "BOSS RACE";
+        exitBadge.className = "exit-badge locked";
+      } else {
+        dotsDisplay.textContent = `${dotsCollected} / ${requiredDots}`;
+        if (exitUnlocked) {
+          exitBadge.textContent = "OPEN!";
+          exitBadge.className = "exit-badge unlocked";
+        } else {
+          exitBadge.textContent = "LOCKED";
+          exitBadge.className = "exit-badge locked";
         }
       }
 
-      if (gameState === "READY") {
-        stateBannerTimer -= dt;
-        if (stateBannerTimer <= 0) {
-          gameState = "PLAYING";
+      const pips = keysDisplay.querySelectorAll(".key-pip");
+      pips.forEach((pip, index) => {
+        if (isBossStage || index < keysCollected) {
+          pip.classList.add("collected");
+        } else {
+          pip.classList.remove("collected");
         }
-      } else if (gameState === "PLAYING") {
-        updatePlayer(dt);
-        if (gameState === "PLAYING") {
-          updateGhosts(dt);
-        }
-      } else if (gameState === "DYING") {
-        deathAnimTimer -= dt;
-        if (deathAnimTimer <= 0) {
-          if (lives <= 0) {
-            gameState = "GAMEOVER";
-            const theme = getLevelTheme();
-            const recordBanner = isNewHighScore ? " ★ NEW HIGH SCORE! ★" : "";
-            gameOverStats.textContent = `Level ${currentLevel} (${theme.name}) • Score: ${score} • Best: ${highScore}${recordBanner}`;
-            gameOverOverlay.classList.remove("hidden");
-          } else {
-            resetPositions();
-            gameState = "READY";
-            stateBannerTimer = 1.25;
-          }
-        }
-      }
-
-      render();
-      requestAnimationFrame(gameLoop);
+      });
     }
 
     // =========================================================================
-    //  INPUT CONTROLS (CLICK-TO-STEER + WASD + ARROWS + TOUCH + PAUSE)
+    //  GAME LOOP & STATE TRANSITIONS
     // =========================================================================
-    function handleCanvasSteer(clientX, clientY) {
-      if (gameState === "START") {
-        startNewGame();
-        return;
-      }
-      if (gameState !== "PLAYING" && gameState !== "READY") return;
-
-      const rect = canvas.getBoundingClientRect();
-      const clickX = (clientX - rect.left) * (canvas.width / rect.width);
-      const clickY = (clientY - rect.top) * (canvas.height / rect.height);
-
-      const playerPxX = player.x * tileSize;
-      const playerPxY = player.y * tileSize;
-      const dx = clickX - playerPxX;
-      const dy = clickY - playerPxY;
-
-      if (Math.hypot(dx, dy) < 6) return;
-
-      const chosenDir = Math.abs(dx) > Math.abs(dy)
-        ? (dx > 0 ? DIRS.RIGHT : DIRS.LEFT)
-        : (dy > 0 ? DIRS.DOWN  : DIRS.UP);
-
-      setPlayerDirection(chosenDir);
-      clickIndicator = { x: clickX, y: clickY, dir: chosenDir, timer: 0.35 };
+    function hideAllOverlays() {
+      pauseOverlay.classList.add("hidden");
+      gameOverOverlay.classList.add("hidden");
+      winOverlay.classList.add("hidden");
+      bossTutorialOverlay.classList.add("hidden");
+      stageSelectOverlay.classList.add("hidden");
+      colorSelectOverlay.classList.add("hidden");
+      controlsOverlay.classList.add("hidden");
     }
 
-    canvas.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      handleCanvasSteer(e.clientX, e.clientY);
-    });
+    function openColorSelect(targetLevel = 1, initialDir = null) {
+      ensureAudio();
+      playTone(587, 0.08, "square", 0.07);
+      pendingStartLevel = targetLevel;
+      pendingInitialDir = initialDir;
+      hideAllOverlays();
+      renderColorSelectGrid();
+      gameState = "COLOR_SELECT";
+      colorSelectOverlay.classList.remove("hidden");
+    }
+
+    function renderColorSelectGrid() {
+      colorGrid.innerHTML = "";
+      PAC_COLOR_OPTIONS.forEach((opt) => {
+        const isSelected = opt.id === selectedPacColor.id;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-btn";
+        btn.style.display = "flex";
+        btn.style.flexDirection = "column";
+        btn.style.alignItems = "center";
+        btn.style.gap = "6px";
+        btn.style.padding = "10px 6px";
+        btn.style.borderColor = isSelected ? "#ffffff" : opt.hex;
+        btn.style.background = isSelected ? "#101733" : "#000000";
+        btn.style.boxShadow = isSelected ? `0 0 8px ${opt.hex}` : "none";
+
+        const swatch = document.createElement("span");
+        swatch.style.width = "22px";
+        swatch.style.height = "22px";
+        swatch.style.background = opt.hex;
+        swatch.style.border = "2px solid #ffffff";
+        swatch.style.display = "inline-block";
+
+        const label = document.createElement("span");
+        label.textContent = opt.name;
+        label.style.fontSize = "0.66rem";
+        label.style.color = isSelected ? "#ffffff" : opt.hex;
+        label.style.lineHeight = "1.2";
+
+        btn.appendChild(swatch);
+        btn.appendChild(label);
+
+        btn.addEventListener("click", () => {
+          ensureAudio();
+          selectedPacColor = opt;
+          COLORS.player = opt.hex;
+          playTone(660, 0.07, "square", 0.07);
+          renderColorSelectGrid();
+        });
+
+        colorGrid.appendChild(btn);
+      });
+
+      startWithColorBtn.textContent = `PLAY AS ${selectedPacColor.name}`;
+      startWithColorBtn.style.background = selectedPacColor.hex;
+      startWithColorBtn.style.borderColor = selectedPacColor.hex;
+      startWithColorBtn.style.color = (selectedPacColor.id === "red" || selectedPacColor.id === "blue") ? "#ffffff" : "#000000";
+    }
+
+    function launchGameAfterColorSelect() {
+      const lvl = pendingStartLevel;
+      const dir = pendingInitialDir;
+      pendingInitialDir = null;
+      COLORS.player = selectedPacColor.hex;
+      startAtLevel(lvl);
+      if (dir) {
+        setPlayerDirection(dir);
+      }
+    }
+
+    function startAtLevel(targetLevel = 1) {
+      ensureAudio();
+      score = 0;
+      currentLevel = Math.max(1, Math.min(MAX_LEVELS, targetLevel));
+      lives = STARTING_LIVES;
+      isNewHighScore = false;
+      titleCodeBuffer = [];
+      initLevel(true);
+      hideAllOverlays();
+
+      if (currentLevel === MAX_LEVELS) {
+        gameState = "TUTORIAL";
+        bossTutorialOverlay.classList.remove("hidden");
+      } else {
+        gameState = "READY";
+        stateTimer = 1.65;
+        playSound("start");
+      }
+    }
+
+    function startNewGame() {
+      startAtLevel(1);
+    }
+
+    function openStageSelect() {
+      ensureAudio();
+      playTone(660, 0.09, "square", 0.08, 0.00);
+      playTone(880, 0.14, "square", 0.09, 0.09);
+      stageGrid.innerHTML = "";
+      for (let lvl = 1; lvl <= MAX_LEVELS; lvl++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-btn";
+        btn.textContent = lvl === MAX_LEVELS ? `${lvl}★` : `${lvl}`;
+        btn.style.padding = "8px 4px";
+        if (lvl === MAX_LEVELS) {
+          btn.style.borderColor = "var(--red)";
+          btn.style.color = "var(--red)";
+        }
+        btn.addEventListener("click", () => openColorSelect(lvl, null));
+        stageGrid.appendChild(btn);
+      }
+      gameState = "STAGE_SELECT";
+      stageSelectOverlay.classList.remove("hidden");
+    }
+
+    function recordTitleCodeInput(dirKey) {
+      if (gameState !== "START" || !dirKey || dirKey === "NONE") return false;
+      titleCodeBuffer.push(dirKey);
+      if (titleCodeBuffer.length > SECRET_CODE.length) {
+        titleCodeBuffer.shift();
+      }
+      playTone(440 + titleCodeBuffer.length * 90, 0.06, "square", 0.06);
+
+      if (
+        titleCodeBuffer.length === SECRET_CODE.length &&
+        titleCodeBuffer.every((val, idx) => val === SECRET_CODE[idx])
+      ) {
+        titleCodeBuffer = [];
+        openStageSelect();
+        return true;
+      }
+      return titleCodeBuffer.length < SECRET_CODE.length &&
+        titleCodeBuffer.every((val, idx) => val === SECRET_CODE[idx]);
+    }
 
     function togglePause() {
       if (gameState === "PLAYING") {
@@ -2053,64 +3070,245 @@
       }
     }
 
+    function gameLoop(timestamp) {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const dt = Math.min((timestamp - lastTimestamp) / 1000, 0.05);
+      lastTimestamp = timestamp;
+
+      // Track live rendered FPS smoothly without affecting game speed
+      fpsAccumTime += dt;
+      if (fpsAccumTime >= 0.4) {
+        currentFps = Math.max(1, Math.round(fpsFrameCounter / fpsAccumTime));
+        fpsFrameCounter = 0;
+        fpsAccumTime = 0;
+        const mode = FPS_MODES[fpsModeIndex];
+        if (fpsBtn) {
+          fpsBtn.textContent = mode === "OFF" ? "FPS: OFF" : `FPS: ${currentFps}`;
+        }
+      }
+
+      globalPulse += dt;
+
+      // Poll connected USB/Bluetooth Arcade Joysticks & Gamepads every frame
+      pollGamepads();
+
+      if (gameState === "START") {
+        titleAnimTime += dt;
+        if (titleAnimTime >= TITLE_DEMO_DELAY) {
+          startAttractDemo();
+        }
+      }
+
+      if (clickMarker.alpha > 0) {
+        clickMarker.alpha = Math.max(0, clickMarker.alpha - dt * 1.8);
+      }
+
+      for (let i = floatingPopups.length - 1; i >= 0; i--) {
+        floatingPopups[i].y -= dt * 0.9;
+        floatingPopups[i].timer -= dt;
+        if (floatingPopups[i].timer <= 0) {
+          floatingPopups.splice(i, 1);
+        }
+      }
+
+      if (gameState === "READY") {
+        stateTimer -= dt;
+        if (stateTimer <= 0) {
+          gameState = "PLAYING";
+        }
+      } else if (gameState === "DEMO") {
+        demoTimer -= dt;
+        updateDemoAI();
+        updatePlayer(dt);
+        updateGhosts(dt);
+        if (demoTimer <= 0) {
+          stopAttractDemoAndReturnToTitle();
+        }
+      } else if (gameState === "PLAYING") {
+        updatePlayer(dt);
+        updateBossRival(dt);
+        if (gameState === "PLAYING") {
+          updateGhosts(dt);
+        }
+      } else if (gameState === "DYING") {
+        stateTimer -= dt;
+        if (stateTimer <= 0) {
+          if (lives <= 0) {
+            gameState = "GAMEOVER";
+            const recordText = isNewHighScore ? " ★ NEW HIGH SCORE! ★" : "";
+            gameOverStats.textContent = `A colored ghost stopped your escape on Level ${currentLevel}. Final Score: ${score}${recordText}`;
+            gameOverOverlay.classList.remove("hidden");
+          } else {
+            resetPositionsAfterHit();
+            gameState = "READY";
+            stateTimer = 1.35;
+          }
+        }
+      }
+
+      const activeFpsMode = FPS_MODES[fpsModeIndex];
+      const minFrameInterval = activeFpsMode === "30"
+        ? (1000 / 30) - 1
+        : activeFpsMode === "60"
+          ? (1000 / 60) - 1
+          : 0;
+
+      if (minFrameInterval === 0 || (timestamp - lastRenderTimestamp) >= minFrameInterval) {
+        lastRenderTimestamp = timestamp;
+        fpsFrameCounter++;
+        render();
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
+    // =========================================================================
+    //  CONTROLS: CLICK-TO-STEER, WASD / ARROWS, TOUCH & SWIPE
+    // =========================================================================
+    function handleCanvasDirectionClick(clientX, clientY) {
+      ensureAudio();
+
+      if (gameState === "DEMO") {
+        stopAttractDemoAndReturnToTitle();
+        return;
+      }
+
+      if (gameState === "START") {
+        const rect = canvas.getBoundingClientRect();
+        const nx = (clientX - rect.left) / rect.width - 0.5;
+        const ny = (clientY - rect.top) / rect.height - 0.5;
+        if (Math.hypot(nx, ny) > 0.14) {
+          const dirKey = Math.abs(nx) > Math.abs(ny)
+            ? (nx > 0 ? "RIGHT" : "LEFT")
+            : (ny > 0 ? "DOWN" : "UP");
+          if (recordTitleCodeInput(dirKey)) {
+            return;
+          }
+        }
+        openColorSelect(1, null);
+        return;
+      }
+      if (gameState !== "PLAYING" && gameState !== "READY") return;
+
+      const rect = canvas.getBoundingClientRect();
+      const clickTileX = ((clientX - rect.left) / rect.width) * COLS;
+      const clickTileY = ((clientY - rect.top) / rect.height) * ROWS;
+
+      const dx = clickTileX - player.x;
+      const dy = clickTileY - player.y;
+
+      if (Math.hypot(dx, dy) < 0.25) return;
+
+      const chosenDir = Math.abs(dx) >= Math.abs(dy)
+        ? (dx > 0 ? DIRS.RIGHT : DIRS.LEFT)
+        : (dy > 0 ? DIRS.DOWN : DIRS.UP);
+
+      clickMarker = {
+        x: clickTileX,
+        y: clickTileY,
+        dir: chosenDir,
+        alpha: 1.0
+      };
+
+      setPlayerDirection(chosenDir);
+    }
+
+    canvas.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      handleCanvasDirectionClick(e.clientX, e.clientY);
+    });
+
     window.addEventListener("keydown", (e) => {
       const key = e.key.toLowerCase();
 
+      if (["arrowup", "arrowdown", "arrowleft", "arrowright", " ", "w", "a", "s", "d"].includes(key)) {
+        e.preventDefault();
+      }
+
+      if (gameState === "DEMO") {
+        stopAttractDemoAndReturnToTitle();
+        return;
+      }
+
       if (gameState === "START") {
-        if (["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright", "enter", " "].includes(key)) {
-          e.preventDefault();
-          startNewGame();
-          if (key === "w" || key === "arrowup")    setPlayerDirection(DIRS.UP);
-          if (key === "s" || key === "arrowdown")  setPlayerDirection(DIRS.DOWN);
-          if (key === "a" || key === "arrowleft")  setPlayerDirection(DIRS.LEFT);
-          if (key === "d" || key === "arrowright") setPlayerDirection(DIRS.RIGHT);
+        if (key === "enter" || key === " ") {
+          openColorSelect(1, null);
+          return;
+        }
+        if (key === "w" || key === "arrowup") {
+          if (recordTitleCodeInput("UP")) return;
+          openColorSelect(1, DIRS.UP);
+          return;
+        }
+        if (key === "s" || key === "arrowdown") {
+          if (recordTitleCodeInput("DOWN")) return;
+          openColorSelect(1, DIRS.DOWN);
+          return;
+        }
+        if (key === "a" || key === "arrowleft") {
+          if (recordTitleCodeInput("LEFT")) return;
+          openColorSelect(1, DIRS.LEFT);
+          return;
+        }
+        if (key === "d" || key === "arrowright") {
+          if (recordTitleCodeInput("RIGHT")) return;
+          openColorSelect(1, DIRS.RIGHT);
+          return;
         }
         return;
       }
 
-      if (key === "w" || key === "arrowup") {
-        e.preventDefault();
-        setPlayerDirection(DIRS.UP);
-      } else if (key === "s" || key === "arrowdown") {
-        e.preventDefault();
-        setPlayerDirection(DIRS.DOWN);
-      } else if (key === "a" || key === "arrowleft") {
-        e.preventDefault();
-        setPlayerDirection(DIRS.LEFT);
-      } else if (key === "d" || key === "arrowright") {
-        e.preventDefault();
-        setPlayerDirection(DIRS.RIGHT);
-      } else if (e.code === "Space") {
-        e.preventDefault();
-        triggerMiniHop();
-      } else if (key === "p") {
-        e.preventDefault();
-        togglePause();
-      } else if (key === "r") {
-        e.preventDefault();
-        startNewGame();
+      if (gameState === "COLOR_SELECT") {
+        if (key === "enter" || key === " ") {
+          launchGameAfterColorSelect();
+          return;
+        }
+        if (key === "a" || key === "arrowleft") {
+          const idx = PAC_COLOR_OPTIONS.findIndex(o => o.id === selectedPacColor.id);
+          selectedPacColor = PAC_COLOR_OPTIONS[(idx - 1 + PAC_COLOR_OPTIONS.length) % PAC_COLOR_OPTIONS.length];
+          COLORS.player = selectedPacColor.hex;
+          playTone(660, 0.07, "square", 0.07);
+          renderColorSelectGrid();
+          return;
+        }
+        if (key === "d" || key === "arrowright") {
+          const idx = PAC_COLOR_OPTIONS.findIndex(o => o.id === selectedPacColor.id);
+          selectedPacColor = PAC_COLOR_OPTIONS[(idx + 1) % PAC_COLOR_OPTIONS.length];
+          COLORS.player = selectedPacColor.hex;
+          playTone(660, 0.07, "square", 0.07);
+          renderColorSelectGrid();
+          return;
+        }
+        return;
       }
+
+      if (key === "w" || key === "arrowup")    setPlayerDirection(DIRS.UP);
+      if (key === "s" || key === "arrowdown")  setPlayerDirection(DIRS.DOWN);
+      if (key === "a" || key === "arrowleft")  setPlayerDirection(DIRS.LEFT);
+      if (key === "d" || key === "arrowright") setPlayerDirection(DIRS.RIGHT);
+      if (key === " ")                         triggerMiniHop();
+      if (key === "p")                         togglePause();
     });
 
-    // On-screen WASD Touch & Mouse Pad
-    padButtons.forEach(btn => {
+    // On-screen WASD Touch Buttons
+    padButtons.forEach((btn) => {
       const dirName = btn.dataset.dir;
       const activate = (e) => {
         e.preventDefault();
         btn.classList.add("active");
         setPlayerDirection(DIRS[dirName]);
       };
-      const release = () => btn.classList.remove("active");
+      const deactivate = () => btn.classList.remove("active");
 
       btn.addEventListener("pointerdown", activate);
-      btn.addEventListener("pointerup", release);
-      btn.addEventListener("pointerleave", release);
-      btn.addEventListener("pointercancel", release);
+      btn.addEventListener("pointerup", deactivate);
+      btn.addEventListener("pointerleave", deactivate);
+      btn.addEventListener("pointercancel", deactivate);
     });
 
-    // Swipe gestures on mobile screens
+    // Swipe Gestures on Canvas
     let touchStartX = 0;
     let touchStartY = 0;
+
     canvas.addEventListener("touchstart", (e) => {
       if (e.touches.length > 0) {
         touchStartX = e.touches[0].clientX;
@@ -2119,25 +3317,233 @@
     }, { passive: true });
 
     canvas.addEventListener("touchend", (e) => {
-      if (e.changedTouches.length > 0) {
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        const dy = e.changedTouches[0].clientY - touchStartY;
-        if (Math.max(Math.abs(dx), Math.abs(dy)) > 20) {
-          if (Math.abs(dx) > Math.abs(dy)) {
-            setPlayerDirection(dx > 0 ? DIRS.RIGHT : DIRS.LEFT);
-          } else {
-            setPlayerDirection(dy > 0 ? DIRS.DOWN : DIRS.UP);
-          }
-        }
+      if (e.changedTouches.length === 0) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) < 22 && Math.abs(dy) < 22) return;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        setPlayerDirection(dx > 0 ? DIRS.RIGHT : DIRS.LEFT);
+      } else {
+        setPlayerDirection(dy > 0 ? DIRS.DOWN : DIRS.UP);
       }
     }, { passive: true });
 
     // UI Button Bindings
-    retryBtn.addEventListener("click", startNewGame);
-    playAgainBtn.addEventListener("click", startNewGame);
-    restartBtn.addEventListener("click", startNewGame);
+    retryBtn.addEventListener("click", () => openColorSelect(1, null));
+    playAgainBtn.addEventListener("click", () => openColorSelect(1, null));
+    restartBtn.addEventListener("click", () => openColorSelect(1, null));
+    startWithColorBtn.addEventListener("click", launchGameAfterColorSelect);
     pauseBtn.addEventListener("click", togglePause);
     resumeBtn.addEventListener("click", togglePause);
+
+    startBossBtn.addEventListener("click", () => {
+      ensureAudio();
+      bossTutorialOverlay.classList.add("hidden");
+      gameState = "READY";
+      stateTimer = 1.5;
+      playSound("start");
+    });
+
+    closeStageSelectBtn.addEventListener("click", () => {
+      stageSelectOverlay.classList.add("hidden");
+      titleAnimTime = 0;
+      gameState = "START";
+    });
+
+    // Arcade Joystick & Controller Configuration UI Bindings
+    controlsBtn.addEventListener("click", openControlsConfig);
+    closeControlsBtn.addEventListener("click", closeControlsConfig);
+
+    modeAutoBtn.addEventListener("click", () => {
+      padControlMode = "AUTO";
+      listeningAction = null;
+      remapPrompt.textContent = "Automatic works instantly with D-Pads, Analog Sticks & Arcade Encoders.";
+      savePadSettings();
+    });
+
+    modeCustomBtn.addEventListener("click", () => {
+      padControlMode = "CUSTOM";
+      listeningAction = null;
+      remapPrompt.textContent = "Click any action below, then push your Arcade Joystick or press a Button.";
+      savePadSettings();
+    });
+
+    remapButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        padControlMode = "CUSTOM";
+        listeningAction = btn.dataset.action;
+        remapPrompt.textContent = `WAITING FOR INPUT -> Move Arcade Stick or press Button for [${listeningAction}]...`;
+        updatePadUI();
+      });
+    });
+
+    resetMapBtn.addEventListener("click", () => {
+      padMapping = JSON.parse(JSON.stringify(DEFAULT_PAD_MAPPING));
+      listeningAction = null;
+      remapPrompt.textContent = "Reset to standard Arcade Stick / Gamepad defaults.";
+      savePadSettings();
+    });
+
+    window.addEventListener("gamepadconnected", (e) => {
+      activePadIndex = e.gamepad.index;
+      updatePadUI();
+      addPopup(player.x, player.y - 0.6, "ARCADE PAD READY!", "#45ba4b");
+    });
+
+    window.addEventListener("gamepaddisconnected", () => {
+      activePadIndex = null;
+      updatePadUI();
+    });
+
+    function triggerGamepadAction(actionName) {
+      if (actionName === "UP")    setPlayerDirection(DIRS.UP);
+      if (actionName === "DOWN")  setPlayerDirection(DIRS.DOWN);
+      if (actionName === "LEFT")  setPlayerDirection(DIRS.LEFT);
+      if (actionName === "RIGHT") setPlayerDirection(DIRS.RIGHT);
+
+      if (actionName === "HOP") {
+        if (gameState === "DEMO") {
+          stopAttractDemoAndReturnToTitle();
+        } else if (gameState === "START") {
+          openColorSelect(1, null);
+        } else if (gameState === "COLOR_SELECT") {
+          launchGameAfterColorSelect();
+        } else if (gameState === "TUTORIAL") {
+          startBossBtn.click();
+        } else if (gameState === "GAMEOVER" || gameState === "WIN") {
+          openColorSelect(1, null);
+        } else {
+          triggerMiniHop();
+        }
+      }
+
+      if (actionName === "PAUSE") {
+        if (gameState === "DEMO") {
+          stopAttractDemoAndReturnToTitle();
+        } else if (gameState === "START") {
+          openColorSelect(1, null);
+        } else if (gameState === "COLOR_SELECT") {
+          launchGameAfterColorSelect();
+        } else if (gameState === "TUTORIAL") {
+          startBossBtn.click();
+        } else if (gameState === "GAMEOVER" || gameState === "WIN") {
+          openColorSelect(1, null);
+        } else {
+          togglePause();
+        }
+      }
+    }
+
+    function pollGamepads() {
+      if (!navigator.getGamepads) return;
+      const pads = navigator.getGamepads();
+      let pad = null;
+
+      for (let i = 0; i < pads.length; i++) {
+        if (pads[i] && pads[i].connected) {
+          pad = pads[i];
+          if (activePadIndex === null) {
+            activePadIndex = pad.index;
+            updatePadUI();
+          }
+          break;
+        }
+      }
+      if (!pad) return;
+
+      const deadzone = 0.45;
+      const currButtons = pad.buttons.map(b => b.pressed || b.value > 0.5);
+      const currAxes = pad.axes.map(a => (a > deadzone ? 1 : a < -deadzone ? -1 : 0));
+
+      const prev = prevPadStates[pad.index] || {
+        buttons: currButtons.map(() => false),
+        axes: currAxes.map(() => 0)
+      };
+
+      // 1. If listening for a new Custom Arcade Button / Stick Axis assignment
+      if (listeningAction) {
+        for (let b = 0; b < currButtons.length; b++) {
+          if (currButtons[b] && !prev.buttons[b]) {
+            padMapping[listeningAction] = { type: "button", index: b };
+            remapPrompt.textContent = `MAPPED [${listeningAction}] -> BUTTON ${b}`;
+            listeningAction = null;
+            savePadSettings();
+            prevPadStates[pad.index] = { buttons: currButtons, axes: currAxes };
+            return;
+          }
+        }
+        for (let a = 0; a < currAxes.length; a++) {
+          if (currAxes[a] !== 0 && prev.axes[a] === 0) {
+            padMapping[listeningAction] = { type: "axis", index: a, dir: currAxes[a] };
+            remapPrompt.textContent = `MAPPED [${listeningAction}] -> AXIS ${a} (${currAxes[a] > 0 ? "+" : "-"})`;
+            listeningAction = null;
+            savePadSettings();
+            prevPadStates[pad.index] = { buttons: currButtons, axes: currAxes };
+            return;
+          }
+        }
+        prevPadStates[pad.index] = { buttons: currButtons, axes: currAxes };
+        return;
+      }
+
+      // Do not trigger game movement while the config modal is open
+      if (!controlsOverlay.classList.contains("hidden")) {
+        prevPadStates[pad.index] = { buttons: currButtons, axes: currAxes };
+        return;
+      }
+
+      // 2. Automatic Plug-and-Play Mode (Works with Arcade Sticks, D-Pads & Analog Sticks)
+      if (padControlMode === "AUTO") {
+        const upNow    = currButtons[12] || currAxes[1] === -1 || currAxes[5] === -1;
+        const downNow  = currButtons[13] || currAxes[1] === 1  || currAxes[5] === 1;
+        const leftNow  = currButtons[14] || currAxes[0] === -1 || currAxes[4] === -1;
+        const rightNow = currButtons[15] || currAxes[0] === 1  || currAxes[4] === 1;
+
+        const upPrev    = prev.buttons[12] || prev.axes[1] === -1 || prev.axes[5] === -1;
+        const downPrev  = prev.buttons[13] || prev.axes[1] === 1  || prev.axes[5] === 1;
+        const leftPrev  = prev.buttons[14] || prev.axes[0] === -1 || prev.axes[4] === -1;
+        const rightPrev = prev.buttons[15] || prev.axes[0] === 1  || prev.axes[4] === 1;
+
+        if (upNow && !upPrev)       triggerGamepadAction("UP");
+        if (downNow && !downPrev)   triggerGamepadAction("DOWN");
+        if (leftNow && !leftPrev)   triggerGamepadAction("LEFT");
+        if (rightNow && !rightPrev) triggerGamepadAction("RIGHT");
+
+        // Standard Arcade Action Buttons (A/B/X/Y -> Buttons 0..3) trigger Hop / Start
+        for (let b = 0; b <= 3; b++) {
+          if (currButtons[b] && !prev.buttons[b]) {
+            triggerGamepadAction("HOP");
+            break;
+          }
+        }
+
+        // Start / Select / Home Buttons (8, 9, 16) trigger Start / Pause
+        for (const b of [8, 9, 16]) {
+          if (currButtons[b] && !prev.buttons[b]) {
+            triggerGamepadAction("PAUSE");
+            break;
+          }
+        }
+      } else {
+        // 3. Custom Mapped Mode
+        for (const action of ["UP", "DOWN", "LEFT", "RIGHT", "HOP", "PAUSE"]) {
+          const bind = padMapping[action];
+          if (!bind) continue;
+          if (bind.type === "button") {
+            if (currButtons[bind.index] && !prev.buttons[bind.index]) {
+              triggerGamepadAction(action);
+            }
+          } else if (bind.type === "axis") {
+            if (currAxes[bind.index] === bind.dir && prev.axes[bind.index] !== bind.dir) {
+              triggerGamepadAction(action);
+            }
+          }
+        }
+      }
+
+      prevPadStates[pad.index] = { buttons: currButtons, axes: currAxes };
+    }
 
     soundToggleBtn.addEventListener("click", () => {
       soundEnabled = !soundEnabled;
@@ -2145,18 +3551,24 @@
       if (soundEnabled) ensureAudio();
     });
 
-    window.addEventListener("resize", () => {
-      resizeCanvas();
-      render();
+    fpsBtn.addEventListener("click", () => {
+      fpsModeIndex = (fpsModeIndex + 1) % FPS_MODES.length;
+      const mode = FPS_MODES[fpsModeIndex];
+      fpsBtn.textContent = mode === "OFF" ? "FPS: OFF" : `FPS: ${mode}`;
+      fpsBtn.style.borderColor = mode === "OFF" ? "var(--blue)" : "var(--green)";
     });
 
-    // Boot Sequence
-    window.onload = function () {
-      loadHighScore();
-      resizeCanvas();
-      initLevel(true);
-      requestAnimationFrame(gameLoop);
-    };
+    crtBtn.addEventListener("click", () => {
+      crtEnabled = !crtEnabled;
+      crtBtn.textContent = crtEnabled ? "CRT: ON" : "CRT: OFF";
+      crtBtn.style.borderColor = crtEnabled ? "var(--green)" : "var(--blue)";
+    });
+
+    // Boot Game
+    updatePadUI();
+    initLevel(false);
+    resizeCanvas();
+    requestAnimationFrame(gameLoop);
   </script>
 </body>
 </html>
